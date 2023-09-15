@@ -1,0 +1,49 @@
+{
+    "name": "@knighttower/js-utility-functions",
+    "version": "1.0.1",
+    "main": "Utility.js",
+    "module": "Utility.js",
+    "unpkg": "dist/Utility.js",
+    "jsdelivr": "dist/Utility.js",
+    "license": "MIT",
+    "description": "**Utility** is a utility library that provides a collection of utility functions for various tasks. The library is designed to be easy to use and covers the most common use cases. ",
+    "homepage": "https://github.com/knighttower/JsUtility",
+    "author": "knighttower (https://github.com/knighttower)",
+    "keywords": [
+        "Utility",
+        "Vue",
+        "react",
+        "library",
+        "plugin",
+        "URL",
+        "Vue 2",
+        "Vue 3",
+        "javascript",
+        "DOM",
+        "functions",
+        "helper",
+        "knighttower"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/knighttower/JsUtility.git"
+    },
+    "scripts": {
+        "build": "mix --production",
+        "dev": "mix",
+        "watch": "mix watch",
+        "test": "vitest"
+    },
+    "dependencies": {
+        "@knighttower/element-helper": "^1.0.11",
+        "@knighttower/js-object-proxy-helper": "^1.0.2",
+        "@knighttower/js-power-helper-functions": "^1.0.2",
+        "@knighttower/js-url-helper": "^1.0.3",
+        "lodash": "^4.17.21"
+    },
+    "devDependencies": {
+        "jsdom": "^22.1.0",
+        "laravel-mix": "^6.0.49",
+        "vitest": "^0.34.4"
+    }
+}
