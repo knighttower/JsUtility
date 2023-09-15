@@ -36,15 +36,9 @@ All functions are handy, but the most handy of all is **"emptyOrValue"** which h
         proxyObject, // see proxy helper
         urlHelper, // see url helper
         // from Lodash used internally but might as well make them available
-        isEmpty,
-        isString,
         every,
-        forEach,
         includes,
-        isInteger,
-        isBoolean,
         isUndefined,
-        toNumber,
         // from JsPowerHelperFunctions
         getDirectivesFromString,
         findAndReplaceInArray,
@@ -76,7 +70,7 @@ yarn add @knighttower/js-utility-functions
 It loads as a 'window' object --> window.Utility
 
 ```html
-<script src=" https://cdn.jsdelivr.net/npm/@knighttower/js-utility-functions@latest/dist/Utility.min.js "></script>
+<script src="https://cdn.jsdelivr.net/npm/@knighttower/js-utility-functions@latest/dist/Utility.min.js"></script>
 ```
 
 ## Usage
