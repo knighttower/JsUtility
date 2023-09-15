@@ -7,8 +7,7 @@
 //  */
 // // -----------------------------------------
 
-import { isEmpty, isString, every, forEach, includes, isInteger, isBoolean, isUndefined, toNumber } from 'lodash';
-const _ = { isEmpty, isString, every, forEach, includes, isInteger, isBoolean, isUndefined, toNumber };
+import { isEmpty, every, includes, isUndefined } from 'lodash-es';
 // @see https://github.com/knighttower/JsObjectProxyHelper
 import ProxyHelper from '@knighttower/js-object-proxy-helper';
 // @see https://github.com/knighttower/JsUrlHelper
@@ -16,7 +15,8 @@ import urlHelper from '@knighttower/js-url-helper';
 // @see https://github.com/knighttower/ElementHelper
 import ElementHelper from '@knighttower/element-helper';
 // @see https://github.com/knighttower/JsPowerHelperFunctions
-import { getDirectivesFromString,
+import {
+    getDirectivesFromString,
     findAndReplaceInArray,
     getMatchInBetween,
     getMatchBlock,
@@ -25,7 +25,8 @@ import { getDirectivesFromString,
     setLookUpExp,
     removeQuotes,
     fixQuotes,
-    addQuotes } from '@knighttower/js-power-helper-functions';
+    addQuotes,
+} from '@knighttower/js-power-helper-functions';
 
 // -----------------------------
 // METHODS
@@ -38,62 +39,59 @@ import { getDirectivesFromString,
  * @param {String|Object} address
  * @return string
  */
-const getGoogleMapsAddress = function (address) {
+const isTruthy = (value) => Boolean(value);
+
+const getGoogleMapsAddress = (address) => {
+    if (!address) return false;
+
     let search = '';
 
-    if (_.isEmpty(address)) {
-        return false;
-    }
-
-    if (_.isString(address)) {
+    if (typeof address === 'string') {
         search = address;
     } else {
-        let keys = ['address', 'address1', 'city', 'state', 'zip', 'zipcode'];
-        let conditions = [
-            Boolean(address.address) || Boolean(address.address1),
-            Boolean(address.zip) || Boolean(address.zipcode),
-            Boolean(address.city),
-            Boolean(address.state),
-        ];
+        const keys = ['address', 'address1', 'city', 'state', 'zip', 'zipcode'];
+        const hasFullAddress = [
+            isTruthy(address.address) || isTruthy(address.address1),
+            isTruthy(address.zip) || isTruthy(address.zipcode),
+            isTruthy(address.city),
+            isTruthy(address.state),
+        ].every(isTruthy);
 
-        let hasFullAddress = _.every(conditions, (i) => {
-            return Boolean(i);
-        });
+        if (!hasFullAddress) return false;
 
-        if (hasFullAddress) {
-            _.forEach(address, function (x, aKey) {
-                keys.forEach((key) => {
-                    if (_.includes(aKey, key)) {
-                        if (!_.isEmpty(address[aKey])) {
-                            search += ' ' + address[aKey];
-                        }
-                    }
-                });
+        keys.forEach((key) => {
+            Object.keys(address).forEach((aKey) => {
+                if (aKey.includes(key) && isTruthy(address[aKey])) {
+                    search += ` ${address[aKey]}`;
+                }
             });
-        } else {
-            return false;
-        }
+        });
     }
 
-    search = search.replace(/[\s+|,]/g, '+');
-    search = 'https://maps.google.it/maps?q=' + search;
-
-    return search;
+    search = search.trim().replace(/\s+|,/g, '+');
+    return `https://maps.google.it/maps?q=${search}`;
 };
 
 /**
- * Open a google map
+ * Open a Google Map using a provided address
  * @function openGoogleMapsAddress
  * @memberof Utility
- * @param {String|Object} object
- * @return void|error
+ * @param {String|Object} object - Address information either as a string or as an object
+ * @throws {Error} Throws an error if the address is invalid or if it's not a string or object.
+ * @return {void}
  */
 const openGoogleMapsAddress = function (object) {
-    let address = getGoogleMapsAddress(object);
-    if (address && _.isString(address)) {
-        return urlHelper.open(address);
+    if (typeof object !== 'string' && typeof object !== 'object') {
+        throw new Error('The input must be a string or an object.');
     }
-    throw new Error('The address you are trying to open has errors or not valid.');
+
+    const address = getGoogleMapsAddress(object);
+
+    if (!address || typeof address !== 'string') {
+        throw new Error('The address you are trying to open is invalid.');
+    }
+
+    return urlHelper.open(address);
 };
 
 /**
@@ -109,31 +107,30 @@ const openGoogleMapsAddress = function (object) {
 function formatPhoneNumber(phoneNumber, template) {
     // Remove all non-numeric characters from the phone number
     const cleaned = phoneNumber.replace(/\D/g, '');
-  
+
     // Verify the length of the cleaned phone number
     if (cleaned.length !== 10) {
-      throw new Error('Invalid phone number length');
+        throw new Error('Invalid phone number length');
     }
-  
+
     // Initialize an array to hold the formatted phone number
     let formatted = [];
-  
+
     // Initialize a pointer for the cleaned phone number
     let cleanedPointer = 0;
-  
+
     // Loop through the template and replace placeholders with actual numbers
     for (let i = 0; i < template.length; i++) {
-      if (template[i] === '0') {
-        formatted.push(cleaned[cleanedPointer]);
-        cleanedPointer++;
-      } else {
-        formatted.push(template[i]);
-      }
+        if (template[i] === '0') {
+            formatted.push(cleaned[cleanedPointer]);
+            cleanedPointer++;
+        } else {
+            formatted.push(template[i]);
+        }
     }
-  
+
     return formatted.join('');
-  }
-  
+}
 
 /**
  * Validate a phone number
@@ -193,17 +190,18 @@ const getRandomId = function () {
  * @return string
  */
 const dateFormat = function (dateTime, wTime) {
-    if (!dateTime) {
+    if (!dateTime || isNaN(new Date(dateTime).getTime())) {
         return null;
     }
 
     const date = new Date(dateTime);
 
-    const optionsDate = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    // Ensuring that the time zone is taken into account.
+    const optionsDate = { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'UTC' };
     const formattedDate = new Intl.DateTimeFormat('en-US', optionsDate).format(date);
 
     if (wTime) {
-        const optionsTime = { hour: '2-digit', minute: '2-digit', hour12: true };
+        const optionsTime = { hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'UTC' };
         const formattedTime = new Intl.DateTimeFormat('en-US', optionsTime).format(date);
         return `${formattedDate} @ ${formattedTime}`;
     }
@@ -299,11 +297,11 @@ const emptyOrValue = function (value, _default) {
      * If it is not Empty, [], null, {}, 0, true, false: true
      */
 
-    if (_.isInteger(value) || _.isBoolean(value)) {
+    if (Number.isInteger(value) || typeof value === 'boolean') {
         return value;
-    } else if (!_.isUndefined(value) && !_.isEmpty(value)) {
+    } else if (!isUndefined(value) && !isEmpty(value)) {
         return value;
-    } else if (!_.isUndefined(_default) && !_.isEmpty(_default)) {
+    } else if (!isUndefined(_default) && !isEmpty(_default)) {
         return _default;
     }
 
@@ -318,8 +316,8 @@ const emptyOrValue = function (value, _default) {
  * @return bool|int
  */
 const isNumber = function (value) {
-    if (_.isInteger(value) || !Number.isNaN(Number(value))) {
-        return _.toNumber(value);
+    if (Number.isInteger(value) || !Number.isNaN(Number(value))) {
+        return +value;
     }
 
     return false;
@@ -382,15 +380,9 @@ const Utility = {
     proxyObject,
     urlHelper,
     // from Lodash used internally but might as well make them available
-    isEmpty,
-    isString,
     every,
-    forEach,
     includes,
-    isInteger,
-    isBoolean,
     isUndefined,
-    toNumber,
     // from JsPowerHelperFunctions
     getDirectivesFromString,
     findAndReplaceInArray,
@@ -401,7 +393,7 @@ const Utility = {
     setLookUpExp,
     removeQuotes,
     fixQuotes,
-    addQuotes
+    addQuotes,
 };
 export {
     getGoogleMapsAddress,
@@ -423,15 +415,9 @@ export {
     proxyObject,
     urlHelper,
     // from Lodash used internally but might as well make them available
-    isEmpty,
-    isString,
     every,
-    forEach,
     includes,
-    isInteger,
-    isBoolean,
     isUndefined,
-    toNumber,
     // from JsPowerHelperFunctions
     getDirectivesFromString,
     findAndReplaceInArray,
@@ -442,6 +428,6 @@ export {
     setLookUpExp,
     removeQuotes,
     fixQuotes,
-    addQuotes
+    addQuotes,
 };
 export { Utility, Utility as default };
