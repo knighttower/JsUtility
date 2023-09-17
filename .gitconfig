@@ -25,6 +25,9 @@ setb = !".gitcommands/setb $1 $2 #"
 #remove/close current branch
 closeb = !".gitcommands/closeb"
 
+# open a PR
+pr = !".gitcommands/pr $1 #"
+
 # remove all local branch except the current
 purgelocalbranches = !".gitcommands/purge-branches"
 
