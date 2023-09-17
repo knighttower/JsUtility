@@ -430,4 +430,4 @@ export {
     fixQuotes,
     addQuotes,
 };
-export { Utility, Utility as default };
+export { Utility, Utility as default, Utility as utils };
