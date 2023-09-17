@@ -1,6 +1,6 @@
 {
     "name": "@knighttower/js-utility-functions",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "main": "src/Utility.js",
     "module": "src/Utility.js",
     "unpkg": "dist/Utility.js",
@@ -37,7 +37,7 @@
     "dependencies": {
         "@knighttower/element-helper": "^1.0.11",
         "@knighttower/js-object-proxy-helper": "^1.0.2",
-        "@knighttower/js-power-helper-functions": "^1.0.2",
+        "@knighttower/js-power-helper-functions": "^1.0.3",
         "@knighttower/js-url-helper": "^1.0.3",
         "lodash": "^4.17.21",
         "lodash-es": "^4.17.21"

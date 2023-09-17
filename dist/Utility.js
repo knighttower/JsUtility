@@ -401,6 +401,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   addQuotes: () => (/* binding */ addQuotes),
 /* harmony export */   cleanStr: () => (/* binding */ cleanStr),
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   findAndReplaceInArray: () => (/* binding */ findAndReplaceInArray),
 /* harmony export */   fixQuotes: () => (/* binding */ fixQuotes),
 /* harmony export */   getDirectivesFromString: () => (/* binding */ getDirectivesFromString),
 /* harmony export */   getMatchBlock: () => (/* binding */ getMatchBlock),
@@ -433,7 +434,7 @@ __webpack_require__.r(__webpack_exports__);
  * @example getDirectivesFromString('directive.tablet|mobile(...values)') // {directive: {tablet: 'values', mobile: 'values'}}
  * @example getDirectivesFromString('directive.tablet(...values)') // {directive: {tablet: 'values'}}
  */
-const getDirectivesFromString = function(settings) {
+const getDirectivesFromString = function (settings) {
     if (!settings) {
         return null;
     }
@@ -446,7 +447,7 @@ const getDirectivesFromString = function(settings) {
     const regexArrayLike = /^\[((.|\n)*?)\]$/gm;
     // Matches a multi-array string like [[value,value]],value]
     const regexMultiArrayString = /\[(\n|)(((.|\[)*)?)\](\,\n|)(((.|\])*)?)(\n|)\]/gm;
-    // Matches object-style strings: directive.tablet(...values) OR directive[expression](...values) 
+    // Matches object-style strings: directive.tablet(...values) OR directive[expression](...values)
     // OR directive.breakdown|breakdown2(...values) OR directive.tablet(...values)&&directive.mobile(...values)
     const regexDotObjectString = /([a-zA-Z]+)\.(.*?)\(((.|\n)*?)\)/gm;
     const regexExObjectString = /([a-zA-Z]+)\[((.|\n)*?)\]\(((.|\n)*?)\)/gm;
@@ -718,7 +719,14 @@ function setExpString(exp) {
     if (exp instanceof RegExp) {
         return exp;
     } else {
-        return exp.split('').map(char => ['$', '^', '.', '*', '+', '?', '(', ')', '[', ']', '{', '}', '|', '\\'].includes(char) ? `\\${char}` : char).join('');
+        return exp
+            .split('')
+            .map((char) =>
+                ['$', '^', '.', '*', '+', '?', '(', ')', '[', ']', '{', '}', '|', '\\'].includes(char)
+                    ? `\\${char}`
+                    : char,
+            )
+            .join('');
     }
 }
 
@@ -787,6 +795,7 @@ function addQuotes(str) {
 }
 const powerHelper = {
     getDirectivesFromString,
+    findAndReplaceInArray,
     getMatchInBetween,
     getMatchBlock,
     cleanStr,
