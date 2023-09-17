@@ -1,8 +1,8 @@
 {
     "name": "@knighttower/js-utility-functions",
-    "version": "1.1.0",
-    "main": "Utility.js",
-    "module": "Utility.js",
+    "version": "1.1.1",
+    "main": "src/Utility.js",
+    "module": "src/Utility.js",
     "unpkg": "dist/Utility.js",
     "jsdelivr": "dist/Utility.js",
     "license": "MIT",
