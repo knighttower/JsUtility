@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-
-#Cycle the app to refresh
-
-#--> run ARTISAN
-git cycleapp
-php artisan system:flush-session
-echo "courtesy flush completed"
-exit

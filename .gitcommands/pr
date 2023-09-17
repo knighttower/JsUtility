@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-projectName=`git config --get remote.origin.url | sed -e 's/\.git$//' -e 's/.*\///'`
-branchName=`git rev-parse --abbrev-ref HEAD`
-
-explorer.exe https://github.com/knighttower/$projectName/pull/new/$branchName
