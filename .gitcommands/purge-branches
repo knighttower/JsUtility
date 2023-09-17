@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+BRANCH=`git rev-parse --abbrev-ref HEAD`
+
+#--> Run git stuff
+
+git save
+git branch | grep -v $BRANCH | xargs git branch -D
+git fetch
+git checkout development
+git pull
+git checkout $BRANCH

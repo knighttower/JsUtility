@@ -1,0 +1,102 @@
+#!/usr/bin/env bash
+
+# VARS
+homeDir=$(pwd)
+vendor_folders=()
+
+# FUNCTIONS
+localInstall() {
+    composer install --ignore-platform-reqs --no-interaction --no-plugins --no-scripts --prefer-dist --no-dev
+}
+
+autoInstall() {
+    composer install --optimize-autoloader --no-dev
+}
+
+prompt_input() {
+    local message=$1
+    local input
+
+    read -p $'\e[43;30m'"${message}"$'\e[0m : ' input
+    echo "$input"
+}
+
+removeFiles() {
+    while true; do
+        clearCache=$(prompt_input "Clear Composer Cache? Y=[yes] or N=[No] or press enter")
+
+        case $clearCache in
+        [Yy]*)
+            set -x
+            composer clearcache
+            set +x
+            break
+            ;;
+        [Nn]* | "")
+            echo "No cache cleared"
+            break
+            ;;
+        *) echo "Please answer yes or no." ;;
+        esac
+    done
+
+    while true; do
+        clearCache=$(prompt_input "Remove Vendor Files? Y=[yes] or N=[No] or press enter")
+
+        case $clearCache in
+        [Yy]*)
+            set -x
+            rm -rf ./vendor/*
+            set +x
+            break
+            ;;
+        [Nn]* | "")
+            echo "No vendors removed"
+            break
+            ;;
+        *) echo "Please answer yes or no." ;;
+        esac
+    done
+}
+
+# SCRIPT
+mapfile -t vendor_folders < <(find . -type d -name "vendor" && echo "ALL")
+
+# List all `vendor` folders.
+for i in "${!vendor_folders[@]}"; do
+    echo -e "\e[32m[${i}] \e[0m${vendor_folders[$i]}"
+done
+
+while true; do
+    read -p $'\033[48;5;33m\033[38;5;11m-------enter VENDOR number to install \033[0m : ' vendor
+
+    if [[ $vendor =~ ^[0-9]+$ ]] && [ "$vendor" -ge 0 ] && [ "$vendor" -lt "${#vendor_folders[@]}" ]; then
+        path="${vendor_folders[$vendor]}"
+        target="${vendor_folders[$vendor]%/vendor}"
+        cd "$target"
+        # Sanitize the vendor folder
+        removeFiles
+
+        # Ask for install type
+        installType=$(prompt_input "Install type? L=[local] or A=[auto]")
+
+        while true; do
+            if [[ "$installType" =~ ^[Ll]$ ]]; then
+                localInstall
+                break
+            elif [[ "$installType" =~ ^[Aa]$ ]]; then
+                autoInstall
+                break
+            else
+                echo "Please enter a valid install type"
+            fi
+        done
+
+        # Go back to the home directory
+        cd "$homeDir"
+
+        break
+    else
+        echo "Invalid input. Please enter a valid number."
+    fi
+done

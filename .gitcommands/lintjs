@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+if [[ $1 == '--full' ]]; then
+    npm run prettier
+    npm run eslint
+else
+    npm run prettier
+fi
+

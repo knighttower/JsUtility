@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+if [[ $1 == '--d' ]]; then
+
+    while true; do
+    echo -e "\e[45m -----> This will remove the last migration, continue? \e[0m\n";
+    read -p  "_____Type 'y'(yes) or 'n'(no)____" yn
+    case $yn in
+        [Yy]* ) php artisan migrate:rollback; break;;
+        [Nn]* ) echo "nothing changed"; break;;
+        * ) echo "Please answer yes or no.";;
+    esac
+  
+done
+elif [[ $1 == '--f' ]]; then
+    php artisan migrate:fresh
+else
+    php artisan migrate
+fi

@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+set -x
+
+rm -rf node_modules
+# rm package-lock.json
+
+# echo -e "\e[45m Cleaning NPM memory \e[0m\n"
+# npm cache clean --force
+
+echo -e "\e[45m Installing and running Dev \e[0m\n"
+npm install && npm run dev
+
+set +x

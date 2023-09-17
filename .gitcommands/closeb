@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+BRANCH=`git rev-parse --abbrev-ref HEAD`
+
+# Switch and remove the current branch
+git checkout -f
+git fetch
+git checkout development
+git pull
+git branch -D $BRANCH
+

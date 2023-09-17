@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+# If nothing then exit
+if [ -z "$1" ]; then 
+    echo -e "\e[41m No Branch specified \e[0m\n"
+    exit
+fi;
+
+while true; do
+    read -p "--------- Opening a branch, have you saved/stashed your previous changes?" yn
+    case $yn in
+        [Yy]* ) echo "Installing-> $1"; break;;
+        [Nn]* ) exit;;
+        * ) echo "Please answer yes or no.";;
+    esac
+done
+
+CURRENT_BRANCH=`git rev-parse --abbrev-ref HEAD`
+
+#--> Run git stuff
+if [[ $CURRENT_BRANCH == production ]]; then
+	git checkout -f
+fi;
+
+git checkout .
+git checkout development
+git reset --hard
+git pull origin development
+git fetch
+git checkout $1
+git pull

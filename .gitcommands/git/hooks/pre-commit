@@ -1,0 +1,4 @@
+#!/bin/sh
+if [[ $(git test) == "It works!" ]]; then
+    git fixphp --skipfix
+fi

@@ -1,0 +1,86 @@
+#!/usr/bin/env bash
+
+# Prompt function for user input with colored message
+prompt_input() {
+    local message=$1
+    local input
+
+    read -p $'\e[43;30m'"${message}"$'\e[0m : ' input
+    echo "$input"
+}
+
+mapfile -t projects < <(docker ps -a --filter "label=com.docker.compose.project" -q | xargs docker inspect --format='{{index .Config.Labels "com.docker.compose.project"}}' | sort | uniq)
+
+for i in "${!projects[@]}"; do
+    echo -e "\e[32m[${i}]\e[0m ${projects[$i]}"
+done
+
+while true; do
+    read -p $'\033[48;5;33m\033[38;5;11m-------enter container number to use \033[0m : ' project
+
+    if [[ $project =~ ^[0-9]+$ ]] && [ "$project" -ge 0 ] && [ "$project" -lt ${#projects[@]} ]; then
+        name="${projects[$project]}"
+
+        if [ -z "$name" ]; then
+            echo "Please enter a container #"
+        else
+            echo "You entered $name"
+
+            for arg in "$@"; do
+                case $arg in
+                --bash)
+                    docker exec -it $name bash
+                    break
+                    ;;
+                --jarvis)
+                    docker exec -it $name bash ./.jarvis/install.sh
+                    break
+                    ;;
+                --composer)
+                    docker exec -it $name git composer
+                    break
+                    ;;
+                --git)
+                    docker exec -it $name bash -c '.gitcommands/git/install-git-cmd.sh $DOCKER_WORKSPACE_DIR'
+                    break
+                    ;;
+                --dir)
+                    docker exec -it $name bash -c 'echo $DOCKER_WORKSPACE_DIR'
+                    break
+                    ;;
+                --start)
+                    force=$(prompt_input "Force recreate container image? (Y=[--force-recreate] or N/none")
+
+                    if [[ "$force" =~ ^[Yy]$ ]]; then
+                        docker-compose -p "$name" up -d --force-recreate
+                    else
+                        docker-compose -p "$name" up -d
+                    fi
+                    break
+                    ;;
+                --stop)
+                    docker-compose -p "$name" stop
+                    break
+                    ;;
+                --down)
+                    docker-compose -p "$name" down
+                    break
+                    ;;
+                --remove)
+                    docker-compose -p "$name" down -v
+                    break
+                    ;;
+
+                *)
+                    # Handle other arguments as needed
+                    ;;
+                esac
+            done
+            break
+        fi
+
+        break
+    else
+        echo "Invalid selection"
+    fi
+done
