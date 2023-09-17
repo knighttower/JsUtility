@@ -34,6 +34,7 @@ All functions are handy, but the most handy of all is **"emptyOrValue"** which h
         isNumber,
         logThis, // get to log from places where the console.log does not log
         proxyObject, // see proxy helper
+        convertToBool, // convert any value to boolean
         urlHelper, // see url helper
         // from Lodash used internally but might as well make them available
         every,
@@ -103,184 +104,387 @@ let something = Utility.theFunctionYouWantToUse();
 
 ## Methods
 
-### getGoogleMapsAddress(address: String | Object) -> String
+## getGoogleMapsAddress
 
-Forms a Google Maps search URL based on the provided address.
+### Parameters
 
-**Parameters**
+-   `address` (String|Object): The address information either as a string or as an object with properties like `address`, `zip`, `city`, `state`, etc.
 
--   `address`: A string or an object containing various address fields like `address`, `address1`, `city`, `state`, `zip`, or `zipcode`.
+### Return value
 
-**Return Value**
+-   `string`: A string containing the Google Maps URL generated from the given address.
 
--   Returns a Google Maps search URL.
+### Example or Usage
 
-### openGoogleMapsAddress(object: String | Object) -> void | Error
+```javascript
+/**
+ * Form a valid Google search address
+ * @function getGoogleMapsAddress
+ * @memberof Utility
+ * @param {String|Object} address
+ * @return string
+ * @example getGoogleMapsAddress('New York') // 'https://maps.google.it/maps?q=New+York'
+ * @example getGoogleMapsAddress({ address: 'New York', zip: '10001' }) // 'https://maps.google.it/maps?q=New+York+10001'
+ * @example getGoogleMapsAddress({ address: 'New York', city: 'New York', state: 'NY' }) // 'https://maps.google.it/maps?q=New+York+New+York+NY'
+ */
+getGoogleMapsAddress('New York'); // 'https://maps.google.it/maps?q=New+York'
+getGoogleMapsAddress({ address: 'New York', zip: '10001' }); // 'https://maps.google.it/maps?q=New+York+10001'
+getGoogleMapsAddress({ address: 'New York', city: 'NY', state: 'New York' }); // 'https://maps.google.it/maps?q=New+York+NY+New+York'
+```
 
-Opens a Google Maps URL based on the provided address.
+---
 
-**Parameters**
+## openGoogleMapsAddress
 
--   `object`: A string or an object containing address fields.
+### Parameters
 
-**Return Value**
+-   `object` (String|Object): The address information either as a string or as an object.
 
--   None. Opens the Google Maps URL or throws an error if the address is invalid.
+### Return value
 
-### formatPhoneNumber(phoneNumber: String, template: String) -> String
+-   `void`
 
-Formats a phone number based on the provided template.
+### Throws
 
-**Parameters**
+-   Error: If the address is invalid or not a string/object.
 
--   `phoneNumber`: The phone number to format.
--   `template`: The template to use for formatting.
+### Example or Usage
 
-**Return Value**
+```javascript
+/**
+ * Open a Google Map using a provided address
+ * @function openGoogleMapsAddress
+ * @memberof Utility
+ * @param {String|Object} object - Address information either as a string or as an object
+ * @throws {Error} Throws an error if the address is invalid or if it's not a string or object.
+ * @return {void}
+ * @example openGoogleMapsAddress('New York'); // Opens Google Maps with the address 'New York'
+ * @example openGoogleMapsAddress({ address: 'New York', zip: '10001' }); // Opens Google Maps with the address 'New York 10001'
+ */
+openGoogleMapsAddress('New York'); // Opens Google Maps with the address 'New York'
+openGoogleMapsAddress({ address: 'New York', zip: '10001' }); // Opens Google Maps with the address 'New York 10001'
+```
 
--   Returns the formatted phone number.
+---
 
-### validatePhone(phone: String) -> Boolean
+## formatPhoneNumber
 
-Validates a phone number.
+### Parameters
 
-**Parameters**
+-   `phoneNumber` (string): The phone number to format.
+-   `template` (string): The template to use for formatting.
 
--   `phone`: The phone number to validate.
+### Return value
 
-**Return Value**
+-   `string`: The formatted phone number.
 
--   Returns `true` if the phone number is valid, `false` otherwise.
+### Example or Usage
 
-### validateEmail(email: String) -> Boolean
+```javascript
+/**
+ * Format a phone number based on a given template.
+ * @param {string} phoneNumber - The phone number to format.
+ * @param {string} template - The template to use for formatting.
+ * @returns {string} - The formatted phone number.
+ * @example console.log(formatPhoneNumber('1234567890', '(000) 000-0000')); // Output: (123) 456-7890
+ * @example console.log(formatPhoneNumber('1234567890', '000-000-0000')); // Output: 123-456-7890
+ * @example console.log(formatPhoneNumber('123-456-7890', '(000) 000-0000')); // Output: (123) 456-7890
+ * @example console.log(formatPhoneNumber('(123) 456-7890', '000-0000-0000')); // Output: 123-4567-890
+ */
+formatPhoneNumber('1234567890', '(000) 000-0000'); // Output: (123) 456-7890
+formatPhoneNumber('9876543210', '000-000-0000'); // Output: 987-654-3210
+```
 
-Validates an email address.
+---
 
-**Parameters**
+## validatePhone
 
--   `email`: The email address to validate.
+### Parameters
 
-**Return Value**
+-   `phone` (string): The phone number to validate.
 
--   Returns `true` if the email is valid, `false` otherwise.
+### Return value
 
-### getDynamicId() -> String
+-   `boolean`: Returns `true` if phone number is valid, otherwise `false`.
 
-Generates a unique ID in the format `kn__000000__000`.
+### Example or Usage
 
-**Return Value**
+```javascript
+/**
+ * Validate a phone number
+ * @function validatePhone
+ * @memberof Utility
+ * @param {String} phone
+ * @return void|Toast
+ * @example validatePhone('1234567890') // true
+ * @example validatePhone('(123) 456-7890') // true
+ * @example validatePhone('123-456-7890') // true
+ * @example validatePhone('123 456 7890') // false
+ * @example validatePhone('123-4567-89') // false
+ */
+validatePhone('1234567890'); // true
+validatePhone('(123) 456-7890'); // true
+```
 
--   Returns the generated unique ID.
+---
 
-### getRandomId() -> String
+## validateEmail
 
-Alias for `getDynamicId`.
+### Parameters
 
-### dateFormat(dateTime: String, wTime: Boolean) -> String
+-   `email` (string): The email to validate.
 
-Formats a date to standard US format.
+### Return value
 
-**Parameters**
+-   `boolean`: Returns `true` if email is valid, otherwise `false`.
 
--   `dateTime`: The raw date-time format or Unix timestamp.
--   `wTime`: If set to `true`, returns date with time as `H:MM A`.
+### Example or Usage
 
-**Return Value**
+```javascript
+/**
+ * Validate emails
+ * @function validateEmail
+ * @memberof Utility
+ * @param {String} email
+ * @return Boolean
+ * @example validateEmail('<EMAIL>') // false
+ * @example validateEmail('test@test') // false
+ * @example validateEmail('test@test.') // false
+ * @example validateEmail('test@test.c') // false
+ * @example validateEmail('test@test.com') // true
+ */
+validateEmail('test@test.com'); // true
+validateEmail('invalid-email'); // false
+```
 
--   Returns the formatted date.
+---
 
-### currencyToDecimal(amount: String | Number) -> Number
+## getDynamicId
 
-Converts a currency string to a decimal number.
+### Parameters
 
-**Parameters**
+-   None
 
--   `amount`: The currency amount to convert.
+### Return value
 
-**Return Value**
+-   `string`: A unique id in the format `kn__000000__000`.
 
--   Returns the converted decimal number.
+### Example or Usage
 
-### decimalToCurrency(amount: String | Number) -> Number
+```javascript
+getDynamicId(); // kn__000000__000
+```
 
-Converts a decimal number to currency format.
+---
 
-**Parameters**
+## getRandomId
 
--   `amount`: The decimal amount to convert.
+### Parameters
 
-**Return Value**
+-   None
 
--   Returns the formatted currency.
+### Return value
 
-### toCurrency(amount: String | Number) -> Number
+-   `string`: A unique id.
 
-Alias for `decimalToCurrency`.
+### Example or Usage
 
-### toDollarString(amount: String | Number) -> Number
+```javascript
+getRandomId(); // kn__000000__000
+```
 
-Converts an amount to a dollar string.
+---
 
-**Parameters**
+## dateFormat
 
--   `amount`: The amount to convert.
+### Parameters
 
-**Return Value**
+-   `dateTime` (string): Raw date-time format.
+-   `wTime` (boolean): If set, returns date with time as H:MM A.
 
--   Returns the converted dollar string.
+### Return value
 
-### emptyOrValue(value: String | Number, \_default: String | Number) -> Mixed
+-   `string`: Formatted date.
 
-Checks if a value is empty and returns either the value or a default value.
+### Example or Usage
 
-**Parameters**
+```javascript
+/**
+ * Format dates to standard US, with or w/out time
+ * @function dateFormat
+ * @memberof Utility
+ * @param {String} dateTime Raw format 2201-01-01 16:15PM or unix or object
+ * @param {Boolean} wTime If set, returns date with time as H:MM A
+ * @return string
+ * @example dateFormat('2201-01-01 16:15PM') // 01/01/2201
+ * @example dateFormat('2201-01-01 16:15PM', true) // 01/01/2201 @ 4:15 PM
+ * @example dateFormat('2201-01-01 16:15PM', false) // 01/01/2201
+ * @example dateFormat('2201-01-01') // 01/01/2201
+ */
+dateFormat('2201-01-01 16:15PM', true); // 01/01/2201 @ 4:15 PM
+dateFormat('2201-01-01 16:15PM', false); // 01/01/2201
+```
 
--   `value`: The value to check.
--   `default`: The default value to return if `value` is empty.
+---
 
-**Return Value**
+## currencyToDecimal
 
--   Returns the value or default value.
+### Parameters
 
-### isNumber(value: String | Number) -> Boolean | Int
+-   `amount` (String|Number): The amount in currency format.
 
-Checks if a value is a number or integer.
+### Return value
 
-**Parameters**
+-   `number`: The amount in decimal format.
 
--   `value`: The value to check.
+### Example or Usage
 
-**Return Value**
+```javascript
+currencyToDecimal('$123.45'); // 123.45
+currencyToDecimal('€100.00'); // 100
+```
 
--   Returns the number or `false` if it is not a number.
+---
 
-### logThis(obj: Object) -> void
+## decimalToCurrency
 
-Logs an object to the console.
+### Parameters
 
-**Parameters**
+-   `amount` (String|Number): The amount in decimal format.
 
--   `obj`: The object to log.
+### Return value
 
-**Return Value**
+-   `number`: The amount in currency format.
 
--   None. Logs the object to the console.
+### Example or Usage
 
-### proxyObject(object: Object) -> Proxy
+```javascript
+decimalToCurrency(123.45); // 123.45
+decimalToCurrency(100); // 100.00
+```
 
-Creates a proxy object for the given object.
+---
 
-**Parameters**
+## toCurrency
 
--   `object`: The object to create a proxy for.
+### Parameters
 
-**Return Value**
+-   `amount` (String|Number): The amount to format.
 
--   Returns the proxy object.
+### Return value
 
-## Examples
+-   `number`: The formatted amount.
 
-You can find usage examples for each method within the method descriptions.
+### Example or Usage
+
+```javascript
+toCurrency(123.45); // 123.45
+toCurrency(100); // 100.00
+```
+
+---
+
+## toDollarString
+
+### Parameters
+
+-   `amount` (String|Number): The amount to format.
+
+### Return value
+
+-   `number`: The formatted amount as a string.
+
+### Example or Usage
+
+```javascript
+toDollarString(2000); // 2K
+toDollarString(2000000); // 2M
+```
+
+---
+
+## emptyOrValue
+
+### Parameters
+
+-   `value` (String|Number|Array|Object|Boolean): The value to test.
+-   `_default` (String|Number|Array|Object|Boolean): The default value to return if `value` is empty.
+
+### Return value
+
+-   `mixed`: Returns the value if not empty, otherwise returns null or the default value.
+
+### Example or Usage
+
+```javascript
+/**
+ * Check if there is a value, if not return null or the default value
+ * It can test strings, arrays, objects, numbers, booleans
+ * @function emptyOrValue
+ * @memberof Utility
+ * @param {String|Number} value If the value is not empty, returns it
+ * @param {String|Number} _default The default value if empty
+ * @return mixed
+ * @example emptyOrValue('test', 'default') // 'test'
+ * @example emptyOrValue('', 'default') // 'default'
+ * @example emptyOrValue('test') // 'test'
+ * @example emptyOrValue('') // null
+ * @example emptyOrValue(0) // 0
+ * @example var hello = ''; emptyOrValue(hello) // Null
+ * @example var hello = 'test'; emptyOrValue(hello) // 'test'
+ * @example var hello = 'test'; emptyOrValue(hello, 'default') // 'test'
+ * @example var hello = ''; emptyOrValue(hello, 'default') // 'default'
+ * @example var hello = []; emptyOrValue(hello, 'default') // null
+ * @example var hello = {}; emptyOrValue(hello, 'default') // null
+ * @example var hello = [...]; emptyOrValue(hello') // [...]
+ */
+emptyOrValue('test', 'default'); // 'test'
+emptyOrValue('', 'default'); // 'default'
+```
+
+---
+
+## isNumber
+
+### Parameters
+
+-   `value` (String|Number): The value to test.
+
+### Return value
+
+-   `bool|int`: Returns `true` if value is a number, otherwise returns `false`.
+
+### Example or Usage
+
+```javascript
+isNumber(123); // true
+isNumber('abc'); // false
+```
+
+---
+
+## logThis
+
+### Parameters
+
+-   `obj` (Object): The object to log.
+
+### Return value
+
+-   `void`
+
+### Example or Usage
+
+```javascript
+logThis('test'); // Logs 'test' to the console
+logThis({ key: 'value' }); // Logs { key: 'value' } to the console
+```
+
+-   `number`: The amount in decimal format.
+
+---
+
+### see the full docs in the docs folder or https://github.com/knighttower/JsUtility/tree/development/docs/Utility.js.html
 
 ## Dependencies
 

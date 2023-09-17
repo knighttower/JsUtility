@@ -16,6 +16,7 @@ import {
     toDollarString,
     emptyOrValue,
     isNumber,
+    convertToBool,
 } from './Utility'; // Adjust the import to your file structure
 
 // getGoogleMapsAddress
@@ -88,4 +89,9 @@ test('emptyOrValue - Return value if not empty', () => {
 // isNumber
 test('isNumber - Validate number', () => {
     assert.equal(isNumber('123'), 123);
+});
+
+// isNumber
+test('convertToBool - Convert to bool', () => {
+    assert.equal(convertToBool('true'), true);
 });
