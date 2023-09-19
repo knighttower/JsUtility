@@ -12,13 +12,15 @@ It also Uses some features from other KnightTower packages:
 -   [JsUrlHelper](https://github.com/knighttower/JsUrlHelper)
 -   [JsPowerHelperFunctions](https://github.com/knighttower/JsPowerHelperFunctions)
 
-All functions are handy, but the most handy of all is **"emptyOrValue"** which helps to mitigate a lot of headaches when dealing with variables to know whether or not they have a value or even to set a default value when empty.
+All functions are handy, but the most handy of all is **"emptyOrValue"** which helps to mitigate a lot of headaches when dealing with variables to know whether or not they have a value or even to set a default value when empty.  
+[![release version](https://github.com/knighttower/JsUtility/actions/workflows/pre-release.yml/badge.svg)](https://github.com/knighttower/JsUtility/actions/workflows/pre-release.yml)  
+[![NPM published](https://github.com/knighttower/JsUtility/actions/workflows/to-npm.yml/badge.svg)](https://github.com/knighttower/JsUtility/actions/workflows/to-npm.yml)
 
 ## List of functions
 
 ```javascript
 {
-    getGoogleMapsAddress, // helps to build a google map address lookup
+        getGoogleMapsAddress, // helps to build a google map address lookup
         openGoogleMapsAddress, // opens the address in google maps
         formatPhoneNumber, // format phone numbers
         validatePhone, // validate phone #
@@ -41,18 +43,20 @@ All functions are handy, but the most handy of all is **"emptyOrValue"** which h
         includes,
         isUndefined,
         // from JsPowerHelperFunctions
-        getDirectivesFromString,
-        findAndReplaceInArray,
-        getMatchInBetween,
-        getMatchBlock,
+        getMatchInBetween, // for regex using bounderies, gets inner
+        getMatchBlock, // for regex using bounderies, gets outer
         cleanStr,
-        setExpString,
-        setLookUpExp,
+        setExpString, // escapes a string for regex
+        setLookUpExp, // create a delimeter regex string
         removeQuotes,
         fixQuotes,
-        addQuotes;
+        addQuotes,
+        wildCardStringSearch, // search for a string using wildcards
+        setWildCardString, // create a regex string using wildcards
 }
 ```
+
+You can see the src with github and explore the function [here](https://github.com/knighttower/JsUtility/blob/development/src/Utility.js)
 
 ## Installation
 
