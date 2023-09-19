@@ -792,19 +792,25 @@ function addQuotes(str) {
  * Search for a wildcard pattern in a list of strings or vicevers
  * @method wildCardStringSearch
  * @param {string} pattern - The pattern to search for
- * @param {string[]} list - The list of strings to search in
+ * @param {array|string} list - The list of strings to search in
+ * @param {boolean} matchStart - If the pattern should match the start of the string (optional)
+ * @param {boolean} matchEnd - If the pattern should match the end of the string optional)
  * @return {string[]|null} - Returns a list of strings that match the pattern, or null if no match is found
  * @example wildCardStringSearch('name.*', ['name.a', 'name.b', 'name.c']) // returns ['name.a', 'name.b', 'name.c']
  */
-function wildCardStringSearch(pattern, list) {
-    if (!pattern || !list) {
+function wildCardStringSearch(pattern, listOrString, matchStart = false, matchEnd = false) {
+    if (!pattern || !listOrString) {
         return null;
     }
+    const regex = new RegExp(this.setWildCardString(pattern, matchStart, matchEnd));
+
+    if (typeof listOrString === 'string') {
+        const matches = listOrString.match(regex);
+        return emptyOrValue(matches, null);
+    }
+
     let filteredList = [];
-
-    const regex = new RegExp(this.setWildCardString(pattern));
-
-    filteredList = list.filter((item) => regex.test(item));
+    filteredList = listOrString.filter((item) => regex.test(item));
 
     return emptyOrValue(filteredList, null);
 }
@@ -813,17 +819,43 @@ function wildCardStringSearch(pattern, list) {
  * Set a string to be used as a wildcard pattern
  * @function setWildCardString
  * @param {string} string - The string to set as a wildcard pattern
+ * @param {boolean} matchStart - If the pattern should match the start of the string
+ * @param {boolean} matchEnd - If the pattern should match the end of the string
  * @return {string} - The wildcard pattern
+ * @example setWildCardString('name.*', true) // returns '^name\.(.*?)'
+ * @example setWildCardString('name.*', false, true) // returns 'name\.(.*?)$'
+ * @example setWildCardString('name.**') // returns 'name\..*' greedy
  */
-function setWildCardString(string) {
+function setWildCardString(string, matchStart = false, matchEnd = false) {
+    if (!string) {
+        return null;
+    }
     let regexStr = string.replace(/([.+?^${}()|\[\]\/\\])/g, '\\$&'); // escape all regex special chars
+    let regStart = matchStart ? '^' : '';
+    let regEnd = matchEnd ? '$' : '';
 
     regexStr = regexStr
         .replace(/\*\*/g, '[_g_]') // Replace wildcard patterns with temporary markers
         .replace(/\*/g, '(.*?)')
         .replace(/\[_g_\]/g, '.*');
 
-    return `^${regexStr}$`;
+    return `${regStart}${regexStr}${regEnd}`;
+}
+
+/**
+ * convert all keys from an object to symbols
+ * @function convertKeysToSymbols
+ * @param {object} obj - The object to convert
+ * @return {object} - The object with all keys converted to symbols
+ * @example convertKeysToSymbols({a: 1, b: 2}) // returns {Symbol(a): 1, Symbol(b): 2}
+ */
+function convertKeysToSymbols(obj) {
+    const newObj = {};
+    for (const key in obj) {
+        const symbolKey = Symbol(key);
+        newObj[symbolKey] = obj[key];
+    }
+    return newObj;
 }
 
 const powerHelper = {
@@ -839,6 +871,7 @@ const powerHelper = {
     addQuotes,
     wildCardStringSearch,
     setWildCardString,
+    convertKeysToSymbols,
 };
 
 // export default Utility;
@@ -907,5 +940,6 @@ export {
     addQuotes,
     wildCardStringSearch,
     setWildCardString,
+    convertKeysToSymbols,
 };
 export { Utility, Utility as default, Utility as utils, powerHelper };
