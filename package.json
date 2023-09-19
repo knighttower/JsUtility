@@ -1,6 +1,6 @@
 {
     "name": "@knighttower/js-utility-functions",
-    "version": "1.1.5",
+    "version": "1.1.6",
     "main": "src/Utility.js",
     "module": "src/Utility.js",
     "unpkg": "dist/Utility.js",

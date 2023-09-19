@@ -28,7 +28,30 @@ import {
     addQuotes,
     wildCardStringSearch,
     setWildCardString,
+    convertKeysToSymbols,
 } from './Utility';
+
+test('convertKeysToSymbols - Empty object', () => {
+    const obj = {};
+    const result = convertKeysToSymbols(obj);
+    assert.deepEqual(result, {});
+});
+
+test('convertKeysToSymbols - Single key', () => {
+    const obj = { a: 1 };
+    const result = convertKeysToSymbols(obj);
+    const symbolKey = Object.getOwnPropertySymbols(result)[0];
+    assert.equal(result[symbolKey], 1);
+});
+
+test('convertKeysToSymbols - Multiple keys', () => {
+    const obj = { a: 1, b: 2 };
+    const result = convertKeysToSymbols(obj);
+    const symbolKeys = Object.getOwnPropertySymbols(result);
+    assert.equal(symbolKeys.length, 2);
+    assert.equal(result[symbolKeys[0]], 1);
+    assert.equal(result[symbolKeys[1]], 2);
+});
 
 // getGoogleMapsAddress
 test('getGoogleMapsAddress - Empty address', () => {
@@ -232,10 +255,10 @@ test('wildCardStringSearch - Empty list', () => {
     assert.equal(result, null);
 });
 
-test('wildCardStringSearch - Match single item', () => {
+test('wildCardStringSearch - Match single item, string start', () => {
     const pattern = 'a*';
     const list = ['apple', 'banana', 'cherry'];
-    const result = wildCardStringSearch(pattern, list);
+    const result = wildCardStringSearch(pattern, list, true);
     assert.deepEqual(result, ['apple']);
 });
 
@@ -256,47 +279,47 @@ test('wildCardStringSearch - No match', () => {
 test('setWildCardString - Empty string', () => {
     const string = '';
     const result = setWildCardString(string);
-    assert.equal(result, '^$');
+    assert.equal(result, null);
 });
 
-test('setWildCardString - Single character', () => {
+test('setWildCardString - Single character, string end', () => {
     const string = 'a';
-    const result = setWildCardString(string);
-    assert.equal(result, '^a$');
+    const result = setWildCardString(string, null, true);
+    assert.equal(result, 'a$');
 });
 
-test('setWildCardString - Multiple characters', () => {
+test('setWildCardString - Multiple characters, string start', () => {
     const string = 'abc';
-    const result = setWildCardString(string);
-    assert.equal(result, '^abc$');
+    const result = setWildCardString(string, true);
+    assert.equal(result, '^abc');
 });
 
 test('setWildCardString - Wildcard at beginning', () => {
     const string = '*abc';
     const result = setWildCardString(string);
-    assert.equal(result, '^(.*?)abc$');
+    assert.equal(result, '(.*?)abc');
 });
 
 test('setWildCardString - Wildcard at end', () => {
     const string = 'abc*';
     const result = setWildCardString(string);
-    assert.equal(result, '^abc(.*?)$');
+    assert.equal(result, 'abc(.*?)');
 });
 
 test('setWildCardString - Wildcard in middle', () => {
     const string = 'a*c';
     const result = setWildCardString(string);
-    assert.equal(result, '^a(.*?)c$');
+    assert.equal(result, 'a(.*?)c');
 });
 
 test('setWildCardString - Multiple wildcards', () => {
     const string = 'a*b*c';
     const result = setWildCardString(string);
-    assert.equal(result, '^a(.*?)b(.*?)c$');
+    assert.equal(result, 'a(.*?)b(.*?)c');
 });
 
 test('setWildCardString - Escape special characters', () => {
     const string = 'a.+?^${}()|[]/\\b*c';
     const result = setWildCardString(string);
-    assert.equal(result, '^a\\.\\+\\?\\^\\$\\{\\}\\(\\)\\|\\[\\]\\/\\\\b(.*?)c$');
+    assert.equal(result, 'a\\.\\+\\?\\^\\$\\{\\}\\(\\)\\|\\[\\]\\/\\\\b(.*?)c');
 });
