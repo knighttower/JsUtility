@@ -78,6 +78,15 @@ It loads as a 'window' object --> window.Utility
 <script src="https://cdn.jsdelivr.net/npm/@knighttower/js-utility-functions@latest/dist/Utility.min.js"></script>
 ```
 
+│ File │ Size │
+
+│ /Utility.js │ 29.4 KiB │
+│ /Utility.js.LICENSE.txt │ 19 bytes │
+│ /Utility.js.br │ 9.46 KiB │
+│ /Utility.js.gz │ 10.1 KiB │
+
+<br/>
+
 ## Usage
 
 ```javascript

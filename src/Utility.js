@@ -847,15 +847,17 @@ function setWildCardString(string, matchStart = false, matchEnd = false) {
  * @function convertKeysToSymbols
  * @param {object} obj - The object to convert
  * @return {object} - The object with all keys converted to symbols
- * @example convertKeysToSymbols({a: 1, b: 2}) // returns {Symbol(a): 1, Symbol(b): 2}
+ * @example convertKeysToSymbols({a: 1, b: 2}) // returns {Symbol(a): 1, Symbol(b): 2, keyToSymbolMap: {a: Symbol(a), b: Symbol(b)}
  */
 function convertKeysToSymbols(obj) {
     const newObj = {};
+    const keyToSymbolMap = {};
     for (const key in obj) {
         const symbolKey = Symbol(key);
         newObj[symbolKey] = obj[key];
+        keyToSymbolMap[key] = symbolKey;
     }
-    return newObj;
+    return { newObj, keyToSymbolMap };
 }
 
 const powerHelper = {
