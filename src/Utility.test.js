@@ -40,6 +40,7 @@ test('convertKeysToSymbols - Empty object', () => {
 test('convertKeysToSymbols - Single key', () => {
     const obj = { a: 1 };
     const result = convertKeysToSymbols(obj);
+
     const symbolKey = Object.getOwnPropertySymbols(result)[0];
     assert.equal(result[symbolKey], 1);
 });
