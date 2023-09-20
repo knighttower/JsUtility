@@ -850,6 +850,9 @@ function setWildCardString(string, matchStart = false, matchEnd = false) {
  * @example convertKeysToSymbols({a: 1, b: 2}) // returns {Symbol(a): 1, Symbol(b): 2, keyToSymbolMap: {a: Symbol(a), b: Symbol(b)}
  */
 function convertKeysToSymbols(obj) {
+    if (emptyOrValue(obj, null) === null) {
+        return {};
+    }
     const newObj = {};
     const keyToSymbolMap = {};
     for (const key in obj) {
@@ -857,7 +860,8 @@ function convertKeysToSymbols(obj) {
         newObj[symbolKey] = obj[key];
         keyToSymbolMap[key] = symbolKey;
     }
-    return { newObj, keyToSymbolMap };
+    newObj.keyToSymbolMap = keyToSymbolMap;
+    return newObj;
 }
 
 const powerHelper = {
