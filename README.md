@@ -14,6 +14,7 @@ It also Uses some features from other KnightTower packages:
 -   <strike>[JsPowerHelperFunctions](https://github.com/knighttower/JsPowerHelperFunctions)</strike> (deprecated) (it has now been merged into this library but still will be available as a standalone library)
 
 All functions are handy, but the most handy of all is **"emptyOrValue"** which helps to mitigate a lot of headaches when dealing with variables to know whether or not they have a value or even to set a default value when empty. From the PowerHelpers, there are a lot of regex and string functions that are very handy.
+All Functions have also been Unit Tested and tests are in the source code if you want to experiment or see more examples.
 
 [![release version](https://github.com/knighttower/JsUtility/actions/workflows/pre-release.yml/badge.svg)](https://github.com/knighttower/JsUtility/actions/workflows/pre-release.yml)
 [![NPM published](https://github.com/knighttower/JsUtility/actions/workflows/to-npm.yml/badge.svg)](https://github.com/knighttower/JsUtility/actions/workflows/to-npm.yml)
