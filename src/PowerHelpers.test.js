@@ -167,6 +167,12 @@ test('cleanStr - should remove the delimiters from a string', () => {
     const p23 = '>';
     const result3 = cleanStr(str3, p13, p23);
     assert.equal(result3, 'world/');
+
+    const str4 = '<world/>';
+    const p14 = '<';
+    const p24 = '>';
+    const result4 = cleanStr(str4, p14, p24, '/');
+    assert.equal(result4, 'world');
 });
 
 test('setExpString - should set a string as a regular expression', () => {
