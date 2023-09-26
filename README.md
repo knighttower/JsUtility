@@ -2,61 +2,76 @@
 
 ## Overview
 
-**Utility** is a utility library that provides a collection of utility functions for various tasks. The library is designed to be easy to use and covers the most common use cases.
+**Utility** is a utility library that provides a collection of utility functions for various tasks. The library is designed to be easy to use and covers the most common use cases. It was created to address the need of repetive need of some very common functions without the need of loading entire libraries for just a few functions.  
+**PowerHelper** was designed to work for other specific libraries, but the fucntions for regex and string manipulation were actually so good to use in other projects that it was decided to share as well here.
 
-Most functions here are extremely handy without the overhead of big libraries. However, for other most advance features it is recomended to also use other libraries, like if you need extensive use of Money, date, numbers functions (ex. money.js, moment.js, jquery, etc)
+Most functions here are extremely handy without the overhead of big libraries. However, for other most advance features it is recomended to also use other libraries, like if you need extensive use of Money, date, numbers functions (ex. money.js, moment.js, validate.js, lodash, v8n.js, jquery, etc)
 
 It also Uses some features from other KnightTower packages:
 
 -   [JsObjectProxyHelper](https://github.com/knighttower/JsObjectProxyHelper)
 -   [JsUrlHelper](https://github.com/knighttower/JsUrlHelper)
--   [JsPowerHelperFunctions](https://github.com/knighttower/JsPowerHelperFunctions)
+-   <strike>[JsPowerHelperFunctions](https://github.com/knighttower/JsPowerHelperFunctions)</strike> (deprecated) (it has now been merged into this library but still will be available as a standalone library)
 
-All functions are handy, but the most handy of all is **"emptyOrValue"** which helps to mitigate a lot of headaches when dealing with variables to know whether or not they have a value or even to set a default value when empty.  
-[![release version](https://github.com/knighttower/JsUtility/actions/workflows/pre-release.yml/badge.svg)](https://github.com/knighttower/JsUtility/actions/workflows/pre-release.yml)  
+All functions are handy, but the most handy of all is **"emptyOrValue"** which helps to mitigate a lot of headaches when dealing with variables to know whether or not they have a value or even to set a default value when empty. From the PowerHelpers, there are a lot of regex and string functions that are very handy.
+
+[![release version](https://github.com/knighttower/JsUtility/actions/workflows/pre-release.yml/badge.svg)](https://github.com/knighttower/JsUtility/actions/workflows/pre-release.yml)
 [![NPM published](https://github.com/knighttower/JsUtility/actions/workflows/to-npm.yml/badge.svg)](https://github.com/knighttower/JsUtility/actions/workflows/to-npm.yml)
 
-## List of functions
+## List of functions included in Utility
 
 ```javascript
 {
-        getGoogleMapsAddress, // helps to build a google map address lookup
-        openGoogleMapsAddress, // opens the address in google maps
-        formatPhoneNumber, // format phone numbers
-        validatePhone, // validate phone #
-        validateEmail, // validate email
-        getDynamicId, // get a quick unique string to use as id
-        getRandomId, // alias
-        dateFormat, // format from unix or raw into US
-        currencyToDecimal,
-        decimalToCurrency,
-        toCurrency,
-        toDollarString,
-        emptyOrValue, // checks any variable value, string, number, object, array if it is empty
-        isNumber,
-        logThis, // get to log from places where the console.log does not log
-        proxyObject, // see proxy helper
-        convertToBool, // convert any value to boolean
-        urlHelper, // see url helper
-        // from Lodash used internally but might as well make them available
-        every,
-        includes,
-        isUndefined,
-        // from JsPowerHelperFunctions
-        getMatchInBetween, // for regex using bounderies, gets inner
-        getMatchBlock, // for regex using bounderies, gets outer
-        cleanStr,
-        setExpString, // escapes a string for regex
-        setLookUpExp, // create a delimeter regex string
-        removeQuotes,
-        fixQuotes,
-        addQuotes,
-        wildCardStringSearch, // search for a string using wildcards
-        setWildCardString, // create a regex string using wildcards
+getGoogleMapsAddress, // gets a formatted address string for a location using the Google Maps API
+openGoogleMapsAddress, // opens Google Maps in a new tab with a specified address
+formatPhoneNumber, // formats a phone number string to a standardized format
+validatePhone, // validates a phone number string to ensure it is in a valid format
+validateEmail, // validates an email address string to ensure it is in a valid format
+getDynamicId, // generates a unique ID string based on a prefix and a random number
+getRandomId, // generates a random ID string
+dateFormat, // formats a date object to a specified format string
+currencyToDecimal, // converts a currency string to a decimal number
+decimalToCurrency, // converts a decimal number to a currency string
+toCurrency, // formats a number to a currency string
+toDollarString, // formats a number to a dollar string
+emptyOrValue, // returns a default value if a given value is empty or undefined
+isNumber, // checks if a given value is a number
+logThis, // logs a message to the console with a specified prefix
+select, // selects a DOM element by ID or class name
+proxyObject, // creates a proxy object that allows for intercepting and modifying property access
+convertToBool, // converts a value to a boolean
+urlHelper, // provides helper functions for working with URLs
+every, // checks if every element in an array satisfies a given condition
+includes, // checks if an array includes a given value
+isUndefined, // checks if a given value is undefined
 }
 ```
 
-You can see the src with github and explore the function [here](https://github.com/knighttower/JsUtility/blob/development/src/Utility.js)
+You can see the src with github and explore the functions by using the "symbols explorer" from Github [here](https://github.com/knighttower/JsUtility/blob/development/src/Utility.js)
+
+# List of functions included in PowerHelpers
+
+```javascript
+{
+    getDirectivesFromString, // extracts directives from a string
+findAndReplaceInArray, // finds and replaces a value in an array
+getArrObjFromString, // extracts an array of objects from a string
+getMatchInBetween, // extracts a substring between two delimiters
+getMatchBlock, // extracts a block of text between two delimiters
+cleanStr, // removes delimiters from a string
+setExpString, // sets a regular expression string based on a given pattern
+setLookUpExp, // sets a regular expression string for looking up a value in an object
+removeQuotes, // removes quotes from a string
+fixQuotes, // replaces single quotes with double quotes in a string
+addQuotes, // adds quotes around a string
+findNested, // finds arrays or objects in a string
+convertKeysToSymbols, // converts object keys to symbols
+wildCardStringSearch, // searches for a string using wildcards
+setWildCardString, // sets a wildcard at the beginning, end, or middle of a string
+}
+```
+
+You can see the src with github and explore the functions by using the "symbols explorer" from Github [here](https://github.com/knighttower/JsUtility/blob/development/src/PowerHelpers.js)
 
 ## Installation
 
@@ -76,14 +91,19 @@ It loads as a 'window' object --> window.Utility
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/@knighttower/js-utility-functions@latest/dist/Utility.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@knighttower/js-utility-functions@latest/dist/PowerHelpers.min.js"></script>
+//or ESM
+<script src="https://esm.run/@knighttower/js-utility-functions@latest/index.js"></script>
 ```
 
-│ File │ Size │
-
-│ /Utility.js │ 29.4 KiB │
-│ /Utility.js.LICENSE.txt │ 19 bytes │
-│ /Utility.js.br │ 9.46 KiB │
-│ /Utility.js.gz │ 10.1 KiB │
+| File                | Size     |
+| ------------------- | -------- |
+| /PowerHelpers.js    | 19.5 KiB |
+| /PowerHelpers.js.br | 6.12 KiB |
+| /PowerHelpers.js.gz | 6.54 KiB |
+| /Utility.js         | 25 KiB   |
+| /Utility.js.br      | 8.13 KiB |
+| /Utility.js.gz      | 8.72 KiB |
 
 <br/>
 
@@ -91,10 +111,13 @@ It loads as a 'window' object --> window.Utility
 
 ```javascript
 import Utility from '@knighttower/js-utility-functions';
+//and or
+import PowerHelpers from '@knighttower/js-utility-functions';
 // or
 import { functionThatYouWantToUse, otherFunction } from '@knighttower/js-utility-functions';
 // or
 import { Utility as yourCustomName } from '@knighttower/js-utility-functions';
+import { functionThatYouWantToUse } from 'https://cdn.jsdelivr.net/npm/@knighttower/js-utility-functions@latest/index.js';
 ```
 
 Or even better, use it along with Vite and [Autoimport](https://github.com/unplugin/unplugin-auto-import) like:
@@ -116,6 +139,15 @@ let something = Utility.theFunctionYouWantToUse();
 <br/>
 
 ## Methods
+
+### Note:
+
+Some of these docs are outdated. Please look via the built in Github Symbol explorer for a better experience and understanding of the functions.
+
+[PowerHelpers](https://github.com/knighttower/JsUtility/blob/development/src/PowerHelpers.js)  
+[Utility](https://github.com/knighttower/JsUtility/blob/development/src/Utility.js)
+
+<br/>
 
 ## getGoogleMapsAddress
 
