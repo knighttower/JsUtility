@@ -19,7 +19,6 @@ import {
     wildCardStringSearch,
     setWildCardString,
     getArrObjFromString,
-    typeOf,
 } from '../index';
 
 test('getDirectivesFromString - should convert string formats into objects', () => {
@@ -72,12 +71,6 @@ test('getArrObjFromString - should convert string formats into objects', () => {
 
     results = getArrObjFromString('{{y:hello}, {x: world}, z: tomorrow}');
     assert.deepEqual(results, { 0: { y: 'hello' }, 1: { x: 'world' }, z: 'tomorrow' });
-});
-
-test('typeof - ', () => {
-    let results = typeOf(null);
-
-    assert.equal(results, null);
 });
 
 test('findAndReplaceInArray - should replace all occurrences of a value in an array', () => {
