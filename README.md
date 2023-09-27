@@ -2,10 +2,17 @@
 
 ## Overview
 
-**Utility** is a utility library that provides a collection of utility functions for various tasks. The library is designed to be easy to use and covers the most common use cases. It was created to address the need of repetive need of some very common functions without the need of loading entire libraries for just a few functions.  
-**PowerHelper** was designed to work for other specific libraries, but the fucntions for regex and string manipulation were actually so good to use in other projects that it was decided to share as well here.
+**Utility** Tiny collection of mighty utility functions with extended functionality for common cases (only 4k gzip and ESM). It was created to address the need of repetive need of some very common functions without the need of loading entire libraries for just a few functions while providing extra functionality:  
+Ex: emptyOrValue(value) or emptyOrValue(value, default) checks if the value is empty or undefined and returns the value or a default value if empty. Very helpful when dealing with variables that may or may not have a value.  
+Ex: typeOf(value) or typeOf(value, 'string') or typeOf(value, 'string|number') checks the type of a value and can also return comparisons (can take piped).
+Ex: convertToBool(value) converts a value to a boolean, accepts int, string and boolean. Typical Js Boolean() only accepts strings and booleans but not 'true', 'false' as string
+<br/>
 
-Most functions here are extremely handy without the overhead of big libraries. However, for other most advance features it is recomended to also use other libraries, like if you need extensive use of Money, date, numbers functions (ex. money.js, moment.js, validate.js, lodash, v8n.js, jquery, etc)
+**PowerHelper** was designed to work for other specific libraries, but the fucntions for regex and string manipulation were actually so good to use in other projects that it was decided to share as well here.  
+<br/>
+
+Most functions here are extremely handy without the overhead of big libraries.  
+However, for other most advance features it is recomended to also use other libraries, like if you need extensive use of Money, date, numbers functions (ex. money.js, moment.js, validate.js, lodash, v8n.js, jquery, moderndash, etc)
 
 It also Uses some features from other KnightTower packages:
 
@@ -23,29 +30,30 @@ All Functions have also been Unit Tested and tests are in the source code if you
 
 ```javascript
 {
-getGoogleMapsAddress, // gets a formatted address string for a location using the Google Maps API
-openGoogleMapsAddress, // opens Google Maps in a new tab with a specified address
-formatPhoneNumber, // formats a phone number string to a standardized format
-validatePhone, // validates a phone number string to ensure it is in a valid format
-validateEmail, // validates an email address string to ensure it is in a valid format
-getDynamicId, // generates a unique ID string based on a prefix and a random number
-getRandomId, // generates a random ID string
-dateFormat, // formats a date object to a specified format string
-currencyToDecimal, // converts a currency string to a decimal number
-decimalToCurrency, // converts a decimal number to a currency string
-toCurrency, // formats a number to a currency string
-toDollarString, // formats a number to a dollar string
-emptyOrValue, // returns a default value if a given value is empty or undefined
-isNumber, // checks if a given value is a number
-logThis, // logs a message to the console with a specified prefix
-select, // selects a DOM element by ID or class name
-proxyObject, // creates a proxy object that allows for intercepting and modifying property access
-convertToBool, // converts a value to a boolean
-urlHelper, // provides helper functions for working with URLs
-every, // checks if every element in an array satisfies a given condition
-includes, // checks if an array includes a given value
-isUndefined, // checks if a given value is undefined
+  convertToBool: "converts a value to a boolean, accepts int, string and boolean",
+  currencyToDecimal: "converts a currency string to a decimal number",
+  dateFormat: "formats a date object to a specified format string",
+  decimalToCurrency: "converts a decimal number to a currency string",
+  emptyOrValue: "returns a default value if a given value is empty or undefined",
+  getGoogleMapsAddress: "gets a formatted address string for a location using the Google Maps API",
+  formatPhoneNumber: "formats a phone number string to a standardized format",
+  getDynamicId: "generates a unique ID string based on a prefix and a random number",
+  getRandomId: "generates a random ID string",
+  includes: "checks if a collection (object|string|array) includes a given value",
+  isNumber: "checks if a given value is a number (that includes string numbers and floats)",
+  isEmpty: "checks if a given value is empty",
+  logThis: "logs a message to the console with a specified prefix",
+  openGoogleMapsAddress: "opens Google Maps in a new tab with a specified address",
+  proxyObject: "creates a proxy object that allows for intercepting and modifying property access",
+  select: "selects a DOM element by ID or class name",
+  toCurrency: "formats a number to a currency string",
+  toDollarString: "formats a number to a dollar string",
+  typeOf: "gets the type of a value and can also return comparisons",
+  urlHelper: "provides helper functions for working with URLs",
+  validateEmail: "validates an email address string to ensure it is in a valid format",
+  validatePhone: "validates a phone number string to ensure it is in a valid format"
 }
+
 ```
 
 You can see the src with github and explore the functions by using the "symbols explorer" from Github [here](https://github.com/knighttower/JsUtility/blob/development/src/Utility.js)
@@ -54,22 +62,23 @@ You can see the src with github and explore the functions by using the "symbols 
 
 ```javascript
 {
-    getDirectivesFromString, // extracts directives from a string
-findAndReplaceInArray, // finds and replaces a value in an array
-getArrObjFromString, // extracts an array of objects from a string
-getMatchInBetween, // extracts a substring between two delimiters
-getMatchBlock, // extracts a block of text between two delimiters
-cleanStr, // removes delimiters from a string
-setExpString, // sets a regular expression string based on a given pattern
-setLookUpExp, // sets a regular expression string for looking up a value in an object
-removeQuotes, // removes quotes from a string
-fixQuotes, // replaces single quotes with double quotes in a string
-addQuotes, // adds quotes around a string
-findNested, // finds arrays or objects in a string
-convertKeysToSymbols, // converts object keys to symbols
-wildCardStringSearch, // searches for a string using wildcards
-setWildCardString, // sets a wildcard at the beginning, end, or middle of a string
+  addQuotes: "adds quotes around a string",
+  cleanStr: "removes delimiters from a string",
+  convertKeysToSymbols: "converts object keys to symbols",
+  findAndReplaceInArray: "finds and replaces a value in an array",
+  findNested: "finds arrays or objects in a string",
+  fixQuotes: "replaces single quotes with double quotes in a string",
+  getArrObjFromString: "extracts an array of objects from a string",
+  getDirectivesFromString: "extracts directives from a string",
+  getMatchBlock: "extracts a block of text between two delimiters",
+  getMatchInBetween: "extracts a substring between two delimiters",
+  removeQuotes: "removes quotes from a string",
+  setExpString: "sets a regular expression string based on a given pattern",
+  setLookUpExp: "sets a regular expression string for looking up a value in an object",
+  setWildCardString: "sets a wildcard at the beginning, end, or middle of a string",
+  wildCardStringSearch: "searches for a string using wildcards"
 }
+
 ```
 
 You can see the src with github and explore the functions by using the "symbols explorer" from Github [here](https://github.com/knighttower/JsUtility/blob/development/src/PowerHelpers.js)
@@ -99,12 +108,12 @@ It loads as a 'window' object --> window.Utility
 
 | File                | Size     |
 | ------------------- | -------- |
-| /PowerHelpers.js    | 19.5 KiB |
-| /PowerHelpers.js.br | 6.12 KiB |
-| /PowerHelpers.js.gz | 6.54 KiB |
-| /Utility.js         | 25 KiB   |
-| /Utility.js.br      | 8.13 KiB |
-| /Utility.js.gz      | 8.72 KiB |
+| /PowerHelpers.js    | 10.5 KiB |
+| /PowerHelpers.js.br | 3.49 KiB |
+| /PowerHelpers.js.gz | 3.78 KiB |
+| /Utility.js         | 8.54 KiB |
+| /Utility.js.br      | 3.13 KiB |
+| /Utility.js.gz      | 3.46 KiB |
 
 <br/>
 

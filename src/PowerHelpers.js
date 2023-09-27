@@ -2,7 +2,7 @@
 // MIT License
 // Copyright (c) [2022] [Knighttower] https://github.com/knighttower
 
-import { emptyOrValue, convertToBool, getRandomId } from './Utility';
+import { emptyOrValue, convertToBool, getRandomId, isEmpty, typeOf } from './Utility';
 
 // @private
 export function _removeBrackets(strExp) {
@@ -182,24 +182,21 @@ export function getArrObjFromString(strExp) {
             //replace the nested array or object with a marker so that we can safely split the string
             let marker = `__${getRandomId()}__`;
             nestedElements[marker] = matched;
+
             newStrExp = newStrExp.replace(matched, marker);
         }
     };
 
     loopNested();
     loopNested(true);
-
+    // console.log(nestedElements);
     getChunks(newStrExp).forEach((chunk, index) => {
-        const chunkParts = isObject ? getChunks(chunk, ':') : chunk;
-        const chunkKey = isObject ? chunkParts[0] : index;
-        // double check the chunk as it can be an object prop value that got split
-        chunk = isObject ? emptyOrValue(chunkParts[1], chunk) : chunk;
-
-        for (const markerKey in nestedElements) {
-            if (chunk.includes(markerKey)) {
-                chunk = getArrObjFromString(nestedElements[markerKey]);
-                break;
-            }
+        const isObjectKey = chunk.includes(':') && isObject;
+        const chunkParts = isObjectKey ? getChunks(chunk, ':') : [];
+        const chunkKey = emptyOrValue(chunkParts[0], index);
+        chunk = isObjectKey ? chunkParts[1] : chunk;
+        if (chunk in nestedElements) {
+            chunk = getArrObjFromString(nestedElements[chunk]);
         }
 
         // set back in the collection either as an object or array
@@ -333,6 +330,8 @@ export function getMatchBlock(str, p1, p2, all = false) {
  * @return {string|array}
  */
 export function getChunks(str, splitter = ',') {
+    if (isEmpty(str)) return [];
+    str = cleanStr(str);
     let chunks = str.split(splitter).map((t) => cleanStr(t));
     return chunks.length === 1 && chunks[0] === '' ? [str] : chunks;
 }
@@ -468,27 +467,6 @@ export function setWildCardString(string, matchStart = false, matchEnd = false) 
 }
 
 /**
- * Check the type of a variable, accepts a piped string of types to check against
- * @param {any} input - The variable to check
- * @param {string} test - The types to check against, piped string
- * @return {string|boolean} - The type of the variable
- * @example typeOf('hello', 'string') // returns true
- * @example typeOf('hello', 'number') // returns false
- * @example typeOf('hello', 'string|number') // returns true
- * @example typeOf('hello') // returns 'string'
- * @example typeOf({}) // returns 'object'
- */
-export function typeOf(input, test = null) {
-    const inputType = typeof input;
-
-    if (test) {
-        return getChunks(test, '|').some((t) => inputType === t);
-    }
-
-    return inputType;
-}
-
-/**
  * Search for a wildcard pattern in a list of strings or viceversa
  * @method wildCardStringSearch
  * @param {string} pattern - The pattern to search for
@@ -507,13 +485,13 @@ export function wildCardStringSearch(pattern, listOrString, matchStart = false, 
 
     if (typeof listOrString === 'string') {
         const matches = listOrString.match(regex);
-        return emptyOrValue(matches, null);
+        return emptyOrValue(matches);
     }
 
     let filteredList = [];
     filteredList = listOrString.filter((item) => regex.test(item));
 
-    return emptyOrValue(filteredList, null);
+    return emptyOrValue(filteredList);
 }
 
 export const powerHelper = {
@@ -533,7 +511,6 @@ export const powerHelper = {
     setExpString,
     setLookUpExp,
     setWildCardString,
-    typeOf,
     wildCardStringSearch,
 };
 

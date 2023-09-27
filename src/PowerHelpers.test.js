@@ -19,6 +19,7 @@ import {
     wildCardStringSearch,
     setWildCardString,
     getArrObjFromString,
+    typeOf,
 } from '../index';
 
 test('getDirectivesFromString - should convert string formats into objects', () => {
@@ -55,24 +56,28 @@ test('getDirectivesFromString - should convert string formats into objects', () 
         value: { directive: { breakdown: 'values', breakdown2: 'values' } },
     });
 });
-test('getArrObjFromString - should convert string formats into objects', () => {
-    const result2 = getArrObjFromString('[[value,value],value]');
-    assert.deepEqual(result2, [['value', 'value'], 'value']);
-});
 
 test('getArrObjFromString - should convert string formats into objects', () => {
-    const result2 = getArrObjFromString('[[value,value],value, { y: hello }, hello]');
-    assert.deepEqual(result2, [['value', 'value'], 'value', { y: 'hello' }, 'hello']);
+    let results;
+    results = getArrObjFromString('{ y: hello, x: world, z: [value,value]}');
+    assert.deepEqual(results, { y: 'hello', x: 'world', z: ['value', 'value'] });
+    results = getArrObjFromString('{ y: hello, x: world, z: [value,value]}');
+    assert.deepEqual(results, { y: 'hello', x: 'world', z: ['value', 'value'] });
+    results = getArrObjFromString('[[value,value], { y: hello, x: world }, hello]');
+    assert.deepEqual(results, [['value', 'value'], { y: 'hello', x: 'world' }, 'hello']);
+    results = getArrObjFromString('[[value,value],value, { y: hello }, hello]');
+    assert.deepEqual(results, [['value', 'value'], 'value', { y: 'hello' }, 'hello']);
+    results = getArrObjFromString('[[value,value],value]');
+    assert.deepEqual(results, [['value', 'value'], 'value']);
+
+    results = getArrObjFromString('{{y:hello}, {x: world}, z: tomorrow}');
+    assert.deepEqual(results, { 0: { y: 'hello' }, 1: { x: 'world' }, z: 'tomorrow' });
 });
 
-test('getArrObjFromString - should convert string formats into objects', () => {
-    const result2 = getArrObjFromString('[[value,value], { y: hello, x: world }, hello]');
-    assert.deepEqual(result2, [['value', 'value'], { y: 'hello', x: 'world' }, 'hello']);
-});
+test('typeof - ', () => {
+    let results = typeOf(null);
 
-test('getArrObjFromString - should convert string formats into objects', () => {
-    const result2 = getArrObjFromString('{ y: hello, x: world, z: [value,value]}');
-    assert.deepEqual(result2, { y: 'hello', x: 'world', z: ['value', 'value'] });
+    assert.equal(results, null);
 });
 
 test('findAndReplaceInArray - should replace all occurrences of a value in an array', () => {
