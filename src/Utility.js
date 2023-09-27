@@ -406,12 +406,39 @@ export function toDollarString(amount) {
  * @example typeOf({}) // returns 'object'
  */
 export function typeOf(input, test) {
-    const inputType = typeof input;
+    // Special case for null
     if (input === null) {
-        if (test === null || (test && test.includes('null'))) return true;
-        return null;
+        return test === null || (test && test.includes('null')) ? true : 'null';
     }
-    if (!isEmpty(test)) {
+
+    let inputType;
+
+    switch (typeof input) {
+        case 'number':
+        case 'string':
+        case 'boolean':
+        case 'undefined':
+        case 'bigint':
+        case 'symbol':
+            inputType = typeof input;
+            break;
+        case 'object':
+            if (input instanceof Date) {
+                inputType = 'date';
+            } else if (input instanceof RegExp) {
+                inputType = 'regexp';
+            } else {
+                inputType = Array.isArray(input) ? 'array' : 'object';
+            }
+            break;
+        case 'function':
+            inputType = 'function';
+            break;
+        default:
+            inputType = 'unknown';
+    }
+
+    if (test) {
         return test.split('|').some((t) => inputType === t);
     }
 

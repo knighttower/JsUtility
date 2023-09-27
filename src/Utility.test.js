@@ -17,7 +17,8 @@ import {
     emptyOrValue,
     isNumber,
     convertToBool,
-} from './Utility';
+    typeOf,
+} from '../index';
 
 // getGoogleMapsAddress
 test('getGoogleMapsAddress - Empty address', () => {
@@ -176,4 +177,54 @@ test('emptyOrValue - should return the value if it is a non-empty string with on
     const value = null;
     const result = emptyOrValue(null);
     assert.equal(result, value);
+});
+
+test('typeof - ', () => {
+    let results = typeOf(null);
+    assert.equal(results, 'null');
+    // create test for null, undefined|null
+    results = typeOf(null, 'undefined|null');
+    assert.equal(results, true);
+    // create test for undefined
+    results = typeOf(undefined);
+    assert.equal(results, 'undefined');
+
+    //create test for 1000 = number
+    results = typeOf(1000, 'number');
+    assert.equal(results, true);
+
+    results = typeOf(1000, 'string');
+    assert.equal(results, false);
+
+    // create test for 10.5 = number
+    results = typeOf(10.5, 'number');
+    assert.equal(results, true);
+
+    // create test for '1000' = string
+    results = typeOf('1000', 'string');
+    assert.equal(results, true);
+
+    // create test for [1,2,3] = array
+    results = typeOf([1, 2, 3], 'array');
+    assert.equal(results, true);
+
+    // create test for {foo: 'bar'} = object
+    results = typeOf({ foo: 'bar' }, 'object');
+    assert.equal(results, true);
+
+    // create test for true = boolean
+    results = typeOf(true, 'boolean');
+    assert.equal(results, true);
+
+    // create test for false = boolean
+    results = typeOf(false, 'boolean');
+    assert.equal(results, true);
+
+    // create test for new Date() = date
+    results = typeOf(new Date(), 'date');
+    assert.equal(results, true);
+
+    // create test for new RegExp() = regexp
+    results = typeOf(new RegExp(), 'regexp');
+    assert.equal(results, true);
 });
