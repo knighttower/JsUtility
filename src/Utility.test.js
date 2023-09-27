@@ -107,3 +107,73 @@ test('isNumber - Validate number float', () => {
 test('convertToBool - Convert to bool', () => {
     assert.equal(convertToBool('true'), true);
 });
+
+test('emptyOrValue - should return the value if it is a number greater than 0', () => {
+    const value = 42;
+    const result = emptyOrValue(value);
+    assert.equal(result, value);
+
+    const value2 = 0.5;
+    const result2 = emptyOrValue(value2);
+    assert.equal(result2, value2);
+});
+
+test('emptyOrValue - should return the value if it is a boolean', () => {
+    const value = true;
+    const result = emptyOrValue(value);
+    assert.equal(result, value);
+
+    const value2 = false;
+    const result2 = emptyOrValue(value2);
+    assert.equal(result2, value2);
+});
+
+test('emptyOrValue - should return the value if it is not empty', () => {
+    const value = 'hello';
+    const result = emptyOrValue(value);
+    assert.equal(result, value);
+
+    const value2 = [1, 2, 3];
+    const result2 = emptyOrValue(value2);
+    assert.deepEqual(result2, value2);
+
+    const value3 = { foo: 'bar' };
+    const result3 = emptyOrValue(value3);
+    assert.deepEqual(result3, value3);
+});
+
+test('emptyOrValue - should return the default value if the input is empty', () => {
+    const value = '';
+    const defaultValue = 'default';
+    const result = emptyOrValue(value, defaultValue);
+    assert.equal(result, defaultValue);
+
+    const value2 = [];
+    const defaultValue2 = [1, 2, 3];
+    const result2 = emptyOrValue(value2, defaultValue2);
+    assert.deepEqual(result2, defaultValue2);
+
+    const value3 = null;
+    const defaultValue3 = { foo: 'bar' };
+    const result3 = emptyOrValue(value3, defaultValue3);
+    assert.deepEqual(result3, defaultValue3);
+});
+
+test('emptyOrValue - should return the default value if the input is undefined', () => {
+    const value = undefined;
+    const defaultValue = 'default';
+    const result = emptyOrValue(value, defaultValue);
+    assert.equal(result, defaultValue);
+});
+
+test('emptyOrValue - should return the value if it is a non-empty string with only whitespace characters', () => {
+    const value = '   ';
+    const result = emptyOrValue(value);
+    assert.equal(result, value);
+});
+
+test('emptyOrValue - should return the value if it is a non-empty string with only whitespace characters', () => {
+    const value = null;
+    const result = emptyOrValue(null);
+    assert.equal(result, value);
+});
