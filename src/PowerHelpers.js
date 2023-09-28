@@ -42,7 +42,7 @@ export function addQuotes(str) {
  * @example cleanStr('Hello World. Sunshine is here!', /Hello/g, /Sunshine/g) // ' World.  is here!'
  */
 export function cleanStr(str, ...args) {
-    if (!emptyOrValue(str)) return;
+    if (!str) return;
 
     return args
         .reduce((accStr, arg) => {
@@ -160,7 +160,7 @@ export function fixQuotes(str) {
  */
 export function getArrObjFromString(strExp) {
     // alredy typeof object or array just return it
-    if (typeOf(strExp, 'object|array')) return strExp;
+    if (typeOf(strExp, 'object') || typeOf(strExp, 'array')) return strExp;
     const isObject = startAndEndWith(strExp, '{', '}');
     const isArray = startAndEndWith(strExp, '[', ']');
     // If it is other type of string, return it
