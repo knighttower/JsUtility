@@ -48,7 +48,8 @@ All Functions have also been Unit Tested and tests are in the source code if you
   select: "selects a DOM element by ID or class name",
   toCurrency: "formats a number to a currency string",
   toDollarString: "formats a number to a dollar string",
-  typeOf: "gets the type of a value and can also return comparisons",
+  typeOf: "gets the type of a value and can also return simple comparisons. For more advanced type-checking, use the 'typeCheck' library https://github.com/knighttower/JsTypeCheck",
+  instanceOf: "gets the instance of a value and can also return simple comparisons",
   urlHelper: "provides helper functions for working with URLs",
   validateEmail: "validates an email address string to ensure it is in a valid format",
   validatePhone: "validates a phone number string to ensure it is in a valid format"

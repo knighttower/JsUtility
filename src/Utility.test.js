@@ -18,6 +18,7 @@ import {
     isNumber,
     convertToBool,
     typeOf,
+    instanceOf,
 } from '../index';
 
 // getGoogleMapsAddress
@@ -181,9 +182,10 @@ test('emptyOrValue - should return the value if it is a non-empty string with on
 
 test('typeof - ', () => {
     let results = typeOf(null);
+
     assert.equal(results, 'null');
-    // create test for null, undefined|null
-    results = typeOf(null, 'undefined|null');
+    // create test for null, null
+    results = typeOf(null, 'null');
     assert.equal(results, true);
     // create test for undefined
     results = typeOf(undefined);
@@ -191,6 +193,7 @@ test('typeof - ', () => {
 
     //create test for 1000 = number
     results = typeOf(1000, 'number');
+    // console.log(typeOf(1000));
     assert.equal(results, true);
 
     results = typeOf(1000, 'string');
@@ -219,12 +222,14 @@ test('typeof - ', () => {
     // create test for false = boolean
     results = typeOf(false, 'boolean');
     assert.equal(results, true);
+});
 
+test('instanceOf - ', () => {
     // create test for new Date() = date
-    results = typeOf(new Date(), 'date');
+    let results = instanceOf(new Date(), 'date');
     assert.equal(results, true);
 
     // create test for new RegExp() = regexp
-    results = typeOf(new RegExp(), 'regexp');
+    results = instanceOf(new RegExp(), 'regexp');
     assert.equal(results, true);
 });

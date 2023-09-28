@@ -317,7 +317,7 @@ export function logThis(obj) {
  * @example openGoogleMapsAddress({ address: 'New York', zip: '10001' }); // Opens Google Maps with the address 'New York 10001'
  */
 export function openGoogleMapsAddress(object) {
-    if (!typeOf(object, 'string|object')) {
+    if (!typeOf(object, 'string') || !typeOf(object, 'object')) {
         throw new Error('The input must be a string or an object.');
     }
 
@@ -395,20 +395,24 @@ export function toDollarString(amount) {
 }
 
 /**
- * Check the type of a variable, accepts a piped string of types to check against
+ * Check the type of a variable, and get the correct type for it. It also accepts simple comparisons
+ * For more advance type checking see https://github.com/knighttower/JsTypeCheck
  * @param {any} input - The variable to check
  * @param {string} test - The types to check against, piped string
  * @return {string|boolean} - The type of the variable
  * @example typeOf('hello', 'string') // returns true
  * @example typeOf('hello', 'number') // returns false
- * @example typeOf('hello', 'string|number') // returns true
+ * @example typeOf('hello', 'string') // returns true
  * @example typeOf('hello') // returns 'string'
  * @example typeOf({}) // returns 'object'
  */
 export function typeOf(input, test) {
-    // Special case for null
+    // Special case for null since it can be treated as an object
     if (input === null) {
-        return test === null || (test && test.includes('null')) ? true : 'null';
+        if (test) {
+            return test === null || test === 'null' ? true : false;
+        }
+        return 'null';
     }
 
     let inputType;
@@ -420,26 +424,75 @@ export function typeOf(input, test) {
         case 'undefined':
         case 'bigint':
         case 'symbol':
+        case 'function':
             inputType = typeof input;
             break;
         case 'object':
-            if (input instanceof Date) {
-                inputType = 'date';
-            } else if (input instanceof RegExp) {
-                inputType = 'regexp';
-            } else {
-                inputType = Array.isArray(input) ? 'array' : 'object';
-            }
-            break;
-        case 'function':
-            inputType = 'function';
+            inputType = Array.isArray(input) ? 'array' : 'object';
+
             break;
         default:
             inputType = 'unknown';
     }
 
     if (test) {
-        return test.split('|').some((t) => inputType === t);
+        return test === inputType;
+    }
+
+    return inputType;
+}
+
+/**
+ * Check the instance of a variable, and get the correct type for it. It also accepts simple comparisons
+ * For more advance type checking see https://github.com/knighttower/JsTypeCheck
+ * @param {any} input - The variable to check
+ * @return {string|boolean} - The type of the variable or boolean when test is provided
+ */
+export function instanceOf(input, test) {
+    let inputType = 'unknown';
+    if (input === null || typeof input !== 'object') {
+        return inputType;
+    }
+    const instanceMapping = [
+        {
+            type: 'date',
+            inst: Date,
+        },
+        {
+            type: 'regexp',
+            inst: RegExp,
+        },
+        {
+            type: 'promise',
+            inst: Promise,
+        },
+        {
+            type: 'map',
+            inst: Map,
+        },
+        {
+            type: 'set',
+            inst: Set,
+        },
+        {
+            type: 'weakMap',
+            inst: WeakMap,
+        },
+        {
+            type: 'weakSet',
+            inst: WeakSet,
+        },
+    ];
+    let instTotal = instanceMapping.length;
+    while (instTotal--) {
+        if (input instanceof instanceMapping[instTotal].inst) {
+            inputType = instanceMapping[instTotal].type;
+            break;
+        }
+    }
+
+    if (test) {
+        return test === inputType;
     }
 
     return inputType;
@@ -493,6 +546,7 @@ export const Utility = {
     includes,
     isEmpty, // from https://moderndash.io/
     isNumber,
+    instanceOf,
     logThis,
     openGoogleMapsAddress,
     proxyObject,
