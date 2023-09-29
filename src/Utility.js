@@ -450,7 +450,7 @@ export function typeOf(input, test) {
  */
 export function instanceOf(input, test) {
     let inputType = 'unknown';
-    if (input === null || typeof input !== 'object') {
+    if (input === null) {
         return inputType;
     }
     const instanceMapping = [
