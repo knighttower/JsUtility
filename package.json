@@ -1,6 +1,6 @@
 {
     "name": "@knighttower/js-utility-functions",
-    "version": "2.2.0",
+    "version": "2.2.1",
     "main": "index.js",
     "module": "index.js",
     "jsdelivr": "dist/Utility.js",
