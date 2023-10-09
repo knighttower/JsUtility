@@ -1,4 +1,8 @@
 {
     "/Utility.js": "/Utility.js",
+    "/DomObserver.js": "/DomObserver.js",
+    "/UrlHelper.js": "/UrlHelper.js",
+    "/ElementHelper.js": "/ElementHelper.js",
+    "/ProxyHelper.js": "/ProxyHelper.js",
     "/PowerHelpers.js": "/PowerHelpers.js"
 }

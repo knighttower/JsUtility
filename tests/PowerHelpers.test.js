@@ -21,7 +21,7 @@ import {
     getArrObjFromString,
     proxyObject,
 } from '../index';
-// console.log(proxyObject({ a: 1, b: 2, c: 3 }));
+console.log(proxyObject({ a: 1, b: 2, c: 3 }));
 
 test('getDirectivesFromString - should convert string formats into objects', () => {
     //test for const regexIdOrClass = /^(\.|\#)([a-zA-Z]+)/g;
