@@ -352,7 +352,7 @@ export function proxyObject(obj) {
  * @uses ElementHelper @knighttower/element-helper (https://github.com/knighttower/ElementHelper)
  * @example select('#test') // <div id="test"></div>
  */
-export function select(selector, scope = document) {
+export function selectElement(selector, scope = document) {
     return new ElementHelper(selector, scope);
 }
 
