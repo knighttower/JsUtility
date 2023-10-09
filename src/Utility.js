@@ -345,12 +345,12 @@ export function proxyObject(obj) {
 
 /**
  * Dom Element selector
- * @function select
+ * @function selectElement
  * @param {String} selector - The selector to search for
  * @param {Object} scope - The scope to search in
  * @return {String} - The first element that matches the selector
  * @uses ElementHelper @knighttower/element-helper (https://github.com/knighttower/ElementHelper)
- * @example select('#test') // <div id="test"></div>
+ * @example selectElement('#test') // <div id="test"></div>
  */
 export function selectElement(selector, scope = document) {
     return new ElementHelper(selector, scope);
@@ -550,7 +550,7 @@ export const Utility = {
     logThis,
     openGoogleMapsAddress,
     proxyObject,
-    select,
+    selectElement,
     toCurrency,
     toDollarString,
     typeOf,
