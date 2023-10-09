@@ -8,11 +8,10 @@
 // // -----------------------------------------
 
 // @see https://github.com/knighttower/JsObjectProxyHelper
-import ProxyHelper from '@knighttower/js-object-proxy-helper';
-// @see https://github.com/knighttower/JsUrlHelper
-import urlHelper from '@knighttower/js-url-helper';
+import ProxyHelper from './ProxyHelper';
+
 // @see https://github.com/knighttower/ElementHelper
-import ElementHelper from '@knighttower/element-helper';
+import ElementHelper from './ElementHelper';
 
 // -----------------------------
 // METHODS
@@ -327,7 +326,7 @@ export function openGoogleMapsAddress(object) {
         throw new Error('The address you are trying to open is invalid.');
     }
 
-    return urlHelper.open(address);
+    return window.open(address, '_blank');
 }
 
 /**
@@ -554,10 +553,9 @@ export const Utility = {
     toCurrency,
     toDollarString,
     typeOf,
-    urlHelper,
     validateEmail,
     validatePhone,
 };
 
 // Export ES6 modules
-export { Utility as default, Utility as utils, Utility as utility, ElementHelper, ProxyHelper, urlHelper };
+export { Utility as default, Utility as utils, Utility as utility };

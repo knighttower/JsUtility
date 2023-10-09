@@ -22,7 +22,7 @@ import {
     selectElement,
 } from '../index';
 
-// console.log(selectElement('body'));
+console.log(selectElement('body'));
 // getGoogleMapsAddress
 test('getGoogleMapsAddress - Empty address', () => {
     assert.equal(getGoogleMapsAddress(''), false);
