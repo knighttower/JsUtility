@@ -19,8 +19,10 @@ import {
     convertToBool,
     typeOf,
     instanceOf,
+    selectElement,
 } from '../index';
 
+// console.log(selectElement('body'));
 // getGoogleMapsAddress
 test('getGoogleMapsAddress - Empty address', () => {
     assert.equal(getGoogleMapsAddress(''), false);
