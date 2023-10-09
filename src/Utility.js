@@ -340,7 +340,7 @@ export function openGoogleMapsAddress(object) {
  * @usage _mutable: array(...) -> Can be modified
  */
 export function proxyObject(obj) {
-    return new ProxyHelper(obj);
+    return ProxyHelper(obj);
 }
 
 /**
@@ -560,4 +560,4 @@ export const Utility = {
 };
 
 // Export ES6 modules
-export { Utility as default, Utility as utils, Utility as utility };
+export { Utility as default, Utility as utils, Utility as utility, ElementHelper, ProxyHelper, urlHelper };
