@@ -122,6 +122,8 @@ It loads as a 'window' object --> window.Utility
 ## Usage
 
 ```javascript
+// note: in some cases, you may need to use the full path to the file "/index" in order to import it
+// All other modules can also be imported individually from the same path
 import Utility from '@knighttower/js-utility-functions';
 //and or
 import PowerHelpers from '@knighttower/js-utility-functions';
