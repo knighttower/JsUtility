@@ -57,10 +57,10 @@ test('getDirectivesFromString - Get directives from string', () => {
 test('getDirectivesFromString - should convert string formats into objects', () => {
     //test for const regexIdOrClass = /^(\.|\#)([a-zA-Z]+)/g;
     results = getDirectivesFromString('#hello');
-    assert.deepEqual(results, { type: 'idOrClass', directive: '#hello' });
+    assert.deepEqual(results, { type: 'string', directive: '#hello' });
 
     results = getDirectivesFromString('.hello');
-    assert.deepEqual(results, { type: 'idOrClass', directive: '.hello' });
+    assert.deepEqual(results, { type: 'string', directive: '.hello' });
 
     // test /^([a-zA-Z]+)(\()(\.|\#)(.*)(\))/g;
     results = getDirectivesFromString('tablet(#hello)');
@@ -95,6 +95,17 @@ test('getDirectivesFromString - should convert string formats into objects', () 
     assert.deepEqual(results, {
         type: 'dotObject',
         directive: { directive: { breakdown: 'values', breakdown2: 'values' } },
+    });
+
+    results = getDirectivesFromString("directive.tablet({to: '#hello'})&&directive.mobile({to: '#world'})");
+    assert.deepEqual(results, {
+        type: 'dotObject',
+        directive: { directive: { tablet: { to: '#hello' }, mobile: { to: '#world' } } },
+    });
+    results = getDirectivesFromString("directive.tablet(#hello .world)&&directive.mobile({to: '#world'})");
+    assert.deepEqual(results, {
+        type: 'dotObject',
+        directive: { directive: { tablet: '#hello .world', mobile: { to: '#world' } } },
     });
 });
 
