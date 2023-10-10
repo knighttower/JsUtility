@@ -243,7 +243,6 @@ export function getDirectivesFromString(stringDirective) {
     };
     const matchArrayTypes = /^\[((.|\n)*?)\]$/gm;
     const matchObjectTypes = /^\{((.|\n)*?)\:((.|\n)*?)\}/gm;
-    const matchIdOrClass = /^(\.|\#)([a-zA-Z]+)/g;
     const matchFunctionString = /^([a-zA-Z]+)(\()(\.|\#)(.*)(\))/g;
     const regexDotObjectString = /([a-zA-Z]+)\.(.*?)\(((.|\n)*?)\)/gm;
     const regexExObjectString = /([a-zA-Z]+)\[((.|\n)*?)\]\(((.|\n)*?)\)/gm;
@@ -266,10 +265,6 @@ export function getDirectivesFromString(stringDirective) {
                 // regexObjectLike = /^\{((.|\n)*?)\:((.|\n)*?)\}/gm;
                 type = 'object';
                 break;
-            case !!str.match(matchIdOrClass):
-                // Matches string ID or class: literals #... or ....
-                // regex IdOrClass
-                return results('idOrClass', str);
             case !!str.match(matchFunctionString):
                 // Mathes simple directive function style: directive(#idOr.Class)
                 // regexFunctionString
@@ -285,6 +280,7 @@ export function getDirectivesFromString(stringDirective) {
                 break;
 
             default:
+                return results('string', str);
                 break;
         }
     }
@@ -307,16 +303,18 @@ export function getDirectivesFromString(stringDirective) {
 
         getChunks(str, '&&').forEach((command) => {
             if (command.match(regexExObjectString)) {
+                // Matches object-style strings: directive[expression](...values)
                 values = getMatchInBetween(command, '](', ')');
                 breakDownId = getMatchInBetween(command, '[', ']');
                 directive = command.split('[')[0].trim();
             } else {
+                // Matches object-style strings: directive.tablet(...values)
                 values = getMatchInBetween(command, '(', ')');
                 command = command.replace(getMatchBlock(command, '(', ')'), '');
                 [directive, breakDownId] = getChunks(command, '.');
             }
 
-            values = getChunks(values, ',').join(' ');
+            values = getArrObjFromString(values);
 
             if (!setObject[directive]) setObject[directive] = {};
 
@@ -325,7 +323,7 @@ export function getDirectivesFromString(stringDirective) {
             });
         });
 
-        return results('dotObject', getArrObjFromString(setObject));
+        return results('dotObject', setObject);
     }
 }
 
