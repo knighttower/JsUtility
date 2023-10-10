@@ -18,6 +18,7 @@ It also Uses some features from other KnightTower packages:
 
 -   [JsObjectProxyHelper](https://github.com/knighttower/JsObjectProxyHelper)
 -   [JsUrlHelper](https://github.com/knighttower/JsUrlHelper)
+-   [JsDomObserver](https://github.com/knighttower/JsDomObserver)
 -   <strike>[JsPowerHelperFunctions](https://github.com/knighttower/JsPowerHelperFunctions)</strike> (deprecated) (it has now been merged into this library but still will be available as a standalone library)
 
 All functions are handy, but the most handy of all is **"emptyOrValue"** which helps to mitigate a lot of headaches when dealing with variables to know whether or not they have a value or even to set a default value when empty. From the PowerHelpers, there are a lot of regex and string functions that are very handy.
