@@ -160,6 +160,10 @@ Some of these docs are outdated. Please look via the built in Github Symbol expl
 
 [PowerHelpers](https://github.com/knighttower/JsUtility/blob/development/src/PowerHelpers.js)  
 [Utility](https://github.com/knighttower/JsUtility/blob/development/src/Utility.js)
+[DomObserver](https://github.com/knighttower/JsUtility/blob/development/src/DomObserver.js)
+[UrlHelper](https://github.com/knighttower/JsUtility/blob/development/src/UrlHelper.js)
+[ProxyHelper](https://github.com/knighttower/JsUtility/blob/development/src/ProxyHelper.js)
+[ElementHelper](https://github.com/knighttower/JsUtility/blob/development/src/ElementHelper.js)
 
 <br/>
 
