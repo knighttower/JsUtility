@@ -71,6 +71,14 @@ test('getDirectivesFromString - should convert string formats into objects', () 
     // console.log('___ log ___', results);
     assert.deepEqual(results, { type: 'array', directive: [['value', 'value'], 'value'] });
 
+    results = getDirectivesFromString('[["value","value"],"value"]');
+    // console.log('___ log ___', results);
+    assert.deepEqual(results, { type: 'array', directive: [['value', 'value'], 'value'] });
+
+    results = getDirectivesFromString("[['value','value'],'value']");
+    // console.log('___ log ___', results);
+    assert.deepEqual(results, { type: 'array', directive: [['value', 'value'], 'value'] });
+
     // create test for /^\{((.|\n)*?)\:((.|\n)*?)\}/gm
     results = getDirectivesFromString('{ y: hello, x: world, z: [value,value]}');
     assert.deepEqual(results, {
