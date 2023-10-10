@@ -122,6 +122,8 @@ It loads as a 'window' object --> window.Utility
 ## Usage
 
 ```javascript
+// note: in some cases, you may need to use the full path to the file "/index" in order to import it
+// All other modules can also be imported individually from the same path
 import Utility from '@knighttower/js-utility-functions';
 //and or
 import PowerHelpers from '@knighttower/js-utility-functions';
@@ -158,6 +160,10 @@ Some of these docs are outdated. Please look via the built in Github Symbol expl
 
 [PowerHelpers](https://github.com/knighttower/JsUtility/blob/development/src/PowerHelpers.js)  
 [Utility](https://github.com/knighttower/JsUtility/blob/development/src/Utility.js)
+[DomObserver](https://github.com/knighttower/JsUtility/blob/development/src/DomObserver.js)
+[UrlHelper](https://github.com/knighttower/JsUtility/blob/development/src/UrlHelper.js)
+[ProxyHelper](https://github.com/knighttower/JsUtility/blob/development/src/ProxyHelper.js)
+[ElementHelper](https://github.com/knighttower/JsUtility/blob/development/src/ElementHelper.js)
 
 <br/>
 
