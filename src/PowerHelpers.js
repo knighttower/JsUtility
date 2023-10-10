@@ -2,10 +2,10 @@
 // MIT License
 // Copyright (c) [2022] [Knighttower] https://github.com/knighttower
 
-import { emptyOrValue, convertToBool, getRandomId, isEmpty, typeOf } from './Utility';
+import { emptyOrValue, convertToBool, getRandomId, isEmpty, typeOf, convertToNumber } from './Utility';
 
 // @private
-export function _removeBrackets(strExp) {
+function _removeBrackets(strExp) {
     const regex = /^(\[|\{)(.*?)(\]|\})$/; // Match brackets at start and end
     const match = strExp.match(regex);
 
@@ -23,8 +23,8 @@ export function _removeBrackets(strExp) {
  * @return {String}
  * @example addQuotes('hello') // "hello"
  */
-export function addQuotes(str) {
-    return `"${str}"`;
+export function addQuotes(str, q = '"') {
+    return `${q}${str}${q}`;
 }
 
 /**
@@ -43,6 +43,7 @@ export function addQuotes(str) {
  */
 export function cleanStr(str, ...args) {
     if (!str) return;
+    if (typeof str !== 'string') return str;
 
     return args
         .reduce((accStr, arg) => {
@@ -118,8 +119,8 @@ export function findAndReplaceInArray(arr, find, value) {
  * @example findNested('[[]hello [world]]', '[', ']') // [world]
  */
 export function findNested(str, start = '[', end = ']') {
+    if (typeof str !== 'string') return str;
     // Find the last index of '['
-
     const lastIndex = str.lastIndexOf(start);
     // If '[' is not found, return null or some default value
     if (lastIndex === -1) {
@@ -142,16 +143,19 @@ export function findNested(str, start = '[', end = ']') {
  * Fix quotes from a string
  * @function fixQuotes
  * @param {String} str
+ * @return {String} q quote type
  * @return {String}
  * @example fixQuotes("'hello'") // "hello"
  * @example fixQuotes('"hello"') // "hello"
  */
-export function fixQuotes(str) {
-    return str.replace(/\`|'/g, '"');
+export function fixQuotes(str, q = '"') {
+    if (typeof str !== 'string') return str;
+    return str.replace(/\`|'|"/g, q);
 }
 
 /**
  * Converts strings formats into objects or arrays
+ * Note: quoted strings are not supported, use getDirectiveFromString instead
  * @param {string} strExp
  * @return {object|array|string}
  * @example getArrObjFromString('[[value,value],value]') // [['value', 'value'], 'value']
@@ -189,12 +193,12 @@ export function getArrObjFromString(strExp) {
 
     loopNested();
     loopNested(true);
-    // console.log(nestedElements);
+
     getChunks(newStrExp).forEach((chunk, index) => {
         const isObjectKey = chunk.includes(':') && isObject;
         const chunkParts = isObjectKey ? getChunks(chunk, ':') : [];
         const chunkKey = emptyOrValue(chunkParts[0], index);
-        chunk = isObjectKey ? chunkParts[1] : chunk;
+        chunk = isObjectKey ? convertToNumber(removeQuotes(chunkParts[1])) : chunk;
         if (chunk in nestedElements) {
             chunk = getArrObjFromString(nestedElements[chunk]);
         }
@@ -202,7 +206,8 @@ export function getArrObjFromString(strExp) {
         // set back in the collection either as an object or array
         isObject ? (newCollection[chunkKey] = chunk) : newCollection.push(chunk);
     });
-
+    // uncomment to debug
+    // console.log('___ log ___', newCollection);
     return newCollection;
 }
 
@@ -230,50 +235,73 @@ export function getDirectivesFromString(stringDirective) {
     const str = stringDirective;
     if (!emptyOrValue(str)) return null;
 
-    const results = (type = null, value = null) => {
+    const results = (type = null, results = null) => {
         return {
             type: type,
-            value: value,
+            directive: results,
         };
     };
-    let directive;
-    const type = typeof str;
+    const matchArrayTypes = /^\[((.|\n)*?)\]$/gm;
+    const matchObjectTypes = /^\{((.|\n)*?)\:((.|\n)*?)\}/gm;
+    const matchIdOrClass = /^(\.|\#)([a-zA-Z]+)/g;
+    const matchFunctionString = /^([a-zA-Z]+)(\()(\.|\#)(.*)(\))/g;
+    const regexDotObjectString = /([a-zA-Z]+)\.(.*?)\(((.|\n)*?)\)/gm;
+    const regexExObjectString = /([a-zA-Z]+)\[((.|\n)*?)\]\(((.|\n)*?)\)/gm;
+    let type = typeof str;
 
     if (type === 'object' || type === 'array') {
         return results(type, str);
-    }
-    // Matches string ID or class: literals #... or ....
-    // regex IdOrClass
-    if (str.match(/^(\.|\#)([a-zA-Z]+)/g)) {
-        return results('idOrClass', str);
+    } else {
+        switch (true) {
+            case !!str.match(matchArrayTypes):
+                // Matches the Array as string: [value, value] OR ['value','value']
+                // regexArrayLike = /^\[((.|\n)*?)\]$/gm;
+                // Matches a multi-array string like [[value,value]],value]
+                // regexMultiArrayString = /\[(\n|)(((.|\[)*)?)\](\,\n|)(((.|\])*)?)(\n|)\]/gm;
+
+                type = 'array';
+                break;
+            case !!str.match(matchObjectTypes):
+                // Matches the JSON objects as string: {'directive':{key:value}} OR {key:value}
+                // regexObjectLike = /^\{((.|\n)*?)\:((.|\n)*?)\}/gm;
+                type = 'object';
+                break;
+            case !!str.match(matchIdOrClass):
+                // Matches string ID or class: literals #... or ....
+                // regex IdOrClass
+                return results('idOrClass', str);
+            case !!str.match(matchFunctionString):
+                // Mathes simple directive function style: directive(#idOr.Class)
+                // regexFunctionString
+                const directive = str.split('(')[0].trim();
+                return results('idOrClassWithDirective', { [directive]: getMatchInBetween(str, '(', ')') });
+            case !!str.match(regexDotObjectString):
+                // Matches object-style strings: directive.tablet(...values) OR directive[expression](...values)
+                // OR directive.breakdown|breakdown2(...values) OR directive.tablet(...values)&&directive.mobile(...values)
+                type = 'dotObject';
+                break;
+            case !!str.match(regexExObjectString):
+                type = 'dotObject';
+                break;
+
+            default:
+                break;
+        }
     }
 
-    // Mathes simple directive function style: directive(#idOr.Class)
-    // regexFunctionString
-    if (str.match(/^([a-zA-Z]+)(\()(\.|\#)(.*)(\))/g)) {
-        const directive = str.split('(')[0].trim();
-        return results('idOrClassWithDirective', { [directive]: getMatchInBetween(str, '(', ')') });
+    if (type === 'array' || type === 'object') {
+        let strQ = fixQuotes(str);
+        try {
+            return results(type, JSON.parse(strQ));
+        } catch (error) {
+            // uncomment to debug
+            // console.log('___ parse error ___', error);
+        }
+
+        return results(type, getArrObjFromString(strQ));
     }
 
-    // Matches the Array as string: [value, value] OR ['value','value']
-    // regexArrayLike = /^\[((.|\n)*?)\]$/gm;
-    // Matches a multi-array string like [[value,value]],value]
-    // regexMultiArrayString = /\[(\n|)(((.|\[)*)?)\](\,\n|)(((.|\])*)?)(\n|)\]/gm;
-    if (str.match(/^\[((.|\n)*?)\]$/gm)) {
-        return results('array', getArrObjFromString(str));
-    }
-
-    // Matches the JSON objects as string: {'directive':{key:value}} OR {key:value}
-    // regexObjectLike = /^\{((.|\n)*?)\:((.|\n)*?)\}/gm;
-    if (str.match(/^\{((.|\n)*?)\:((.|\n)*?)\}/gm)) {
-        return results('object', getArrObjFromString(str));
-    }
-
-    // Matches object-style strings: directive.tablet(...values) OR directive[expression](...values)
-    // OR directive.breakdown|breakdown2(...values) OR directive.tablet(...values)&&directive.mobile(...values)
-    const regexDotObjectString = /([a-zA-Z]+)\.(.*?)\(((.|\n)*?)\)/gm;
-    const regexExObjectString = /([a-zA-Z]+)\[((.|\n)*?)\]\(((.|\n)*?)\)/gm;
-    if (str.match(regexDotObjectString) || str.match(regexExObjectString)) {
+    if (type === 'dotObject') {
         let values, breakDownId, directive;
         const setObject = {};
 
@@ -314,6 +342,7 @@ export function getDirectivesFromString(stringDirective) {
  * @example getMatchBlock('is a <hello world/> today', '<', '/>') // '<hello world/>'
  */
 export function getMatchBlock(str, p1, p2, all = false) {
+    if (typeof str !== 'string') return str;
     p1 = setExpString(p1);
     p2 = setExpString(p2);
     let regex = new RegExp(setLookUpExp(p1, p2), 'gm');
@@ -330,6 +359,7 @@ export function getMatchBlock(str, p1, p2, all = false) {
  * @return {string|array}
  */
 export function getChunks(str, splitter = ',') {
+    if (typeof str !== 'string') return str;
     if (isEmpty(str)) return [];
     str = cleanStr(str);
     let chunks = str.split(splitter).map((t) => cleanStr(t));
@@ -349,6 +379,7 @@ export function getChunks(str, splitter = ',') {
  * @example getMatchInBetween('hello <world/>', '<', '/>') // 'world'
  */
 export function getMatchInBetween(str, p1, p2, all = false) {
+    if (typeof str !== 'string') return str;
     const matchBlock = getMatchBlock(str, p1, p2, all) ?? (all ? [] : str);
     return all ? matchBlock.map((match) => cleanStr(match, p1, p2)) : cleanStr(matchBlock, p1, p2);
 }
@@ -362,6 +393,7 @@ export function getMatchInBetween(str, p1, p2, all = false) {
  * @example removeQuotes("'hello'") // hello
  */
 export function removeQuotes(str) {
+    if (typeof str !== 'string') return str;
     return str.replace(/\`|'|"/g, '');
 }
 
@@ -448,13 +480,14 @@ export function setLookUpExp(...args) {
  * @example setWildCardString('name.*', false, true) // returns 'name\.(.*?)$'
  * @example setWildCardString('name.**') // returns 'name\..*' greedy
  */
-export function setWildCardString(string, matchStart = false, matchEnd = false) {
-    if (!string) {
+export function setWildCardString(str, matchStart = false, matchEnd = false) {
+    if (typeof str !== 'string') return str;
+    if (!str) {
         return null;
     }
     matchStart = convertToBool(matchStart);
     matchEnd = convertToBool(matchEnd);
-    let regexStr = string.replace(/([.+?^${}()|\[\]\/\\])/g, '\\$&'); // escape all regex special chars
+    let regexStr = str.replace(/([.+?^${}()|\[\]\/\\])/g, '\\$&'); // escape all regex special chars
     let regStart = matchStart ? '^' : '';
     let regEnd = matchEnd ? '$' : '';
 

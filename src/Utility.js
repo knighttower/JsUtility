@@ -43,6 +43,28 @@ export function convertToBool(val) {
 }
 
 /**
+ * Converts a given variable to a number if possible.
+ * @param {string|number} input - The input variable to convert.
+ * @returns {string|number} - The converted number or the original variable.
+ * @example convertToNumber(123) // Output: 123 (number)
+ * @example convertToNumber(123.45) // Output: 123.45 (number)
+ * @example convertToNumber("123") // Output: 123 (number)
+ * @example convertToNumber("123.45") // Output: 123.45 (number)
+ * @example convertToNumber("abc") // Output: "abc" (original string)
+ * @example convertToNumber("123abc") // Output: "123abc" (original string)
+ * @example convertToNumber(null) // Output: null (original)
+ */
+export function convertToNumber(input) {
+    const isNum = isNumber(input);
+
+    if (isNum !== null) {
+        return isNum;
+    }
+    // Case: String that cannot be converted to a number
+    return input;
+}
+
+/**
  * Translate dollar amounts to decimal notation
  * @function currencyToDecimal
  * @memberof Utility
@@ -132,7 +154,7 @@ export function emptyOrValue(value, _default = null) {
      * If it is not Empty, [], null, {}, 0, true, false: true
      */
 
-    if (isNumber(value) || typeof value === 'boolean') {
+    if (isNumber(value) !== null || typeof value === 'boolean') {
         return value;
     } else if (!isEmpty(value)) {
         return value;
@@ -282,27 +304,92 @@ export function isEmpty(value) {
  * @function isNumber
  * @memberof Utility
  * @param {String|Number} value
- * @return bool|int
+ * @return null|int
  * @example isNumber(123) // true
- * @example isNumber('123.45') // true
+ * @example isNumber(123.45) // true
+ * @example isNumber('123abc') // false
+ * @example isNumber('abc') // false
+ * @example isNumber('') // false
+ * @example isNumber("123") // true
+ * @example isNumber("123.45") // true
  */
 export function isNumber(value) {
-    if (Number.isInteger(value) || !Number.isNaN(Number(value))) {
-        return +value;
+    const isType = typeof value;
+    switch (value) {
+        case null:
+        case undefined:
+        case '':
+            return null;
+        case '0':
+        case 0:
+            return 0;
+        default:
+            if (isType === 'number' || isType === 'string') {
+                if (typeof value === 'number' || !Number.isNaN(Number(value))) {
+                    return +value;
+                }
+            }
+
+            break;
     }
-    return false;
+
+    return null;
 }
 
 /**
- * Logging into console in places where console cannot be called directly
- * @function logThis
- * @memberof Utility
- * @param {Object} obj
- * @return void
- * @example logThis('test') // 'test'
+ * Check the instance of a variable, and get the correct type for it. It also accepts simple comparisons
+ * For more advance type checking see https://github.com/knighttower/JsTypeCheck
+ * @param {any} input - The variable to check
+ * @return {string|boolean} - The type of the variable or boolean when test is provided
  */
-export function logThis(obj) {
-    console.log(obj);
+export function instanceOf(input, test) {
+    let inputType = 'unknown';
+    if (input === null) {
+        return inputType;
+    }
+    const instanceMapping = [
+        {
+            type: 'date',
+            inst: Date,
+        },
+        {
+            type: 'regexp',
+            inst: RegExp,
+        },
+        {
+            type: 'promise',
+            inst: Promise,
+        },
+        {
+            type: 'map',
+            inst: Map,
+        },
+        {
+            type: 'set',
+            inst: Set,
+        },
+        {
+            type: 'weakMap',
+            inst: WeakMap,
+        },
+        {
+            type: 'weakSet',
+            inst: WeakSet,
+        },
+    ];
+    let instTotal = instanceMapping.length;
+    while (instTotal--) {
+        if (input instanceof instanceMapping[instTotal].inst) {
+            inputType = instanceMapping[instTotal].type;
+            break;
+        }
+    }
+
+    if (test) {
+        return test === inputType;
+    }
+
+    return inputType;
 }
 
 /**
@@ -442,62 +529,6 @@ export function typeOf(input, test) {
 }
 
 /**
- * Check the instance of a variable, and get the correct type for it. It also accepts simple comparisons
- * For more advance type checking see https://github.com/knighttower/JsTypeCheck
- * @param {any} input - The variable to check
- * @return {string|boolean} - The type of the variable or boolean when test is provided
- */
-export function instanceOf(input, test) {
-    let inputType = 'unknown';
-    if (input === null) {
-        return inputType;
-    }
-    const instanceMapping = [
-        {
-            type: 'date',
-            inst: Date,
-        },
-        {
-            type: 'regexp',
-            inst: RegExp,
-        },
-        {
-            type: 'promise',
-            inst: Promise,
-        },
-        {
-            type: 'map',
-            inst: Map,
-        },
-        {
-            type: 'set',
-            inst: Set,
-        },
-        {
-            type: 'weakMap',
-            inst: WeakMap,
-        },
-        {
-            type: 'weakSet',
-            inst: WeakSet,
-        },
-    ];
-    let instTotal = instanceMapping.length;
-    while (instTotal--) {
-        if (input instanceof instanceMapping[instTotal].inst) {
-            inputType = instanceMapping[instTotal].type;
-            break;
-        }
-    }
-
-    if (test) {
-        return test === inputType;
-    }
-
-    return inputType;
-}
-
-/**
  * Validate emails
  * @function validateEmail
  * @memberof Utility
@@ -535,6 +566,7 @@ export function validatePhone(phone) {
 export const Utility = {
     convertToBool,
     currencyToDecimal,
+    convertToNumber,
     dateFormat,
     decimalToCurrency,
     emptyOrValue,
@@ -546,7 +578,6 @@ export const Utility = {
     isEmpty, // from https://moderndash.io/
     isNumber,
     instanceOf,
-    logThis,
     openGoogleMapsAddress,
     proxyObject,
     selectElement,

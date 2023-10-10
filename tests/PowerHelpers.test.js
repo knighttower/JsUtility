@@ -21,40 +21,72 @@ import {
     getArrObjFromString,
     proxyObject,
 } from '../index';
-console.log(proxyObject({ a: 1, b: 2, c: 3 }));
+// console.log(proxyObject({ a: 1, b: 2, c: 3 }));
+let results = '';
+// getDirectivesFromString
+test('getDirectivesFromString - quoted single', () => {
+    results = getDirectivesFromString("{'hello': 'this', 'world': {'one': 1, 'two': 'two'}}");
+    assert.deepEqual(results, {
+        type: 'object',
+        directive: { hello: 'this', world: { one: 1, two: 'two' } },
+    });
+});
+test('getDirectivesFromString - Get directives from string', () => {
+    results = getDirectivesFromString("{hello: 'this', world: {one: 1, two: 'two'}}");
+    assert.deepEqual(results, {
+        type: 'object',
+        directive: { hello: 'this', world: { one: 1, two: 'two' } },
+    });
+});
+test('getDirectivesFromString - quoted double', () => {
+    results = getDirectivesFromString('{"hello": "this", "world": {"one": "1", "two": "two"}}');
+    assert.deepEqual(results, {
+        type: 'object',
+        directive: { hello: 'this', world: { one: 1, two: 'two' } },
+    });
+});
+
+test('getDirectivesFromString - Get directives from string', () => {
+    results = getDirectivesFromString('{hello: "this", world: {one: 1, two: "two"}}');
+    assert.deepEqual(results, {
+        type: 'object',
+        directive: { hello: 'this', world: { one: 1, two: 'two' } },
+    });
+});
 
 test('getDirectivesFromString - should convert string formats into objects', () => {
     //test for const regexIdOrClass = /^(\.|\#)([a-zA-Z]+)/g;
-    let results = getDirectivesFromString('#hello');
-    assert.deepEqual(results, { type: 'idOrClass', value: '#hello' });
+    results = getDirectivesFromString('#hello');
+    assert.deepEqual(results, { type: 'idOrClass', directive: '#hello' });
 
     results = getDirectivesFromString('.hello');
-    assert.deepEqual(results, { type: 'idOrClass', value: '.hello' });
+    assert.deepEqual(results, { type: 'idOrClass', directive: '.hello' });
 
     // test /^([a-zA-Z]+)(\()(\.|\#)(.*)(\))/g;
     results = getDirectivesFromString('tablet(#hello)');
-    assert.deepEqual(results, { type: 'idOrClassWithDirective', value: { tablet: '#hello' } });
+    assert.deepEqual(results, { type: 'idOrClassWithDirective', directive: { tablet: '#hello' } });
 
     // create test for /^\[((.|\n)*?)\]$/gm
     results = getDirectivesFromString('[[value,value],value]');
-    assert.deepEqual(results, { type: 'array', value: [['value', 'value'], 'value'] });
+    // console.log('___ log ___', results);
+    assert.deepEqual(results, { type: 'array', directive: [['value', 'value'], 'value'] });
 
     // create test for /^\{((.|\n)*?)\:((.|\n)*?)\}/gm
     results = getDirectivesFromString('{ y: hello, x: world, z: [value,value]}');
     assert.deepEqual(results, {
         type: 'object',
-        value: { y: 'hello', x: 'world', z: ['value', 'value'] },
+        directive: { y: 'hello', x: 'world', z: ['value', 'value'] },
     });
 
     // create test for /([a-zA-Z]+)\.(.*?)\(((.|\n)*?)\)/gm
     results = getDirectivesFromString('directive.tablet(values)');
-    assert.deepEqual(results, { type: 'dotObject', value: { directive: { tablet: 'values' } } });
+    assert.deepEqual(results, { type: 'dotObject', directive: { directive: { tablet: 'values' } } });
 
     // create test for directive.breakdown|breakdown2(...values)
     results = getDirectivesFromString('directive.breakdown|breakdown2(values)');
     assert.deepEqual(results, {
         type: 'dotObject',
-        value: { directive: { breakdown: 'values', breakdown2: 'values' } },
+        directive: { directive: { breakdown: 'values', breakdown2: 'values' } },
     });
 });
 

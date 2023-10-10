@@ -20,9 +20,21 @@ import {
     typeOf,
     instanceOf,
     selectElement,
+    convertToNumber,
 } from '../index';
 
 console.log(selectElement('body'));
+
+// convertToNumber
+test('convertToNumber - Convert to number', () => {
+    assert.equal(convertToNumber('123'), 123);
+    assert.equal(convertToNumber(123.4), 123.4);
+    assert.equal(convertToNumber('123.4'), 123.4);
+    assert.equal(convertToNumber('$123.4'), '$123.4');
+    assert.equal(convertToNumber('$abc123.4'), '$abc123.4');
+    assert.equal(convertToNumber('0'), 0);
+    assert.equal(convertToNumber(0), 0);
+});
 // getGoogleMapsAddress
 test('getGoogleMapsAddress - Empty address', () => {
     assert.equal(getGoogleMapsAddress(''), false);
@@ -99,6 +111,13 @@ test('emptyOrValue - Return value if not empty', () => {
 // isNumber
 test('isNumber - Validate number string', () => {
     assert.equal(isNumber('123'), 123);
+    assert.equal(isNumber(''), null);
+    assert.equal(isNumber([]), null);
+    assert.equal(isNumber({}), null);
+    assert.equal(isNumber(null), null);
+    assert.equal(isNumber(undefined), null);
+    assert.equal(isNumber('undefined'), null);
+    assert.equal(isNumber('[]'), null);
 });
 test('isNumber - Validate number int', () => {
     assert.equal(isNumber(123), 123);
