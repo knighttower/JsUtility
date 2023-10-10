@@ -197,12 +197,12 @@ export function getArrObjFromString(strExp) {
     getChunks(newStrExp).forEach((chunk, index) => {
         const isObjectKey = chunk.includes(':') && isObject;
         const chunkParts = isObjectKey ? getChunks(chunk, ':') : [];
-        const chunkKey = emptyOrValue(chunkParts[0], index);
-        chunk = isObjectKey ? convertToNumber(removeQuotes(chunkParts[1])) : chunk;
+        const chunkKey = removeQuotes(emptyOrValue(chunkParts[0], index));
+        chunk = isObjectKey ? chunkParts[1] : chunk;
         if (chunk in nestedElements) {
             chunk = getArrObjFromString(nestedElements[chunk]);
         }
-
+        chunk = convertToNumber(removeQuotes(chunk));
         // set back in the collection either as an object or array
         isObject ? (newCollection[chunkKey] = chunk) : newCollection.push(chunk);
     });
