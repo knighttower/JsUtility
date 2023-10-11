@@ -1,1 +1,78 @@
-(()=>{"use strict";var r={d:(e,t)=>{for(var n in t)r.o(t,n)&&!r.o(e,n)&&Object.defineProperty(e,n,{enumerable:!0,get:t[n]})},o:(r,e)=>Object.prototype.hasOwnProperty.call(r,e),r:r=>{"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(r,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(r,"__esModule",{value:!0})}},e={};function t(r){return function(r){if(Array.isArray(r))return n(r)}(r)||function(r){if("undefined"!=typeof Symbol&&null!=r[Symbol.iterator]||null!=r["@@iterator"])return Array.from(r)}(r)||function(r,e){if(!r)return;if("string"==typeof r)return n(r,e);var t=Object.prototype.toString.call(r).slice(8,-1);"Object"===t&&r.constructor&&(t=r.constructor.name);if("Map"===t||"Set"===t)return Array.from(r);if("Arguments"===t||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t))return n(r,e)}(r)||function(){throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}()}function n(r,e){(null==e||e>r.length)&&(e=r.length);for(var t=0,n=new Array(e);t<e;t++)n[t]=r[t];return n}function o(r){var e=new Map((r._private||["_private"]).map((function(r){return[r,!0]}))),n=new Map([].concat(t(e),t((r._protected||[]).map((function(r){return[r,!0]}))))),o=new Map((r._mutable||[]).map((function(r){return[r,!0]})));return new Proxy(r,{get:function(r,t){return t in r&&!e.has(String(t))?r[t]:void console.error("Prop is private, not set, or object is protected",t)},set:function(r,t,a){return(t=String(t))in r?o.has(t)?(r[t]=a,!0):n.has(t)||e.has(t)?(console.error("The prop is protected or private and cannot be modified",t,a),!1):(r[t]=a,!0):(console.error("Protected Object, cannot set new props",t,a),!1)}})}r.r(e),r.d(e,{default:()=>o}),window.PowerHelpers=e})();
+/*
+ * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define("ProxyHelper", [], factory);
+	else if(typeof exports === 'object')
+		exports["ProxyHelper"] = factory();
+	else
+		root["ProxyHelper"] = factory();
+})(self, () => {
+return /******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "./src/ProxyHelper.js":
+/*!****************************!*\
+  !*** ./src/ProxyHelper.js ***!
+  \****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (/* binding */ ProxyHelper)\n/* harmony export */ });\n/* Author Knighttower\n    MIT License\n    [2023] [Knighttower] https://github.com/knighttower\n*/\n/**\n * @module ProxyHelper\n * Convert to proxy to protect objects\n * Allows to declare _private, _protected and _mutable - all arrays with prop names\n * @example ProxyHelper({objectProps..., _protected: array(...)})\n * @param {Object} object\n * @return {Proxy}\n * @usage const proxy = ProxyHelper({objectProps..., _protected: array(...), _private: array(...), _mutable: array(...)})\n * @usage _protected: array(...) -> Cannot be modified\n * @usage _private: array(...) -> Cannot be accessed\n * @usage _mutable: array(...) -> Can be modified\n */\nfunction ProxyHelper(object) {\n    'use strict';\n    const _private = new Map((object._private || ['_private']).map((prop) => [prop, true]));\n    const _protected = new Map([..._private, ...(object._protected || []).map((prop) => [prop, true])]);\n    const _mutable = new Map((object._mutable || []).map((prop) => [prop, true]));\n\n    return new Proxy(object, {\n        get(target, prop) {\n            if (prop in target && !_private.has(String(prop))) {\n                return target[prop];\n            } else {\n                console.error('Prop is private, not set, or object is protected', prop);\n                return undefined;\n            }\n        },\n        set(target, prop, value) {\n            prop = String(prop);\n            if (prop in target) {\n                if (_mutable.has(prop)) {\n                    target[prop] = value;\n                    return true;\n                }\n                if (!_protected.has(prop) && !_private.has(prop)) {\n                    target[prop] = value;\n                    return true;\n                } else {\n                    console.error('The prop is protected or private and cannot be modified', prop, value);\n                    return false;\n                }\n            } else {\n                console.error('Protected Object, cannot set new props', prop, value);\n                return false;\n            }\n        },\n    });\n}\n\n\n//# sourceURL=webpack://ProxyHelper/./src/ProxyHelper.js?");
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The require scope
+/******/ 	var __webpack_require__ = {};
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/************************************************************************/
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module can't be inlined because the eval devtool is used.
+/******/ 	var __webpack_exports__ = {};
+/******/ 	__webpack_modules__["./src/ProxyHelper.js"](0, __webpack_exports__, __webpack_require__);
+/******/ 	
+/******/ 	return __webpack_exports__;
+/******/ })()
+;
+});

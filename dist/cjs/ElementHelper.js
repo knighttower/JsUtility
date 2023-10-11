@@ -1,1 +1,97 @@
-(()=>{"use strict";var e={303:(e,t,n)=>{function r(e,t){var n="undefined"!=typeof Symbol&&e[Symbol.iterator]||e["@@iterator"];if(!n){if(Array.isArray(e)||(n=function(e,t){if(!e)return;if("string"==typeof e)return o(e,t);var n=Object.prototype.toString.call(e).slice(8,-1);"Object"===n&&e.constructor&&(n=e.constructor.name);if("Map"===n||"Set"===n)return Array.from(e);if("Arguments"===n||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n))return o(e,t)}(e))||t&&e&&"number"==typeof e.length){n&&(e=n);var r=0,i=function(){};return{s:i,n:function(){return r>=e.length?{done:!0}:{done:!1,value:e[r++]}},e:function(e){throw e},f:i}}throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}var a,u=!0,l=!1;return{s:function(){n=n.call(e)},n:function(){var e=n.next();return u=e.done,e},e:function(e){l=!0,a=e},f:function(){try{u||null==n.return||n.return()}finally{if(l)throw a}}}}function o(e,t){(null==t||t>e.length)&&(t=e.length);for(var n=0,r=new Array(t);n<t;n++)r[n]=e[n];return r}n.d(t,{default:()=>a});var i={};!function(){if("undefined"!=typeof window){new MutationObserver((function(e,t){var n,o=r(e);try{for(o.s();!(n=o.n()).done;){if("childList"===n.value.type)for(var a in i)i[a]()}}catch(e){o.e(e)}finally{o.f()}})).observe(document.body,{childList:!0,subtree:!0})}}();const a={executeOnNodeChanged:i,addOnNodeChange:function(e,t){t&&(i[e]=t)},removeOnNodeChange:function(e){e&&delete i[e]},cleanup:function(){Object.keys(i).forEach((function(e){return delete i[e]}))}}}},t={};function n(r){var o=t[r];if(void 0!==o)return o.exports;var i=t[r]={exports:{}};return e[r](i,i.exports,n),i.exports}n.d=(e,t)=>{for(var r in t)n.o(t,r)&&!n.o(e,r)&&Object.defineProperty(e,r,{enumerable:!0,get:t[r]})},n.o=(e,t)=>Object.prototype.hasOwnProperty.call(e,t),n.r=e=>{"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})};var r={};(()=>{n.r(r),n.d(r,{default:()=>i});var e=n(303);function t(e){return t="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e},t(e)}function o(e,n){for(var r=0;r<n.length;r++){var o=n[r];o.enumerable=o.enumerable||!1,o.configurable=!0,"value"in o&&(o.writable=!0),Object.defineProperty(e,(i=o.key,a=void 0,a=function(e,n){if("object"!==t(e)||null===e)return e;var r=e[Symbol.toPrimitive];if(void 0!==r){var o=r.call(e,n||"default");if("object"!==t(o))return o;throw new TypeError("@@toPrimitive must return a primitive value.")}return("string"===n?String:Number)(e)}(i,"string"),"symbol"===t(a)?a:String(a)),o)}var i,a}const i=function(){function n(e){var r=arguments.length>1&&void 0!==arguments[1]?arguments[1]:document;!function(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}(this,n),this.selector=e,"object"===t(e)?this.domElement=e:String(e).includes("//")?this.domElement=this.getElementByXpath(e):this.domElement=r.querySelector(e)}var r,i,a;return r=n,(i=[{key:"isInDom",value:function(){var e;return Boolean(null===(e=this.domElement)||void 0===e?void 0:e.outerHTML)}},{key:"whenInDom",value:function(){var t=this,r=Date.now()+Math.floor(1e3*Math.random());return new Promise((function(o){t.isInDom()?o(t):e.default.addOnNodeChange(r,(function(){var i=new n(t.selector);i.isInDom()&&(o(t=i),e.default.removeOnNodeChange(r))}))}))}},{key:"getElementByXpath",value:function(e){return document.evaluate(e,document,null,XPathResult.FIRST_ORDERED_NODE_TYPE,null).singleNodeValue}},{key:"getXpathTo",value:function(){var e=this.domElement;if(e.id)return"//*[@id='"+e.id+"']";if(e===document.body)return"//"+e.tagName;for(var t=0,r=e.parentNode.childNodes,o=0;o<r.length;o++){var i=r[o];if(i===e)return new n(e.parentNode).getXpathTo()+"/"+e.tagName+"["+(t+1)+"]";1===i.nodeType&&i.tagName===e.tagName&&t++}}},{key:"getAttribute",value:function(e){return this.domElement.getAttribute(e)||null}},{key:"getHash",value:function(){var e=String(this.getXpathTo()),t=0;if(0===e.length)return t;for(var n=0;n<e.length;n++)t=(t<<5)-t+e.charCodeAt(n),t&=t;return t}}])&&o(r.prototype,i),a&&o(r,a),Object.defineProperty(r,"prototype",{writable:!1}),n}()})(),window.PowerHelpers=r})();
+/*
+ * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+/******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "./src/DomObserver.js":
+/*!****************************!*\
+  !*** ./src/DomObserver.js ***!
+  \****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n// Author Knighttower\n// MIT License\n// [2022] [Knighttower] https://github.com/knighttower\n/**\n * @module DomObserver\n * Detect DOM changes\n * @name DomObserver\n * @param {window} selector\n * @param {Function}\n * @return DomObserver\n * @example DomObserver.addOnNodeChange('elementIdentifier', () => { console.log('Node changed') })\n * @example DomObserver.removeOnNodeChange('elementIdentifier')\n */\n/**\n * Holds memory of registered functions\n * @private\n */\nconst executeOnNodeChanged = {};\n/**\n * When node change\n * @param {String} id\n * @param {Function} callback Callback when any node changes/ add/deleted/modified\n * @return {Void}\n */\nconst addOnNodeChange = (id, callback) => {\n    if (callback) {\n        executeOnNodeChanged[id] = callback;\n    }\n};\n/**\n * Remove from node change\n * @param {String} id\n * @return {Void}\n */\nconst removeOnNodeChange = (id) => {\n    if (id) {\n        delete executeOnNodeChanged[id];\n    }\n};\n/**\n * Deep cleanup\n * @return {Void}\n */\nconst cleanup = () => {\n    Object.keys(executeOnNodeChanged).forEach((key) => delete executeOnNodeChanged[key]);\n};\n/**\n * Observer\n * @private\n * @return {MutationObserver}\n */\n(() => {\n    if (typeof window !== 'undefined') {\n        const callback = (mutationList, observer) => {\n            for (const mutation of mutationList) {\n                if (mutation.type === 'childList') {\n                    for (const id in executeOnNodeChanged) {\n                        executeOnNodeChanged[id]();\n                    }\n                }\n            }\n        };\n        const config = {\n            childList: true,\n            subtree: true,\n        };\n        const observer = new MutationObserver(callback);\n        observer.observe(document.body, config);\n    }\n})();\nconst DomObserver = {\n    executeOnNodeChanged,\n    addOnNodeChange,\n    removeOnNodeChange,\n    cleanup,\n};\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (DomObserver);\n\n\n//# sourceURL=webpack://ElementHelper/./src/DomObserver.js?");
+
+/***/ }),
+
+/***/ "./src/ElementHelper.js":
+/*!******************************!*\
+  !*** ./src/ElementHelper.js ***!
+  \******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony import */ var _DomObserver__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./DomObserver */ \"./src/DomObserver.js\");\n// Author Knighttower\n// MIT License\n// Copyright (c) [2022] [Knighttower] https://github.com/knighttower\n\n\n\n/**\n * @class Adds some extra functionality to interact with a DOM element\n * @param {String|Object} selector Class or ID or DOM element\n * @param {String} scope The scope to search in, window, document, dom element. Defaults to document\n * @return {Object}\n * @example new ElementHelper('elementSelector')\n * @example new ElementHelper('elementSelector', domElement|window|document)\n *\n */\nclass ElementHelper {\n    /**\n     * Constructor\n     * @param {String|Object} selector\n     * @return {Object}\n     */\n    constructor(selector, scope = document) {\n        this.selector = selector;\n        if (typeof selector === 'object') {\n            this.domElement = selector;\n        } else if (String(selector).includes('//')) {\n            this.domElement = this.getElementByXpath(selector);\n        } else {\n            this.domElement = scope.querySelector(selector);\n        }\n    }\n\n    // =========================================\n    // --> Public\n    // --------------------------\n\n    /**\n     * Check if the element exists or is visible. It will keep querying\n     * @return {Boolean}\n     */\n    isInDom() {\n        return Boolean(this.domElement?.outerHTML);\n    }\n\n    /**\n     * Wait for element exists or is visible. It will keep querying\n     * @function whenInDom\n     * @return {Promise}\n     */\n    whenInDom() {\n        let $this = this;\n        let callbackId = Date.now() + Math.floor(Math.random() * 1000);\n\n        return new Promise(function (resolveThis) {\n            if (!$this.isInDom()) {\n                _DomObserver__WEBPACK_IMPORTED_MODULE_0__[\"default\"].addOnNodeChange(callbackId, () => {\n                    let element = new ElementHelper($this.selector);\n                    if (element.isInDom()) {\n                        $this = element;\n                        resolveThis($this);\n                        _DomObserver__WEBPACK_IMPORTED_MODULE_0__[\"default\"].removeOnNodeChange(callbackId);\n                    }\n                });\n            } else {\n                resolveThis($this);\n            }\n        });\n    }\n\n    /**\n     * Find element by Xpath string\n     * @param {String} xpath\n     * @example getElementByXpath(\"//html[1]/body[1]/div[1]\")\n     * @return {Object} DOM element\n     */\n    getElementByXpath(xpath) {\n        return document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;\n    }\n\n    /**\n     * Get the element xpath string\n     * @author Based on https://stackoverflow.com/questions/2631820/how-do-i-ensure-saved-click-coordinates-can-be-reload-to-the-same-place-even-if/2631931#2631931\n     * @return {String}\n     */\n    getXpathTo() {\n        let element = this.domElement;\n\n        if (element.id) {\n            return \"//*[@id='\" + element.id + \"']\";\n        }\n        if (element === document.body) {\n            return '//' + element.tagName;\n        }\n\n        let ix = 0;\n        let siblings = element.parentNode.childNodes;\n        for (let i = 0; i < siblings.length; i++) {\n            let sibling = siblings[i];\n            if (sibling === element) {\n                return (\n                    new ElementHelper(element.parentNode).getXpathTo() + '/' + element.tagName + '[' + (ix + 1) + ']'\n                );\n            }\n            if (sibling.nodeType === 1 && sibling.tagName === element.tagName) {\n                ix++;\n            }\n        }\n    }\n\n    /**\n     * Get the element attribute, but parse it if it is an object or array\n     * @param {String} attr Atrribute name\n     * @return {String|Array|Object|Null}\n     */\n    getAttribute(attr) {\n        return this.domElement.getAttribute(attr) || null;\n    }\n\n    /**\n     * Create a unique has for the element derived from its xpath\n     * @author Based on https://www.geeksforgeeks.org/how-to-create-hash-from-string-in-javascript/\n     * @return {String}\n     */\n    getHash() {\n        let string = String(this.getXpathTo());\n        let hash = 0;\n\n        if (string.length === 0) {\n            return hash;\n        }\n\n        for (let i = 0; i < string.length; i++) {\n            let char = string.charCodeAt(i);\n            hash = (hash << 5) - hash + char;\n            hash = hash & hash;\n        }\n\n        return hash;\n    }\n}\n\n/**\n * Future\n * @private\n * @todo enhance to extend the prototype like https://stackoverflow.com/questions/779880/in-javascript-can-you-extend-the-dom\n */\n\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ElementHelper);\n\n\n//# sourceURL=webpack://ElementHelper/./src/ElementHelper.js?");
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/************************************************************************/
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module can't be inlined because the eval devtool is used.
+/******/ 	var __webpack_exports__ = __webpack_require__("./src/ElementHelper.js");
+/******/ 	module.exports.ElementHelper = __webpack_exports__;
+/******/ 	
+/******/ })()
+;
