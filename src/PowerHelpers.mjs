@@ -2,7 +2,7 @@
 // MIT License
 // Copyright (c) [2022] [Knighttower] https://github.com/knighttower
 
-import { emptyOrValue, convertToBool, getRandomId, isEmpty, typeOf, convertToNumber } from './Utility';
+import { emptyOrValue, convertToBool, getRandomId, isEmpty, typeOf, convertToNumber } from './Utility.mjs';
 
 // @private
 function _removeBrackets(strExp) {
