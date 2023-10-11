@@ -8,10 +8,10 @@
 // // -----------------------------------------
 
 // @see https://github.com/knighttower/JsObjectProxyHelper
-import ProxyHelper from './ProxyHelper';
+import ProxyHelper from './ProxyHelper.mjs';
 
 // @see https://github.com/knighttower/ElementHelper
-import ElementHelper from './ElementHelper';
+import ElementHelper from './ElementHelper.mjs';
 
 // -----------------------------
 // METHODS

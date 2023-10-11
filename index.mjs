@@ -1,11 +1,11 @@
-import DomObserver from './src/DomObserver';
-import ElementHelper from './src/ElementHelper';
-import * as _PowerHelpers from './src/PowerHelpers';
-import powerHelper from './src/PowerHelpers';
-import ProxyHelper from './src/ProxyHelper';
-import UrlHelper from './src/UrlHelper';
-import * as _Utility from './src/Utility';
-import Utility from './src/Utility';
+import DomObserver from './src/DomObserver.mjs';
+import ElementHelper from './src/ElementHelper.mjs';
+import * as _PowerHelpers from './src/PowerHelpers.mjs';
+import powerHelper from './src/PowerHelpers.mjs';
+import ProxyHelper from './src/ProxyHelper.mjs';
+import UrlHelper from './src/UrlHelper.mjs';
+import * as _Utility from './src/Utility.mjs';
+import Utility from './src/Utility.mjs';
 
 export { DomObserver };
 export { ElementHelper };

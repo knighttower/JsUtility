@@ -1,6 +1,5 @@
 const path = require('path');
 const CompressionPlugin = require('compression-webpack-plugin');
-
 /**
  * Generates a Webpack configuration for a given library name and target.
  *
@@ -8,9 +7,9 @@ const CompressionPlugin = require('compression-webpack-plugin');
  * @param {string} libraryTarget - The library target format.
  * @returns {Object} - The Webpack configuration.
  */
-const getWebpackConfig = (libraryName, libraryTarget, dir) => ({
+const getWebpackConfig = (libraryName, libraryTarget, dir, ext) => ({
     mode: 'production',
-    entry: `./src/${libraryName}.js`,
+    entry: `./src/${libraryName}.${ext}`,
     output: {
         path: path.resolve(__dirname, `dist/${dir}`),
         filename: `${libraryName}.js`,
@@ -18,7 +17,9 @@ const getWebpackConfig = (libraryName, libraryTarget, dir) => ({
         libraryTarget: libraryTarget,
         umdNamedDefine: true,
     },
-    stats: 'errors-only',
+    stats: {
+        errorDetails: true, // or 'auto'
+    },
     plugins: [
         new CompressionPlugin({
             algorithm: 'brotliCompress',
@@ -32,19 +33,19 @@ const getWebpackConfig = (libraryName, libraryTarget, dir) => ({
 });
 
 const targets = [
-    { name: 'Utility', ext: '.js' },
-    { name: 'DomObserver', ext: '.js' },
-    { name: 'UrlHelper', ext: '.js' },
-    { name: 'ElementHelper', ext: '.js' },
-    { name: 'ProxyHelper', ext: '.js' },
-    { name: 'PowerHelpers', ext: '.js' },
+    { name: 'Utility', ext: 'mjs' },
+    { name: 'DomObserver', ext: 'mjs' },
+    { name: 'UrlHelper', ext: 'mjs' },
+    { name: 'ElementHelper', ext: 'mjs' },
+    { name: 'ProxyHelper', ext: 'mjs' },
+    { name: 'PowerHelpers', ext: 'mjs' },
 ];
 
 // Generate multiple configurations
 const configs = targets.flatMap((target) => [
-    getWebpackConfig(target.name, 'umd', 'umd'),
-    getWebpackConfig(target.name, 'commonjs2', 'cjs'),
-    getWebpackConfig(target.name, 'window', 'browser'),
+    getWebpackConfig(target.name, 'umd', 'umd', target.ext),
+    getWebpackConfig(target.name, 'commonjs2', 'cjs', target.ext),
+    getWebpackConfig(target.name, 'window', 'browser', target.ext),
 ]);
 
 module.exports = configs;
