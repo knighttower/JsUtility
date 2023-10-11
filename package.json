@@ -1,8 +1,7 @@
 {
     "name": "@knighttower/js-utility-functions",
-    "version": "3.0.2",
+    "version": "3.0.3",
     "main": "index.js",
-    "module": "index.js",
     "jsdelivr": "dist/Utility.js",
     "browser": "dist/Utility.js",
     "license": "MIT",
@@ -37,7 +36,7 @@
     },
     "scripts": {
         "production": "npm run build",
-        "build": "mix --production",
+        "build": "mix --production && node ./build-export.js --directory ./src",
         "dev": "mix",
         "watch": "mix watch",
         "test": "vitest"
