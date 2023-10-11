@@ -1,1 +1,78 @@
-(()=>{"use strict";var t={d:(n,e)=>{for(var r in e)t.o(e,r)&&!t.o(n,r)&&Object.defineProperty(n,r,{enumerable:!0,get:e[r]})},o:(t,n)=>Object.prototype.hasOwnProperty.call(t,n),r:t=>{"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(t,"__esModule",{value:!0})}},n={};function e(t,n){return function(t){if(Array.isArray(t))return t}(t)||function(t,n){var e=null==t?null:"undefined"!=typeof Symbol&&t[Symbol.iterator]||t["@@iterator"];if(null!=e){var r,o,a,i,c=[],l=!0,u=!1;try{if(a=(e=e.call(t)).next,0===n){if(Object(e)!==e)return;l=!1}else for(;!(l=(r=a.call(e)).done)&&(c.push(r.value),c.length!==n);l=!0);}catch(t){u=!0,o=t}finally{try{if(!l&&null!=e.return&&(i=e.return(),Object(i)!==i))return}finally{if(u)throw o}}return c}}(t,n)||r(t,n)||function(){throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}()}function r(t,n){if(t){if("string"==typeof t)return o(t,n);var e=Object.prototype.toString.call(t).slice(8,-1);return"Object"===e&&t.constructor&&(e=t.constructor.name),"Map"===e||"Set"===e?Array.from(t):"Arguments"===e||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(e)?o(t,n):void 0}}function o(t,n){(null==n||n>t.length)&&(n=t.length);for(var e=0,r=new Array(n);e<n;e++)r[e]=t[e];return r}function a(t,n){var o=window,a=document,i=o.$HOST||!1,c=o.$TEMPLATE||!1,l=o.location.protocol.replace(":",""),u=i||o.location.host,f=c||"",s=location.pathname,y=i||"".concat(l,"://").concat(u),h=i?"".concat(i).concat(s):"".concat(l,"://").concat(u).concat(s),d=null,p=function(){if(d)return d;var t,n=new URLSearchParams(o.location.search),a={},i=function(t,n){var e="undefined"!=typeof Symbol&&t[Symbol.iterator]||t["@@iterator"];if(!e){if(Array.isArray(t)||(e=r(t))||n&&t&&"number"==typeof t.length){e&&(t=e);var o=0,a=function(){};return{s:a,n:function(){return o>=t.length?{done:!0}:{done:!1,value:t[o++]}},e:function(t){throw t},f:a}}throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}var i,c=!0,l=!1;return{s:function(){e=e.call(t)},n:function(){var t=e.next();return c=t.done,t},e:function(t){l=!0,i=t},f:function(){try{c||null==e.return||e.return()}finally{if(l)throw i}}}}(n.entries());try{for(i.s();!(t=i.n()).done;){var c=e(t.value,2),l=c[0],u=c[1];a[l]=u}}catch(t){i.e(t)}finally{i.f()}return d={params:n,queryString:n.toString(),search:o.location.search,keys:Array.from(n.keys()),values:Array.from(n.values()),collection:a}};t.getPage=function(){return a.location.toString().toLowerCase().split("/").pop().split(".")[0]||"index"},t.getParams=function(){return p()},t.getQuery=function(){return p().queryString},t.addToQuery=function(t){var n=p().collection;return Object.assign(n,t),{collection:n,queryString:Object.entries(n).map((function(t){var n=e(t,2),r=n[0],o=n[1];return"".concat(r,"=").concat(o)})).join("&")}},t.getHash=function(){return o.location.hash.substring(1)},t.setHash=function(t){a.location.hash=t},t.deleteHash=function(){history.pushState("",a.title,o.location.pathname)},t.goTo=function(t){return o.location.href=t,!1},t.open=function(t){var e=arguments.length>1&&arguments[1]!==n?arguments[1]:"_blank",r=arguments.length>2&&arguments[2]!==n?arguments[2]:"";return o.open(t,e,r)},t.onChange=function(t){"function"==typeof t&&o.addEventListener("hashchange",t)},t.fullUrl=h,t.siteUrl=y,t.template=f,t.protocol=l,t.host=u,t.path=s,t.readUrl=a.URL}t.r(n),t.d(n,{default:()=>a}),window.PowerHelpers=n})();
+/*
+ * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define("UrlHelper", [], factory);
+	else if(typeof exports === 'object')
+		exports["UrlHelper"] = factory();
+	else
+		root["UrlHelper"] = factory();
+})(self, () => {
+return /******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "./src/UrlHelper.js":
+/*!**************************!*\
+  !*** ./src/UrlHelper.js ***!
+  \**************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (/* binding */ UrlHelper)\n/* harmony export */ });\n/**\n * URL Object Class with public methods for URL functions and manipulation.\n *\n * @module urlHelper\n */\nfunction UrlHelper(__u, undefined) {\n    'use strict';\n\n    /**\n     * Reference to the global window object.\n     * @type {Window}\n     */\n    const win = window;\n\n    /**\n     * Reference to the global document object.\n     * @type {Document}\n     */\n    const doc = document;\n\n    /**\n     * Get the host value, check if template head has defined this variable.\n     * @type {string|boolean}\n     */\n    const $H = win.$HOST || false;\n\n    /**\n     * Get the template value, check if template head has defined this variable.\n     * @type {string|boolean}\n     */\n    const $TMP = win.$TEMPLATE || false;\n\n    /**\n     * Server Protocol.\n     * @type {string}\n     */\n    const PROTOCOL = win.location.protocol.replace(':', '');\n\n    /**\n     * Hostname.\n     * @type {string}\n     */\n    const HOST = $H || win.location.host;\n\n    /**\n     * Template URL.\n     * @type {string}\n     */\n    const TEMPLATE = $TMP || '';\n\n    /**\n     * Current Pathname.\n     * @type {string}\n     */\n    const PATH = location.pathname;\n\n    /**\n     * Site URL.\n     * @type {string}\n     */\n    const SITE_URL = $H ? $H : `${PROTOCOL}://${HOST}`;\n\n    /**\n     * Full URL.\n     * @type {string}\n     */\n    const FULL_URL = $H ? `${$H}${PATH}` : `${PROTOCOL}://${HOST}${PATH}`;\n\n    /**\n     * Cached URL parameters.\n     * @type {Object|null}\n     */\n    let cachedURLParams = null;\n\n    /**\n     * Parse and return URL parameters.\n     *\n     * @return {Object} with params, queryString, search, keys, values, and collection.\n     * @private\n     */\n    const parseURLParams = () => {\n        if (cachedURLParams) return cachedURLParams;\n\n        const params = new URLSearchParams(win.location.search);\n        const vars = {};\n\n        for (const [key, value] of params.entries()) {\n            vars[key] = value;\n        }\n\n        cachedURLParams = {\n            params,\n            queryString: params.toString(),\n            search: win.location.search,\n            keys: Array.from(params.keys()),\n            values: Array.from(params.values()),\n            collection: vars,\n        };\n\n        return cachedURLParams;\n    };\n\n    /**\n     * Get the current page name (Last part of the URL).\n     *\n     * @return {string} Current page name.\n     */\n    __u.getPage = () => {\n        const cURL = doc.location.toString().toLowerCase();\n        const page = cURL.split('/').pop().split('.')[0];\n        return page || 'index'; // assuming 'index' as the default page name\n    };\n\n    /**\n     * Get the query object info from the current URL.\n     *\n     * @return {Object} with params, queryString, search, keys, values, and collection.\n     */\n    __u.getParams = () => {\n        return parseURLParams();\n    };\n\n    /**\n     * Get the query string from the current URL.\n     *\n     * @return {string} Query string.\n     */\n    __u.getQuery = () => {\n        return parseURLParams().queryString;\n    };\n\n    /**\n     * Add params to the current query string from the current URL.\n     *\n     * @param {Object} query - The query object to add.\n     * @return {Object} with collection and queryString.\n     */\n    __u.addToQuery = (query) => {\n        const currentQuery = parseURLParams().collection;\n        Object.assign(currentQuery, query);\n        const qString = Object.entries(currentQuery)\n            .map(([key, value]) => `${key}=${value}`)\n            .join('&');\n\n        return {\n            collection: currentQuery,\n            queryString: qString,\n        };\n    };\n\n    /**\n     * Get only the URL hash.\n     *\n     * @return {string} Current hash.\n     */\n    __u.getHash = () => win.location.hash.substring(1);\n\n    /**\n     * Set the URL hash.\n     *\n     * @param {string} h - The hash to set.\n     */\n    __u.setHash = (h) => {\n        doc.location.hash = h;\n    };\n\n    /**\n     * Remove the URL hash.\n     */\n    __u.deleteHash = () => {\n        history.pushState('', doc.title, win.location.pathname);\n    };\n\n    /**\n     * Go to a specific URL on the same page.\n     *\n     * @param {string} url - The URL to go to.\n     * @return {boolean} Always returns false to prevent browser default behavior.\n     */\n    __u.goTo = (url) => {\n        win.location.href = url;\n        return false;\n    };\n\n    /**\n     * Open a URL in the browser.\n     *\n     * @param {string} url - The URL to open.\n     * @param {string} [name='_blank'] - The name attribute for the new window.\n     * @param {string} [params=''] - The window parameters.\n     * @return {Window} The window object of the opened URL.\n     */\n    __u.open = (url, name = '_blank', params = '') => {\n        return win.open(url, name, params);\n    };\n\n    /**\n     * Execute a function if the current URL changes.\n     *\n     * @param {function} callback - The callback function to execute.\n     */\n    __u.onChange = (callback) => {\n        if (typeof callback === 'function') {\n            win.addEventListener('hashchange', callback);\n        }\n    };\n\n    // Expose constants\n    __u.fullUrl = FULL_URL;\n    __u.siteUrl = SITE_URL;\n    __u.template = TEMPLATE;\n    __u.protocol = PROTOCOL;\n    __u.host = HOST;\n    __u.path = PATH;\n    __u.readUrl = doc.URL;\n}\n\n\n//# sourceURL=webpack://UrlHelper/./src/UrlHelper.js?");
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The require scope
+/******/ 	var __webpack_require__ = {};
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/************************************************************************/
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module can't be inlined because the eval devtool is used.
+/******/ 	var __webpack_exports__ = {};
+/******/ 	__webpack_modules__["./src/UrlHelper.js"](0, __webpack_exports__, __webpack_require__);
+/******/ 	
+/******/ 	return __webpack_exports__;
+/******/ })()
+;
+});

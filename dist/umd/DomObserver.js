@@ -1,1 +1,78 @@
-(()=>{"use strict";var e={d:(t,n)=>{for(var r in n)e.o(n,r)&&!e.o(t,r)&&Object.defineProperty(t,r,{enumerable:!0,get:n[r]})},o:(e,t)=>Object.prototype.hasOwnProperty.call(e,t),r:e=>{"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})}},t={};function n(e,t){var n="undefined"!=typeof Symbol&&e[Symbol.iterator]||e["@@iterator"];if(!n){if(Array.isArray(e)||(n=function(e,t){if(!e)return;if("string"==typeof e)return r(e,t);var n=Object.prototype.toString.call(e).slice(8,-1);"Object"===n&&e.constructor&&(n=e.constructor.name);if("Map"===n||"Set"===n)return Array.from(e);if("Arguments"===n||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n))return r(e,t)}(e))||t&&e&&"number"==typeof e.length){n&&(e=n);var o=0,i=function(){};return{s:i,n:function(){return o>=e.length?{done:!0}:{done:!1,value:e[o++]}},e:function(e){throw e},f:i}}throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}var a,u=!0,f=!1;return{s:function(){n=n.call(e)},n:function(){var e=n.next();return u=e.done,e},e:function(e){f=!0,a=e},f:function(){try{u||null==n.return||n.return()}finally{if(f)throw a}}}}function r(e,t){(null==t||t>e.length)&&(t=e.length);for(var n=0,r=new Array(t);n<t;n++)r[n]=e[n];return r}e.r(t),e.d(t,{default:()=>i});var o={};!function(){if("undefined"!=typeof window){new MutationObserver((function(e,t){var r,i=n(e);try{for(i.s();!(r=i.n()).done;){if("childList"===r.value.type)for(var a in o)o[a]()}}catch(e){i.e(e)}finally{i.f()}})).observe(document.body,{childList:!0,subtree:!0})}}();const i={executeOnNodeChanged:o,addOnNodeChange:function(e,t){t&&(o[e]=t)},removeOnNodeChange:function(e){e&&delete o[e]},cleanup:function(){Object.keys(o).forEach((function(e){return delete o[e]}))}};window.PowerHelpers=t})();
+/*
+ * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define("DomObserver", [], factory);
+	else if(typeof exports === 'object')
+		exports["DomObserver"] = factory();
+	else
+		root["DomObserver"] = factory();
+})(self, () => {
+return /******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "./src/DomObserver.js":
+/*!****************************!*\
+  !*** ./src/DomObserver.js ***!
+  \****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n// Author Knighttower\n// MIT License\n// [2022] [Knighttower] https://github.com/knighttower\n/**\n * @module DomObserver\n * Detect DOM changes\n * @name DomObserver\n * @param {window} selector\n * @param {Function}\n * @return DomObserver\n * @example DomObserver.addOnNodeChange('elementIdentifier', () => { console.log('Node changed') })\n * @example DomObserver.removeOnNodeChange('elementIdentifier')\n */\n/**\n * Holds memory of registered functions\n * @private\n */\nconst executeOnNodeChanged = {};\n/**\n * When node change\n * @param {String} id\n * @param {Function} callback Callback when any node changes/ add/deleted/modified\n * @return {Void}\n */\nconst addOnNodeChange = (id, callback) => {\n    if (callback) {\n        executeOnNodeChanged[id] = callback;\n    }\n};\n/**\n * Remove from node change\n * @param {String} id\n * @return {Void}\n */\nconst removeOnNodeChange = (id) => {\n    if (id) {\n        delete executeOnNodeChanged[id];\n    }\n};\n/**\n * Deep cleanup\n * @return {Void}\n */\nconst cleanup = () => {\n    Object.keys(executeOnNodeChanged).forEach((key) => delete executeOnNodeChanged[key]);\n};\n/**\n * Observer\n * @private\n * @return {MutationObserver}\n */\n(() => {\n    if (typeof window !== 'undefined') {\n        const callback = (mutationList, observer) => {\n            for (const mutation of mutationList) {\n                if (mutation.type === 'childList') {\n                    for (const id in executeOnNodeChanged) {\n                        executeOnNodeChanged[id]();\n                    }\n                }\n            }\n        };\n        const config = {\n            childList: true,\n            subtree: true,\n        };\n        const observer = new MutationObserver(callback);\n        observer.observe(document.body, config);\n    }\n})();\nconst DomObserver = {\n    executeOnNodeChanged,\n    addOnNodeChange,\n    removeOnNodeChange,\n    cleanup,\n};\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (DomObserver);\n\n\n//# sourceURL=webpack://DomObserver/./src/DomObserver.js?");
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The require scope
+/******/ 	var __webpack_require__ = {};
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/************************************************************************/
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module can't be inlined because the eval devtool is used.
+/******/ 	var __webpack_exports__ = {};
+/******/ 	__webpack_modules__["./src/DomObserver.js"](0, __webpack_exports__, __webpack_require__);
+/******/ 	
+/******/ 	return __webpack_exports__;
+/******/ })()
+;
+});
