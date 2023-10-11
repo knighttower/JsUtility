@@ -1,69 +1,114 @@
 const fs = require('fs');
 const path = require('path');
-
-/**
- * Reads a directory and returns an array of filenames.
- *
- * @param {string} directory - The path of the directory.
- * @returns {string[]} - An array of filenames.
- */
-function readDirectory(directory) {
-    return fs.readdirSync(directory).filter((file) => path.extname(file) === '.js');
-}
+const glob = require('glob');
 
 /**
  * Reads a file and returns the names of the exported modules.
- *
- * @param {string} filePath - The path of the file to read.
- * @returns {string[]} - An array of exported module names.
+ * @param {string} filePath
+ * @returns {Object} Object containing arrays of named exports and the default export
  */
 function getExports(filePath) {
-    const content = fs.readFileSync(filePath, 'utf8');
-    const exportMatches = content.match(/export\s+(const|let|var|function|class)\s+(\w+)/g) || [];
-    return exportMatches.map((match) => match.split(' ').pop());
-}
+    const content = fs.readFileSync(filePath, 'utf-8');
+    const directExports =
+        content.match(/export\s+(const|let|var|function|class)\s+(\w+)|export\s+(\w+)|export\s*{([^}]+)}/g) || [];
+    const defaultExport = content.match(/export\s+default\s+(class|function)?\s*(\w+)|(\w+)\s+as\s+default/);
+    const aliases = content.match(/export\s*{([^}]+)}/g) || [];
 
-/**
- * Generates the content for index.js.
- *
- * @param {Object} exportMap - An object mapping filenames to exported module names.
- * @returns {string} - The content for index.js.
- */
-function generateIndexContent(exportMap) {
-    let content = '';
-    for (const [file, exports] of Object.entries(exportMap)) {
-        const moduleName = path.basename(file, '.js');
-        content += `import * as ${moduleName} from './${moduleName}';\n`;
-        exports.forEach((exp) => {
-            content += `export const ${exp} = ${moduleName}.${exp};\n`;
-        });
+    let namedExports = [];
+
+    directExports.forEach((exp) => {
+        const parts = exp.replace('export ', '').split(' ');
+        if (parts.length === 1) {
+            namedExports.push(parts[0]);
+        } else if (parts.length === 2) {
+            namedExports.push(parts[1]);
+        } else {
+            const innerExports = parts[2].slice(1, -1).split(',');
+            innerExports.forEach((e) => {
+                const [original, alias] = e.trim().split(' as ');
+                namedExports.push(alias || original);
+            });
+        }
+    });
+
+    let defaultExportName = null;
+
+    if (defaultExport) {
+        defaultExportName = defaultExport[2] || defaultExport[3];
     }
-    return content;
+
+    // Adding aliases
+    aliases.forEach((aliasLine) => {
+        const parts = aliasLine.replace('export {', '').replace('}', '').split(',');
+        parts.forEach((part) => {
+            const [original, alias] = part.trim().split(' as ');
+            if (alias && alias !== 'default') {
+                namedExports.push(alias);
+            }
+        });
+    });
+
+    // Remove 'default' from named exports
+    namedExports = namedExports.filter((name) => name !== 'default' && name !== defaultExportName);
+
+    return {
+        named: Array.from(new Set(namedExports)), // Remove duplicates
+        default: defaultExportName,
+    };
 }
 
 /**
- * Writes the given content to index.js.
- *
- * @param {string} content - The content for index.js.
- * @param {string} directory - The directory where index.js will be created.
+ * Generates the content for the index.js file.
+ * @param {Object} allExports - An object containing information about all exports
+ * @returns {string} - The content for the index.js file
  */
-function writeIndexFile(content, directory) {
-    const indexPath = path.join(directory, 'index.js');
-    fs.writeFileSync(indexPath, content);
+function generateIndexContent(allExports) {
+    let imports = '';
+    let exports = '';
+
+    for (const [filePath, { named, default: defaultExport }] of Object.entries(allExports)) {
+        const moduleName = path.basename(filePath, '.js');
+        const relativePath = path.relative(process.cwd(), filePath).replace(/\\/g, '/').replace(/\.js$/, '');
+
+        if (named.length > 0) {
+            imports += `import * as _${moduleName} from './${relativePath}';\n`;
+            named.forEach((name) => {
+                if (name) {
+                    exports += `export const ${name} = _${moduleName}.${name};\n`;
+                }
+            });
+        }
+
+        if (defaultExport) {
+            imports += `import ${defaultExport} from './${relativePath}';\n`;
+            exports += `export { ${defaultExport} };\n`;
+        }
+    }
+
+    return `${imports}\n${exports}`;
 }
 
-// Execution part
-const directory = './src'; // Replace with your directory
+/**
+ * Main function to generate the index.js file.
+ */
+function generateIndex() {
+    const directory = process.argv.includes('--directory')
+        ? process.argv[process.argv.indexOf('--directory') + 1]
+        : '.';
+    const filePaths = glob.sync(`${directory}/**/*.js`);
 
-const files = readDirectory(directory);
-const exportMap = {};
+    const allExports = {};
 
-files.forEach((file) => {
-    const filePath = path.join(directory, file);
-    exportMap[file] = getExports(filePath);
-});
+    filePaths.forEach((filePath) => {
+        if (path.basename(filePath) === 'index.js') {
+            return;
+        }
+        allExports[filePath] = getExports(filePath);
+    });
 
-const indexContent = generateIndexContent(exportMap);
-writeIndexFile(indexContent, directory);
+    const indexContent = generateIndexContent(allExports);
+    fs.writeFileSync(path.join(process.cwd(), 'index.js'), indexContent);
+    console.log('index.js generated');
+}
 
-console.log('Index.js generated successfully.');
+generateIndex();
