@@ -16,7 +16,6 @@ jobs:
                   node-version: 16
             - run: npm ci
             - run: npm run test
-            - run: npm run build
     tagged-release:
         needs: build
         runs-on: ubuntu-latest
