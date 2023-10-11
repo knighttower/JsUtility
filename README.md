@@ -103,10 +103,13 @@ yarn add @knighttower/js-utility-functions
 It loads as a 'window' object --> window.Utility
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@knighttower/js-utility-functions@latest/dist/Utility.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@knighttower/js-utility-functions@latest/dist/PowerHelpers.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@knighttower/js-utility-functions@latest/dist/browser/Utility.min.js"></script>
+// in addition, you can also load other libraries
+<script src="https://cdn.jsdelivr.net/npm/@knighttower/js-utility-functions@latest/dist/browser/PowerHelpers.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@knighttower/js-utility-functions@latest/dist/browser/DomObserver.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@knighttower/js-utility-functions@latest/dist/browser/UrlHelper.min.js"></script>
 //or ESM
-<script src="https://esm.run/@knighttower/js-utility-functions@latest/index.js"></script>
+<script src="https://esm.run/@knighttower/js-utility-functions@latest/index.mjs"></script>
 ```
 
 | File                | Size     |
@@ -132,7 +135,7 @@ import PowerHelpers from '@knighttower/js-utility-functions';
 import { functionThatYouWantToUse, otherFunction } from '@knighttower/js-utility-functions';
 // or
 import { Utility as yourCustomName } from '@knighttower/js-utility-functions';
-import { functionThatYouWantToUse } from 'https://cdn.jsdelivr.net/npm/@knighttower/js-utility-functions@latest/index.js';
+import { functionThatYouWantToUse } from 'https://cdn.jsdelivr.net/npm/@knighttower/js-utility-functions@latest/index.mjs';
 ```
 
 Or even better, use it along with Vite and [Autoimport](https://github.com/unplugin/unplugin-auto-import) like:

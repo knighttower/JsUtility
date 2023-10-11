@@ -1,8 +1,20 @@
 {
-    "/Utility.js": "/Utility.js",
-    "/DomObserver.js": "/DomObserver.js",
-    "/UrlHelper.js": "/UrlHelper.js",
-    "/ElementHelper.js": "/ElementHelper.js",
-    "/ProxyHelper.js": "/ProxyHelper.js",
-    "/PowerHelpers.js": "/PowerHelpers.js"
+    "/umd/Utility.js": "/umd/Utility.js",
+    "/cjs/Utility.js": "/cjs/Utility.js",
+    "/browser/Utility.js": "/browser/Utility.js",
+    "/umd/DomObserver.js": "/umd/DomObserver.js",
+    "/cjs/DomObserver.js": "/cjs/DomObserver.js",
+    "/browser/DomObserver.js": "/browser/DomObserver.js",
+    "/umd/UrlHelper.js": "/umd/UrlHelper.js",
+    "/cjs/UrlHelper.js": "/cjs/UrlHelper.js",
+    "/browser/UrlHelper.js": "/browser/UrlHelper.js",
+    "/umd/ElementHelper.js": "/umd/ElementHelper.js",
+    "/cjs/ElementHelper.js": "/cjs/ElementHelper.js",
+    "/browser/ElementHelper.js": "/browser/ElementHelper.js",
+    "/umd/ProxyHelper.js": "/umd/ProxyHelper.js",
+    "/cjs/ProxyHelper.js": "/cjs/ProxyHelper.js",
+    "/browser/ProxyHelper.js": "/browser/ProxyHelper.js",
+    "/umd/PowerHelpers.js": "/umd/PowerHelpers.js",
+    "/cjs/PowerHelpers.js": "/cjs/PowerHelpers.js",
+    "/browser/PowerHelpers.js": "/browser/PowerHelpers.js"
 }

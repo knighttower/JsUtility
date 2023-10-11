@@ -3,29 +3,55 @@ const path = require('path');
 const fs = require('fs');
 require('laravel-mix-compress');
 
-const getWebpackConfig = (libraryName) => ({
+/**
+ * Generates a Webpack configuration for a given library name and target.
+ *
+ * @param {string} libraryName - The name of the library.
+ * @param {string} libraryTarget - The library target format.
+ * @returns {Object} - The Webpack configuration.
+ */
+const getWebpackConfig = (libraryName, libraryTarget) => ({
     resolve: {
         modules: ['node_modules', path.resolve(__dirname, 'src')],
     },
     output: {
         library: libraryName,
-        libraryTarget: 'window',
+        libraryTarget: libraryTarget,
     },
+
     stats: 'errors-only',
 });
 
-// Configure for Utility.js
-mix.js('src/Utility.js', 'dist/Utility.js').webpackConfig(getWebpackConfig('Utility'));
-mix.js('src/DomObserver.js', 'dist/DomObserver.js').webpackConfig(getWebpackConfig('DomObserver'));
-mix.js('src/UrlHelper.js', 'dist/UrlHelper.js').webpackConfig(getWebpackConfig('UrlHelper'));
-mix.js('src/ElementHelper.js', 'dist/ElementHelper.js').webpackConfig(getWebpackConfig('ElementHelper'));
-mix.js('src/ProxyHelper.js', 'dist/ProxyHelper.js').webpackConfig(getWebpackConfig('ProxyHelper'));
+const targets = [
+    { name: 'Utility', ext: '.js' },
+    { name: 'DomObserver', ext: '.js' },
+    { name: 'UrlHelper', ext: '.js' },
+    { name: 'ElementHelper', ext: '.js' },
+    { name: 'ProxyHelper', ext: '.js' },
+    { name: 'PowerHelpers', ext: '.js' },
+];
 
-// Configure for PowerHelpers.js
-mix.js('src/PowerHelpers.js', 'dist/PowerHelpers.js')
-    .setPublicPath('dist')
+// Generate configurations for each target and format
+targets.forEach((target) => {
+    // UMD format for browsers
+    mix.js(`src/${target.name}${target.ext}`, `dist/umd/${target.name}.js`).webpackConfig(
+        getWebpackConfig(target.name, 'umd'),
+    );
+
+    // CommonJS format
+    mix.js(`src/${target.name}${target.ext}`, `dist/cjs/${target.name}.js`).webpackConfig(
+        getWebpackConfig(target.name, 'commonjs2'),
+    );
+
+    // CommonJS format
+    mix.js(`src/${target.name}${target.ext}`, `dist/browser/${target.name}.js`).webpackConfig(
+        getWebpackConfig(target.name, 'window'),
+    );
+});
+
+// Additional settings for PowerHelpers
+mix.setPublicPath('dist')
     .compress({
         useBrotli: true,
     })
-    .webpackConfig(getWebpackConfig('PowerHelpers'))
     .disableNotifications();
