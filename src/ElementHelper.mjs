@@ -86,7 +86,7 @@ class ElementHelper {
         let element = this.domElement;
 
         if (element.id) {
-            return "//*[@id='" + element.id + "']";
+            return `//*[@id='${element.id}']`;
         }
         if (element === document.body) {
             return '//' + element.tagName;

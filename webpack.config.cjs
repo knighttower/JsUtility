@@ -10,6 +10,10 @@ const CompressionPlugin = require('compression-webpack-plugin');
 const getWebpackConfig = (libraryName, libraryTarget, dir, ext) => ({
     mode: 'production',
     entry: `./src/${libraryName}.${ext}`,
+    resolve: {
+        modules: ['node_modules', path.resolve(__dirname, 'src')],
+        extensions: ['.mjs', '.js', '.json', '.cjs'],
+    },
     output: {
         path: path.resolve(__dirname, `dist/${dir}`),
         filename: `${libraryName}.js`,
@@ -17,9 +21,7 @@ const getWebpackConfig = (libraryName, libraryTarget, dir, ext) => ({
         libraryTarget: libraryTarget,
         umdNamedDefine: true,
     },
-    stats: {
-        errorDetails: true, // or 'auto'
-    },
+    stats: 'errors-only',
     plugins: [
         new CompressionPlugin({
             algorithm: 'brotliCompress',
