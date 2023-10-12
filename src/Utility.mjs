@@ -231,7 +231,9 @@ export const getRandomId = getDynamicId;
  * @example getGoogleMapsAddress({ address: 'New York', city: 'New York', state: 'NY' }) // 'https://maps.google.it/maps?q=New+York+New+York+NY'
  */
 export function getGoogleMapsAddress(address) {
-    if (!address) return false;
+    if (!address) {
+        return false;
+    }
 
     let search = '';
 
@@ -284,15 +286,25 @@ export function includes(collection, value, fromIndex = 0) {
  * @return {string}
  */
 export function isEmpty(value) {
-    if (value === null || value === undefined) return true;
+    if (value === null || value === undefined) {
+        return true;
+    }
 
-    if (typeof value === 'string' || Array.isArray(value)) return value.length === 0;
+    if (typeof value === 'string' || Array.isArray(value)) {
+        return value.length === 0;
+    }
 
-    if (value instanceof Map || value instanceof Set) return value.size === 0;
+    if (value instanceof Map || value instanceof Set) {
+        return value.size === 0;
+    }
 
-    if (ArrayBuffer.isView(value)) return value.byteLength === 0;
+    if (ArrayBuffer.isView(value)) {
+        return value.byteLength === 0;
+    }
 
-    if (typeof value === 'object') return Object.keys(value).length === 0;
+    if (typeof value === 'object') {
+        return Object.keys(value).length === 0;
+    }
 
     return false;
 }

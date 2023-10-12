@@ -42,8 +42,12 @@ export function addQuotes(str, q = '"') {
  * @example cleanStr('Hello World. Sunshine is here!', /Hello/g, /Sunshine/g) // ' World.  is here!'
  */
 export function cleanStr(str, ...args) {
-    if (!str) return;
-    if (typeof str !== 'string') return str;
+    if (!str) {
+        return;
+    }
+    if (typeof str !== 'string') {
+        return str;
+    }
 
     return args
         .reduce((accStr, arg) => {
@@ -119,7 +123,9 @@ export function findAndReplaceInArray(arr, find, value) {
  * @example findNested('[[]hello [world]]', '[', ']') // [world]
  */
 export function findNested(str, start = '[', end = ']') {
-    if (typeof str !== 'string') return str;
+    if (typeof str !== 'string') {
+        return str;
+    }
     // Find the last index of '['
     const lastIndex = str.lastIndexOf(start);
     // If '[' is not found, return null or some default value
@@ -149,8 +155,10 @@ export function findNested(str, start = '[', end = ']') {
  * @example fixQuotes('"hello"') // "hello"
  */
 export function fixQuotes(str, q = '"') {
-    if (typeof str !== 'string') return str;
-    return str.replace(/\`|'|"/g, q);
+    if (typeof str !== 'string') {
+        return str;
+    }
+    return str.replace(/`|'|"/g, q);
 }
 
 /**
@@ -164,11 +172,15 @@ export function fixQuotes(str, q = '"') {
  */
 export function getArrObjFromString(strExp) {
     // alredy typeof object or array just return it
-    if (typeOf(strExp, 'object') || typeOf(strExp, 'array')) return strExp;
+    if (typeOf(strExp, 'object') || typeOf(strExp, 'array')) {
+        return strExp;
+    }
     const isObject = startAndEndWith(strExp, '{', '}');
     const isArray = startAndEndWith(strExp, '[', ']');
     // If it is other type of string, return it
-    if (!isObject && !isArray) return strExp;
+    if (!isObject && !isArray) {
+        return strExp;
+    }
 
     const newCollection = isObject ? {} : [];
     const nestedElements = {};
@@ -177,11 +189,15 @@ export function getArrObjFromString(strExp) {
     let newStrExp = _removeBrackets(strExp);
 
     const loopNested = (objects = false) => {
+        // ignore eslint comment
+        // eslint-disable-next-line no-constant-condition
         while (true) {
             //find any nested arrays or objects
             let matched = objects ? findNested(newStrExp, '{', '}') : findNested(newStrExp);
 
-            if (!matched) break;
+            if (!matched) {
+                break;
+            }
 
             //replace the nested array or object with a marker so that we can safely split the string
             let marker = `__${getRandomId()}__`;
@@ -233,7 +249,9 @@ export function getArrObjFromString(strExp) {
  */
 export function getDirectivesFromString(stringDirective) {
     const str = stringDirective;
-    if (!emptyOrValue(str)) return null;
+    if (!emptyOrValue(str)) {
+        return null;
+    }
 
     const results = (type = null, results = null) => {
         return {
@@ -242,7 +260,10 @@ export function getDirectivesFromString(stringDirective) {
         };
     };
     const matchArrayTypes = /^\[((.|\n)*?)\]$/gm;
+    // comment eslint to ignore
+    // eslint-disable-next-line no-useless-escape
     const matchObjectTypes = /^\{((.|\n)*?)\:((.|\n)*?)\}/gm;
+    // eslint-disable-next-line no-useless-escape
     const matchFunctionString = /^([a-zA-Z]+)(\()(\.|\#)(.*)(\))/g;
     const regexDotObjectString = /([a-zA-Z]+)\.(.*?)\(((.|\n)*?)\)/gm;
     const regexExObjectString = /([a-zA-Z]+)\[((.|\n)*?)\]\(((.|\n)*?)\)/gm;
@@ -268,6 +289,7 @@ export function getDirectivesFromString(stringDirective) {
             case !!str.match(matchFunctionString):
                 // Mathes simple directive function style: directive(#idOr.Class)
                 // regexFunctionString
+                // eslint-disable-next-line
                 const directive = str.split('(')[0].trim();
                 return results('idOrClassWithDirective', { [directive]: getMatchInBetween(str, '(', ')') });
             case !!str.match(regexDotObjectString):
@@ -281,7 +303,6 @@ export function getDirectivesFromString(stringDirective) {
 
             default:
                 return results('string', str);
-                break;
         }
     }
 
@@ -316,7 +337,9 @@ export function getDirectivesFromString(stringDirective) {
 
             values = getArrObjFromString(values);
 
-            if (!setObject[directive]) setObject[directive] = {};
+            if (!setObject[directive]) {
+                setObject[directive] = {};
+            }
 
             getChunks(breakDownId, '|').forEach((id) => {
                 setObject[directive][id] = values;
@@ -340,7 +363,9 @@ export function getDirectivesFromString(stringDirective) {
  * @example getMatchBlock('is a <hello world/> today', '<', '/>') // '<hello world/>'
  */
 export function getMatchBlock(str, p1, p2, all = false) {
-    if (typeof str !== 'string') return str;
+    if (typeof str !== 'string') {
+        return str;
+    }
     p1 = setExpString(p1);
     p2 = setExpString(p2);
     let regex = new RegExp(setLookUpExp(p1, p2), 'gm');
@@ -357,8 +382,12 @@ export function getMatchBlock(str, p1, p2, all = false) {
  * @return {string|array}
  */
 export function getChunks(str, splitter = ',') {
-    if (typeof str !== 'string') return str;
-    if (isEmpty(str)) return [];
+    if (typeof str !== 'string') {
+        return str;
+    }
+    if (isEmpty(str)) {
+        return [];
+    }
     str = cleanStr(str);
     let chunks = str.split(splitter).map((t) => cleanStr(t));
     return chunks.length === 1 && chunks[0] === '' ? [str] : chunks;
@@ -377,7 +406,9 @@ export function getChunks(str, splitter = ',') {
  * @example getMatchInBetween('hello <world/>', '<', '/>') // 'world'
  */
 export function getMatchInBetween(str, p1, p2, all = false) {
-    if (typeof str !== 'string') return str;
+    if (typeof str !== 'string') {
+        return str;
+    }
     const matchBlock = getMatchBlock(str, p1, p2, all) ?? (all ? [] : str);
     return all ? matchBlock.map((match) => cleanStr(match, p1, p2)) : cleanStr(matchBlock, p1, p2);
 }
@@ -391,8 +422,10 @@ export function getMatchInBetween(str, p1, p2, all = false) {
  * @example removeQuotes("'hello'") // hello
  */
 export function removeQuotes(str) {
-    if (typeof str !== 'string') return str;
-    return str.replace(/\`|'|"/g, '');
+    if (typeof str !== 'string') {
+        return str;
+    }
+    return str.replace(/`|'|"/g, '');
 }
 
 /**
@@ -479,12 +512,15 @@ export function setLookUpExp(...args) {
  * @example setWildCardString('name.**') // returns 'name\..*' greedy
  */
 export function setWildCardString(str, matchStart = false, matchEnd = false) {
-    if (typeof str !== 'string') return str;
+    if (typeof str !== 'string') {
+        return str;
+    }
     if (!str) {
         return null;
     }
     matchStart = convertToBool(matchStart);
     matchEnd = convertToBool(matchEnd);
+    // eslint-disable-next-line no-useless-escape
     let regexStr = str.replace(/([.+?^${}()|\[\]\/\\])/g, '\\$&'); // escape all regex special chars
     let regStart = matchStart ? '^' : '';
     let regEnd = matchEnd ? '$' : '';
