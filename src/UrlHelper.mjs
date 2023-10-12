@@ -3,7 +3,7 @@
  *
  * @module urlHelper
  */
-export default function UrlHelper(__u, undefined) {
+export default function UrlHelper(__u) {
     'use strict';
 
     /**
@@ -79,7 +79,9 @@ export default function UrlHelper(__u, undefined) {
      * @private
      */
     const parseURLParams = () => {
-        if (cachedURLParams) return cachedURLParams;
+        if (cachedURLParams) {
+            return cachedURLParams;
+        }
 
         const params = new URLSearchParams(win.location.search);
         const vars = {};

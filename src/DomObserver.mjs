@@ -51,7 +51,7 @@ const cleanup = () => {
  */
 (() => {
     if (typeof window !== 'undefined') {
-        const callback = (mutationList, observer) => {
+        const callback = (mutationList) => {
             for (const mutation of mutationList) {
                 if (mutation.type === 'childList') {
                     for (const id in executeOnNodeChanged) {
