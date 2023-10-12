@@ -168,6 +168,7 @@ Some of these docs are outdated. Please look via the built in Github Symbol expl
 [UrlHelper](https://github.com/knighttower/JsUtility/blob/development/src/UrlHelper.js)
 [ProxyHelper](https://github.com/knighttower/JsUtility/blob/development/src/ProxyHelper.js)
 [ElementHelper](https://github.com/knighttower/JsUtility/blob/development/src/ElementHelper.js)
+[NodeHelpers](https://github.com/knighttower/JsUtility/blob/development/src/NodeHelpers.js)
 
 <br/>
 
