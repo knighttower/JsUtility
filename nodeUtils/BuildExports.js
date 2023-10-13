@@ -1,10 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 import glob from 'glob';
-import { PowerHelper as helper } from './src/PowerHelpers.mjs';
-import { Utility as utils } from './src/Utility.mjs';
-import { getFlagValue } from './node/NodeHelpers.mjs';
+import { PowerHelper as helper } from '../src/PowerHelpers.js';
+import { Utility as utils } from '../src/Utility.js';
+import { getFlagValue } from './NodeHelpers.js';
 
+const workingDir = process.cwd();
 /**
  * Reads a file and returns the names of the exported modules.
  * @param {string} filePath
@@ -88,13 +89,13 @@ function getExports(filePath) {
  * @param {Object} allExports - An object containing information about all exports
  * @returns {string} - The content for the index.js file
  */
-function generateIndexContent(allExports) {
+function getEsmContent(allExports) {
     let imports = '';
     let exports = '';
 
     for (const [filePath, { named, default: defaultExport }] of Object.entries(allExports)) {
         const moduleName = path.basename(filePath).replace(/\.js|\.mjs/, '');
-        const relativePath = path.relative(process.cwd(), filePath).replace(/\\/g, '/');
+        const relativePath = path.relative(workingDir, filePath).replace(/\\/g, '/');
         const commentSingle = `// Single Modules and Aliases from: ${moduleName}\n`;
         const commentDefault = `// Default Module from: ${moduleName}\n`;
         if (named.length > 0) {
@@ -118,14 +119,51 @@ function generateIndexContent(allExports) {
 }
 
 /**
+ * Generate index content for CommonJS modules.
+ * @param {Object} allExports - An object containing information about all exports.
+ * @return {string} - The generated index content.
+ */
+function getCommonJsContent(allExports) {
+    let imports = '';
+    let exports = '';
+
+    for (const [filePath, { named, default: defaultExport }] of Object.entries(allExports)) {
+        const moduleName = path.basename(filePath).replace(/\.js|\.mjs/, '');
+        const relativePath = path.relative(workingDir, filePath).replace(/\\/g, '/');
+        const commentSingle = `// Single Modules and Aliases from: ${moduleName}\n`;
+        const commentDefault = `// Default Module from: ${moduleName}\n`;
+
+        if (named.length > 0) {
+            const namedModules = named.join(', ');
+
+            imports += commentSingle;
+            imports += `const { ${namedModules} } = require('./${relativePath}');\n`;
+            exports += commentSingle;
+            exports += `module.exports = { ${namedModules} };\n`;
+        }
+
+        if (defaultExport) {
+            imports += commentDefault;
+            imports += `const ${defaultExport} = require('./${relativePath}');\n`;
+            exports += commentDefault;
+            exports += `module.exports = { ${defaultExport} };\n`;
+        }
+    }
+
+    return `${imports}\n${exports}`;
+}
+
+/**
  * Main function to generate the index.js file.
  */
 (function generateIndex() {
     const directory = getFlagValue('dir') ?? './src';
-    const destination = getFlagValue('out') ?? './index.mjs';
+    const singleFile = getFlagValue('single') ?? false;
+    const out = getFlagValue('out') ? helper.cleanStr(getFlagValue('out'), '.js', '.mjs', '.cjs', '.ts') : null;
+    const destination = out ?? './index';
     // Synchronously fetch all file paths within a directory and its subdirectories
     // that have a .js or .mjs extension
-    const filePaths = glob.sync(`${directory}/**/*.{js,mjs}`);
+    const filePaths = !singleFile ? glob.sync(`${directory}/**/*.{js,mjs,cjs}`) : glob.sync(`${singleFile}`);
     const allExports = {};
 
     filePaths.forEach((filePath) => {
@@ -134,9 +172,10 @@ function generateIndexContent(allExports) {
         }
     });
 
-    const indexContent = generateIndexContent(allExports);
-    fs.writeFileSync(path.join(process.cwd(), destination), indexContent);
-    console.log('index generated');
-})();
+    const indexEsmContent = getEsmContent(allExports);
+    const indexCjsContent = getCommonJsContent(allExports);
 
-// generateIndex();
+    fs.writeFileSync(path.join(workingDir, `${destination}.js`), indexEsmContent);
+    fs.writeFileSync(path.join(workingDir, `${destination}.cjs.js`), indexCjsContent);
+    console.log('indexes generated');
+})();

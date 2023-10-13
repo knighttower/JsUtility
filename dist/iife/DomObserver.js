@@ -1,8 +1,5 @@
-(function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-  typeof define === 'function' && define.amd ? define(factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.adaptive = factory());
-})(this, (function () { 'use strict';
+var adaptive = (function () {
+  'use strict';
 
   function _unsupportedIterableToArray(o, minLen) {
     if (!o) return;
@@ -159,4 +156,4 @@
 
   return DomObserver;
 
-}));
+})();

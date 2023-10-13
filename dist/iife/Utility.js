@@ -1,8 +1,5 @@
-(function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-  typeof define === 'function' && define.amd ? define(['exports'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.adaptive = {}));
-})(this, (function (exports) { 'use strict';
+var adaptive = (function (exports) {
+  'use strict';
 
   function _typeof(o) {
     "@babel/helpers - typeof";
@@ -1009,4 +1006,6 @@
 
   Object.defineProperty(exports, '__esModule', { value: true });
 
-}));
+  return exports;
+
+})({});

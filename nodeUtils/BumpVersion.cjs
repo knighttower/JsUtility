@@ -1,13 +1,13 @@
 const fs = require('fs');
 const path = require('path');
-
+const workingDir = process.cwd();
 /**
  * Read package.json and return its content.
  *
  * @returns {Object} - Parsed JSON content of package.json.
  */
 const readPackageJson = () => {
-    const filePath = path.join(process.cwd(), 'package.json');
+    const filePath = path.join(workingDir, 'package.json');
     const rawContent = fs.readFileSync(filePath, 'utf8');
     return JSON.parse(rawContent);
 };
@@ -18,7 +18,7 @@ const readPackageJson = () => {
  * @param {Object} content - The updated package.json content.
  */
 const writePackageJson = (content) => {
-    const filePath = path.join(process.cwd(), 'package.json');
+    const filePath = path.join(workingDir, 'package.json');
     const updatedContent = JSON.stringify(content, null, 2);
     fs.writeFileSync(filePath, updatedContent);
 };
