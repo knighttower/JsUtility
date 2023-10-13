@@ -3,7 +3,7 @@ import path from 'path';
 import glob from 'glob';
 import { PowerHelper as helper } from './src/PowerHelpers.mjs';
 import { Utility as utils } from './src/Utility.mjs';
-import { getFlagValue } from './src/NodeHelpers.mjs';
+import { getFlagValue } from './node/NodeHelpers.mjs';
 
 /**
  * Reads a file and returns the names of the exported modules.
@@ -121,20 +121,21 @@ function generateIndexContent(allExports) {
  * Main function to generate the index.js file.
  */
 (function generateIndex() {
-    const directory = getFlagValue('hello') ?? './src';
+    const directory = getFlagValue('dir') ?? './src';
+    const destination = getFlagValue('out') ?? './index.mjs';
     // Synchronously fetch all file paths within a directory and its subdirectories
     // that have a .js or .mjs extension
     const filePaths = glob.sync(`${directory}/**/*.{js,mjs}`);
     const allExports = {};
 
     filePaths.forEach((filePath) => {
-        if (path.basename(filePath) !== 'index.mjs') {
+        if (!path.basename(filePath).includes('index')) {
             allExports[filePath] = getExports(filePath);
         }
     });
 
     const indexContent = generateIndexContent(allExports);
-    fs.writeFileSync(path.join(process.cwd(), 'index.mjs'), indexContent);
+    fs.writeFileSync(path.join(process.cwd(), destination), indexContent);
     console.log('index generated');
 })();
 

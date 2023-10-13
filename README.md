@@ -168,7 +168,8 @@ Some of these docs are outdated. Please look via the built in Github Symbol expl
 [UrlHelper](https://github.com/knighttower/JsUtility/blob/development/src/UrlHelper.js)
 [ProxyHelper](https://github.com/knighttower/JsUtility/blob/development/src/ProxyHelper.js)
 [ElementHelper](https://github.com/knighttower/JsUtility/blob/development/src/ElementHelper.js)
-[NodeHelpers](https://github.com/knighttower/JsUtility/blob/development/src/NodeHelpers.js)
+// NodeHelpers are not yet documented nor included with the above pkg cause it is node only files, but it can be imported from @knighttower/js-utility-functions/node/index.mjs (NodeHelpers)
+[NodeHelpers](https://github.com/knighttower/JsUtility/blob/development/node/NodeHelpers.js)
 
 <br/>
 

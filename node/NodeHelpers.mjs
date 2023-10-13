@@ -1,6 +1,6 @@
 import { execSync } from 'child_process';
-import { removeQuotes } from './PowerHelpers.mjs';
-import { isEmpty } from './Utility.mjs';
+import { removeQuotes } from '../src/PowerHelpers.mjs';
+import { isEmpty } from '../src/Utility.mjs';
 
 /**
  * Get the value of a command line flag.
