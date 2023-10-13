@@ -3,7 +3,26 @@ import DomObserver from './src/DomObserver.mjs';
 // Default Module from: ElementHelper
 import ElementHelper from './src/ElementHelper.mjs';
 // Single Modules and Aliases from: PowerHelpers
-import { PowerHelper, addQuotes, cleanStr, convertKeysToSymbols, findAndReplaceInArray, findNested, fixQuotes, getArrObjFromString, getDirectivesFromString, getMatchBlock, getChunks, getMatchInBetween, removeQuotes, startAndEndWith, setExpString, setLookUpExp, setWildCardString, wildCardStringSearch } from './src/PowerHelpers.mjs';
+import {
+    PowerHelper,
+    addQuotes,
+    cleanStr,
+    convertKeysToSymbols,
+    findAndReplaceInArray,
+    findNested,
+    fixQuotes,
+    getArrObjFromString,
+    getDirectivesFromString,
+    getMatchBlock,
+    getChunks,
+    getMatchInBetween,
+    removeQuotes,
+    startAndEndWith,
+    setExpString,
+    setLookUpExp,
+    setWildCardString,
+    wildCardStringSearch,
+} from './src/PowerHelpers.mjs';
 // Default Module from: PowerHelpers
 import powerHelper from './src/PowerHelpers.mjs';
 // Default Module from: ProxyHelper
@@ -11,7 +30,32 @@ import ProxyHelper from './src/ProxyHelper.mjs';
 // Default Module from: UrlHelper
 import UrlHelper from './src/UrlHelper.mjs';
 // Single Modules and Aliases from: Utility
-import { utils, utility, convertToBool, convertToNumber, currencyToDecimal, dateFormat, decimalToCurrency, emptyOrValue, formatPhoneNumber, getDynamicId, getRandomId, getGoogleMapsAddress, includes, isEmpty, isNumber, instanceOf, openGoogleMapsAddress, proxyObject, selectElement, toCurrency, toDollarString, typeOf, validateEmail, validatePhone } from './src/Utility.mjs';
+import {
+    utils,
+    utility,
+    convertToBool,
+    convertToNumber,
+    currencyToDecimal,
+    dateFormat,
+    decimalToCurrency,
+    emptyOrValue,
+    formatPhoneNumber,
+    getDynamicId,
+    getRandomId,
+    getGoogleMapsAddress,
+    includes,
+    isEmpty,
+    isNumber,
+    instanceOf,
+    openGoogleMapsAddress,
+    proxyObject,
+    selectElement,
+    toCurrency,
+    toDollarString,
+    typeOf,
+    validateEmail,
+    validatePhone,
+} from './src/Utility.mjs';
 // Default Module from: Utility
 import Utility from './src/Utility.mjs';
 
@@ -20,7 +64,26 @@ export { DomObserver };
 // Default Module from: ElementHelper
 export { ElementHelper };
 // Single Modules and Aliases from: PowerHelpers
-export { PowerHelper, addQuotes, cleanStr, convertKeysToSymbols, findAndReplaceInArray, findNested, fixQuotes, getArrObjFromString, getDirectivesFromString, getMatchBlock, getChunks, getMatchInBetween, removeQuotes, startAndEndWith, setExpString, setLookUpExp, setWildCardString, wildCardStringSearch };
+export {
+    PowerHelper,
+    addQuotes,
+    cleanStr,
+    convertKeysToSymbols,
+    findAndReplaceInArray,
+    findNested,
+    fixQuotes,
+    getArrObjFromString,
+    getDirectivesFromString,
+    getMatchBlock,
+    getChunks,
+    getMatchInBetween,
+    removeQuotes,
+    startAndEndWith,
+    setExpString,
+    setLookUpExp,
+    setWildCardString,
+    wildCardStringSearch,
+};
 // Default Module from: PowerHelpers
 export { powerHelper };
 // Default Module from: ProxyHelper
@@ -28,6 +91,31 @@ export { ProxyHelper };
 // Default Module from: UrlHelper
 export { UrlHelper };
 // Single Modules and Aliases from: Utility
-export { utils, utility, convertToBool, convertToNumber, currencyToDecimal, dateFormat, decimalToCurrency, emptyOrValue, formatPhoneNumber, getDynamicId, getRandomId, getGoogleMapsAddress, includes, isEmpty, isNumber, instanceOf, openGoogleMapsAddress, proxyObject, selectElement, toCurrency, toDollarString, typeOf, validateEmail, validatePhone };
+export {
+    utils,
+    utility,
+    convertToBool,
+    convertToNumber,
+    currencyToDecimal,
+    dateFormat,
+    decimalToCurrency,
+    emptyOrValue,
+    formatPhoneNumber,
+    getDynamicId,
+    getRandomId,
+    getGoogleMapsAddress,
+    includes,
+    isEmpty,
+    isNumber,
+    instanceOf,
+    openGoogleMapsAddress,
+    proxyObject,
+    selectElement,
+    toCurrency,
+    toDollarString,
+    typeOf,
+    validateEmail,
+    validatePhone,
+};
 // Default Module from: Utility
 export { Utility };
