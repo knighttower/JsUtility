@@ -112,6 +112,10 @@ It loads as a 'window' object --> window.Utility
 <script src="https://esm.run/@knighttower/js-utility-functions@latest/index.mjs"></script>
 ```
 
+<br/>
+
+## Files
+
 | File                | Size     |
 | ------------------- | -------- |
 | /PowerHelpers.js    | 10.5 KiB |
@@ -120,6 +124,9 @@ It loads as a 'window' object --> window.Utility
 | /Utility.js         | 8.54 KiB |
 | /Utility.js.br      | 3.13 KiB |
 | /Utility.js.gz      | 3.46 KiB |
+
+By default the "import" or "require", will load the indexes automatically. But, in case of wanting to use individual files or other specific formats, all Files are available in the dist folder as ESM, CJS, AMD, IIFE, Browser, UMD and System formats. For ESM + JS 'next', use the files in the src folder or import directly from the index.js file.  
+**Bonus:** Also included into this monorepo are files for use in NodeJS Projects, see the "nodeUtils" folder for more information.
 
 <br/>
 

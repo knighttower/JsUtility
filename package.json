@@ -1,7 +1,6 @@
 {
     "name": "@knighttower/js-utility-functions",
     "version": "3.0.17",
-    "type": "module",
     "main": "index.cjs.js",
     "module": "index.js",
     "jsdelivr": "dist/browser/Utility.js",
@@ -52,7 +51,7 @@
     "scripts": {
         "production": "npm run build",
         "build": "webpack --mode production && rollup -c && node ./nodeUtils/BuildExports.js --dir ./src && node ./nodeUtils/BumpVersion.cjs",
-        "roll": "rollup -c",
+        "rollup": "rollup -c",
         "dev": "webpack --mode development",
         "watch": "webpack --mode development --watch",
         "test": "npm run format && npm run eslint && vitest",
@@ -71,7 +70,7 @@
         "@rollup/plugin-node-resolve": "^15.2.3",
         "@rollup/plugin-terser": "^0.4.4",
         "compression-webpack-plugin": "^10.0.0",
-        "eslint": "^8.51.0",
+        "eslint": "^8.52.0",
         "eslint-config-prettier": "^9.0.0",
         "eslint-plugin-prettier": "^5.0.1",
         "jsdom": "^22.1.0",
@@ -80,7 +79,7 @@
         "rollup": "^4.0.2",
         "terser": "^5.21.0",
         "vitest": "^0.34.6",
-        "webpack": "^5.88.2",
+        "webpack": "^5.89.0",
         "webpack-cli": "^5.1.4"
     }
 }

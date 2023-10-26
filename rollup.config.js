@@ -12,7 +12,7 @@ const targets = [
     { name: 'PowerHelpers', ext: 'js', exportType: 'named' },
 ];
 
-const formats = ['amd', 'cjs', 'umd', 'iife', 'system'];
+const formats = ['amd', 'cjs', 'umd', 'iife', 'system', 'esm'];
 
 function buildConfig({ filename, format, transpile = true, exportType = 'default' }) {
     const plugins = [
