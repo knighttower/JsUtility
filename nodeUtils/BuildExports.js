@@ -91,7 +91,7 @@ function getExports(filePath) {
  */
 function getEsmContent(allExports) {
     let imports = '';
-    let exports = '';
+    let exports = [];
 
     for (const [filePath, { named, default: defaultExport }] of Object.entries(allExports)) {
         const moduleName = path.basename(filePath).replace(/\.js|\.mjs/, '');
@@ -103,19 +103,18 @@ function getEsmContent(allExports) {
 
             imports += commentSingle;
             imports += `import { ${namedModules} } from './${relativePath}';\n`;
-            exports += commentSingle;
-            exports += `export { ${namedModules} };\n`;
+            exports.push(named);
         }
 
         if (defaultExport) {
             imports += commentDefault;
             imports += `import ${defaultExport} from './${relativePath}';\n`;
-            exports += commentDefault;
-            exports += `export { ${defaultExport} };\n`;
+            exports.push(defaultExport);
         }
     }
+    exports = exports.flat().join(',\n');
 
-    return `${imports}\n${exports}`;
+    return `${imports}\n export { \n ${exports} \n };`;
 }
 
 /**
@@ -125,7 +124,7 @@ function getEsmContent(allExports) {
  */
 function getCommonJsContent(allExports) {
     let imports = '';
-    let exports = '';
+    let exports = [];
 
     for (const [filePath, { named, default: defaultExport }] of Object.entries(allExports)) {
         const moduleName = path.basename(filePath).replace(/\.js|\.mjs/, '');
@@ -138,19 +137,17 @@ function getCommonJsContent(allExports) {
 
             imports += commentSingle;
             imports += `const { ${namedModules} } = require('./${relativePath}');\n`;
-            exports += commentSingle;
-            exports += `module.exports = { ${namedModules} };\n`;
+            exports.push(named);
         }
 
         if (defaultExport) {
             imports += commentDefault;
             imports += `const ${defaultExport} = require('./${relativePath}');\n`;
-            exports += commentDefault;
-            exports += `module.exports = { ${defaultExport} };\n`;
+            exports.push(defaultExport);
         }
     }
-
-    return `${imports}\n${exports}`;
+    exports = exports.flat().join(',\n');
+    return `${imports}\n module.exports = { \n ${exports} \n };`;
 }
 
 /**
