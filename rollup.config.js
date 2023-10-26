@@ -2,17 +2,9 @@ import buble from '@rollup/plugin-buble';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import babel from '@rollup/plugin-babel';
+import { targets, rollupFormats } from './source-files.cjs';
 
-const targets = [
-    { name: 'Utility', ext: 'js', exportType: 'named' },
-    { name: 'DomObserver', ext: 'js', exportType: 'default' },
-    { name: 'UrlHelper', ext: 'js', exportType: 'default' },
-    { name: 'ElementHelper', ext: 'js', exportType: 'default' },
-    { name: 'ProxyHelper', ext: 'js', exportType: 'default' },
-    { name: 'PowerHelpers', ext: 'js', exportType: 'named' },
-];
-
-const formats = ['amd', 'cjs', 'umd', 'iife', 'system', 'esm'];
+const formats = rollupFormats ?? [('amd', 'cjs', 'umd', 'iife', 'system', 'esm')];
 
 function buildConfig({ filename, format, transpile = true, exportType = 'default' }) {
     const plugins = [
