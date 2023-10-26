@@ -1,4 +1,5 @@
 const path = require('path');
+const targets = require('./source-files.cjs').targets;
 
 /**
  * Generates a Webpack configuration for a given library name and target.
@@ -23,15 +24,6 @@ const getWebpackConfig = (libraryName, libraryTarget, dir, ext) => ({
     },
     stats: 'errors-only',
 });
-
-const targets = [
-    { name: 'Utility', ext: 'js' },
-    { name: 'DomObserver', ext: 'js' },
-    { name: 'UrlHelper', ext: 'js' },
-    { name: 'ElementHelper', ext: 'js' },
-    { name: 'ProxyHelper', ext: 'js' },
-    { name: 'PowerHelpers', ext: 'js' },
-];
 
 // Generate multiple configurations
 const configs = targets.flatMap((target) => [
