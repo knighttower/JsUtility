@@ -1,6 +1,7 @@
 {
     "name": "@knighttower/js-utility-functions",
-    "version": "3.0.17",
+    "version": "3.1.2",
+    "type": "module",
     "main": "index.cjs.js",
     "module": "index.js",
     "jsdelivr": "dist/browser/Utility.js",
@@ -50,7 +51,9 @@
     },
     "scripts": {
         "production": "npm run build",
-        "build": "webpack --mode production && rollup -c && node ./nodeUtils/BuildExports.js --dir ./src && node ./nodeUtils/BumpVersion.cjs",
+        "build": "webpack --mode production && rollup -c && npm run buildExports && npm run bumpVersion",
+        "bumpVersion": "node ./nodeUtils/BumpVersion.cjs",
+        "buildExports": "node ./nodeUtils/BuildExports.js --dir ./src",
         "rollup": "rollup -c",
         "dev": "webpack --mode development",
         "watch": "webpack --mode development --watch",
