@@ -1,7 +1,3 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', { value: true });
-
 function _typeof(o) {
   "@babel/helpers - typeof";
 
@@ -978,29 +974,4 @@ var Utility = {
   validatePhone: validatePhone
 };
 
-exports.Utility = Utility;
-exports.convertToBool = convertToBool;
-exports.convertToNumber = convertToNumber;
-exports.currencyToDecimal = currencyToDecimal;
-exports.dateFormat = dateFormat;
-exports.decimalToCurrency = decimalToCurrency;
-exports.default = Utility;
-exports.emptyOrValue = emptyOrValue;
-exports.formatPhoneNumber = formatPhoneNumber;
-exports.getDynamicId = getDynamicId;
-exports.getGoogleMapsAddress = getGoogleMapsAddress;
-exports.getRandomId = getRandomId;
-exports.includes = includes;
-exports.instanceOf = instanceOf;
-exports.isEmpty = isEmpty;
-exports.isNumber = isNumber;
-exports.openGoogleMapsAddress = openGoogleMapsAddress;
-exports.proxyObject = proxyObject;
-exports.selectElement = selectElement;
-exports.toCurrency = toCurrency;
-exports.toDollarString = toDollarString;
-exports.typeOf = typeOf;
-exports.utility = Utility;
-exports.utils = Utility;
-exports.validateEmail = validateEmail;
-exports.validatePhone = validatePhone;
+export { Utility, convertToBool, convertToNumber, currencyToDecimal, dateFormat, decimalToCurrency, Utility as default, emptyOrValue, formatPhoneNumber, getDynamicId, getGoogleMapsAddress, getRandomId, includes, instanceOf, isEmpty, isNumber, openGoogleMapsAddress, proxyObject, selectElement, toCurrency, toDollarString, typeOf, Utility as utility, Utility as utils, validateEmail, validatePhone };

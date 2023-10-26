@@ -1,5 +1,3 @@
-'use strict';
-
 function _unsupportedIterableToArray(o, minLen) {
   if (!o) return;
   if (typeof o === "string") return _arrayLikeToArray(o, minLen);
@@ -153,4 +151,4 @@ var DomObserver = {
   cleanup: cleanup
 };
 
-module.exports = DomObserver;
+export { DomObserver as default };

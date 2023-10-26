@@ -1,9 +1,9 @@
 // Default Module from: DomObserver
-import DomObserver from './src/DomObserver.mjs';
+const DomObserver = require('./src/DomObserver.js');
 // Default Module from: ElementHelper
-import ElementHelper from './src/ElementHelper.mjs';
+const ElementHelper = require('./src/ElementHelper.js');
 // Single Modules and Aliases from: PowerHelpers
-import {
+const {
     PowerHelper,
     addQuotes,
     cleanStr,
@@ -22,15 +22,15 @@ import {
     setLookUpExp,
     setWildCardString,
     wildCardStringSearch,
-} from './src/PowerHelpers.mjs';
+} = require('./src/PowerHelpers.js');
 // Default Module from: PowerHelpers
-import powerHelper from './src/PowerHelpers.mjs';
+const powerHelper = require('./src/PowerHelpers.js');
 // Default Module from: ProxyHelper
-import ProxyHelper from './src/ProxyHelper.mjs';
+const ProxyHelper = require('./src/ProxyHelper.js');
 // Default Module from: UrlHelper
-import UrlHelper from './src/UrlHelper.mjs';
+const UrlHelper = require('./src/UrlHelper.js');
 // Single Modules and Aliases from: Utility
-import {
+const {
     utils,
     utility,
     convertToBool,
@@ -55,16 +55,16 @@ import {
     typeOf,
     validateEmail,
     validatePhone,
-} from './src/Utility.mjs';
+} = require('./src/Utility.js');
 // Default Module from: Utility
-import Utility from './src/Utility.mjs';
+const Utility = require('./src/Utility.js');
 
 // Default Module from: DomObserver
-export { DomObserver };
+module.exports = { DomObserver };
 // Default Module from: ElementHelper
-export { ElementHelper };
+module.exports = { ElementHelper };
 // Single Modules and Aliases from: PowerHelpers
-export {
+module.exports = {
     PowerHelper,
     addQuotes,
     cleanStr,
@@ -85,13 +85,13 @@ export {
     wildCardStringSearch,
 };
 // Default Module from: PowerHelpers
-export { powerHelper };
+module.exports = { powerHelper };
 // Default Module from: ProxyHelper
-export { ProxyHelper };
+module.exports = { ProxyHelper };
 // Default Module from: UrlHelper
-export { UrlHelper };
+module.exports = { UrlHelper };
 // Single Modules and Aliases from: Utility
-export {
+module.exports = {
     utils,
     utility,
     convertToBool,
@@ -118,4 +118,4 @@ export {
     validatePhone,
 };
 // Default Module from: Utility
-export { Utility };
+module.exports = { Utility };

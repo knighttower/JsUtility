@@ -1,5 +1,3 @@
-'use strict';
-
 function _toConsumableArray(arr) {
   return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
 }
@@ -84,4 +82,4 @@ function ProxyHelper(object) {
   });
 }
 
-module.exports = ProxyHelper;
+export { ProxyHelper as default };

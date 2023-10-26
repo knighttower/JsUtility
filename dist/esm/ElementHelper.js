@@ -1,5 +1,3 @@
-'use strict';
-
 function _typeof(o) {
   "@babel/helpers - typeof";
 
@@ -342,4 +340,4 @@ var ElementHelper = /*#__PURE__*/function () {
   return ElementHelper;
 }();
 
-module.exports = ElementHelper;
+export { ElementHelper as default };

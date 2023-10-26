@@ -2,7 +2,7 @@
 // MIT License
 // Copyright (c) [2022] [Knighttower] https://github.com/knighttower
 
-import DomObserver from './DomObserver.mjs';
+import DomObserver from './DomObserver.js';
 
 /**
  * @class Adds some extra functionality to interact with a DOM element

@@ -1,5 +1,3 @@
-'use strict';
-
 function _iterableToArrayLimit(r, l) {
   var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"];
   if (null != t) {
@@ -332,4 +330,4 @@ function UrlHelper(__u) {
   __u.readUrl = doc.URL;
 }
 
-module.exports = UrlHelper;
+export { UrlHelper as default };
