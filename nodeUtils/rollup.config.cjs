@@ -1,8 +1,11 @@
-import buble from '@rollup/plugin-buble';
-import resolve from '@rollup/plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs';
-import babel from '@rollup/plugin-babel';
-import { targets, rollupFormats } from './source-files.cjs';
+const buble = require('@rollup/plugin-buble');
+const resolve = require('@rollup/plugin-node-resolve');
+const commonjs = require('@rollup/plugin-commonjs');
+const babel = require('@rollup/plugin-babel');
+const path = require('path');
+
+const workingDir = process.cwd();
+const { targets, rollupFormats } = require(`${workingDir}/source-files.cjs`);
 
 const formats = rollupFormats ?? [('amd', 'cjs', 'umd', 'iife', 'system', 'esm')];
 
@@ -20,11 +23,11 @@ function buildConfig({ filename, format, transpile = true, exportType = 'default
     }
 
     return {
-        input: `./src/${filename}`,
+        input: path.resolve(`${workingDir}/src/${filename}`),
         output: {
             name: 'adaptive',
             format,
-            file: `./dist/${format}/${filename}`,
+            file: path.resolve(`${workingDir}/dist/${format}/${filename}`),
             exports: exportType,
         },
         plugins,
@@ -43,6 +46,7 @@ function getAllConfigs() {
     });
     return configs;
 }
+
 const configs = getAllConfigs();
 
-export default configs;
+module.exports = configs;

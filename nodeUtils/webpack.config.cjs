@@ -1,5 +1,6 @@
 const path = require('path');
-const targets = require('./source-files.cjs').targets;
+const workingDir = process.cwd();
+const { targets } = require(`${workingDir}/source-files.cjs`);
 
 /**
  * Generates a Webpack configuration for a given library name and target.
@@ -10,13 +11,18 @@ const targets = require('./source-files.cjs').targets;
  */
 const getWebpackConfig = (libraryName, libraryTarget, dir, ext) => ({
     mode: 'production',
-    entry: `./src/${libraryName}.${ext}`,
+    entry: `${workingDir}/src/${libraryName}.${ext}`,
     resolve: {
-        modules: ['node_modules', path.resolve(__dirname, 'src')],
+        modules: [
+            'node_modules',
+            path.resolve(__dirname, 'src'),
+            path.resolve(__dirname, `${workingDir}/src`),
+            path.resolve(__dirname, `${workingDir}/node_modules`),
+        ],
         extensions: ['.mjs', '.js', '.json', '.cjs'],
     },
     output: {
-        path: path.resolve(__dirname, `dist/${dir}`),
+        path: path.resolve(__dirname, `${workingDir}/dist/${dir}`),
         filename: `${libraryName}.js`,
         library: libraryName,
         libraryTarget: libraryTarget,
