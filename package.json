@@ -1,8 +1,8 @@
 {
   "name": "@knighttower/js-utility-functions",
-  "version": "3.1.5",
+  "version": "3.1.6",
   "type": "module",
-  "main": "index.cjs.js",
+  "main": "index.cjs",
   "module": "index.js",
   "jsdelivr": "dist/browser/Utility.js",
   "browser": "dist/browser/Utility.js",
@@ -15,12 +15,12 @@
     "src",
     "nodeUtils",
     "index.js",
-    "index.cjs.js"
+    "index.cjs"
   ],
   "exports": {
     ".": {
       "import": "./index.js",
-      "require": "./index.cjs.js"
+      "require": "./index.cjs"
     }
   },
   "keywords": [
