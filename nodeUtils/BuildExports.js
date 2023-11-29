@@ -27,6 +27,14 @@ function getExports(filePath) {
     // Example matches: export { myVar, myFunc }
     const matchAliasesExps = content.match(/export\s*{([^}]+)}/g) || [];
 
+    //Example matches: module.exports = { myVar, myFunc }
+    const matchModuleExports = helper.getMatchInBetween(content, /module\.exports\s*={/g, '}', true);
+    const matchModuleExports2 = helper.getMatchInBetween(content, /module\.exports\./g, /(=|;)/, true);
+    //Example matches: modules.myModule = any
+    const matchExports = (content.match(/modules\.(\w+)\s*=/g) || []).map((module) =>
+        helper.cleanStr(module, 'modules.', '='),
+    );
+
     // Storages
     const singleExports = [];
     const defaultExport = utils.emptyOrValue(
@@ -46,7 +54,7 @@ function getExports(filePath) {
     // --> Process the arrays to clean and pick the export
     // --------------------------
     // Handle single exports
-    matchSingleExps.forEach((exp) => {
+    [...matchSingleExps, ...matchExports].forEach((exp) => {
         const parts = helper.cleanStr(exp, 'export').match(/\b\w+\b/g);
         if (parts.length === 1) {
             singleExports.push(parts[0]);
@@ -56,7 +64,7 @@ function getExports(filePath) {
     });
 
     // Handle aliases
-    matchAliasesExps.forEach((aliasLine) => {
+    [...matchAliasesExps, ...matchModuleExports, ...matchModuleExports2].forEach((aliasLine) => {
         helper
             // cleanup and create an array of aliases
             .getChunks(helper.cleanStr(aliasLine, 'export', '{', '}'))
@@ -154,23 +162,33 @@ function getCommonJsContent(allExports) {
  * Main function to generate the index.js file.
  */
 (function generateIndex() {
-    const directory = getFlagValue('dir') ?? './src';
+    const esmDir = getFlagValue('dir') ?? './src';
+    const commonJsDir = getFlagValue('cdir') ?? esmDir;
     const singleFile = getFlagValue('single') ?? false;
     const out = getFlagValue('out') ? helper.cleanStr(getFlagValue('out'), '.js', '.mjs', '.cjs', '.ts') : null;
     const destination = out ?? './index';
-    // Synchronously fetch all file paths within a directory and its subdirectories
+    // Synchronously fetch all file paths within a esmDir and its subdirectories
     // that have a .js or .mjs extension
-    const filePaths = !singleFile ? glob.sync(`${directory}/**/*.{js,mjs,cjs}`) : glob.sync(`${singleFile}`);
-    const allExports = {};
+    const filePathsEsm = !singleFile ? glob.sync(`${esmDir}/**/*.{js,mjs,cjs}`) : glob.sync(`${singleFile}`);
+    const filePathsCjs = !singleFile ? glob.sync(`${commonJsDir}/**/*.{js,mjs,cjs}`) : glob.sync(`${singleFile}`);
 
-    filePaths.forEach((filePath) => {
+    const allExportsEsm = {};
+    const allExportsCjs = {};
+
+    filePathsEsm.forEach((filePath) => {
         if (!path.basename(filePath).includes('index')) {
-            allExports[filePath] = getExports(filePath);
+            allExportsEsm[filePath] = getExports(filePath);
         }
     });
 
-    const indexEsmContent = getEsmContent(allExports);
-    const indexCjsContent = getCommonJsContent(allExports);
+    filePathsCjs.forEach((filePath) => {
+        if (!path.basename(filePath).includes('index')) {
+            allExportsCjs[filePath] = getExports(filePath);
+        }
+    });
+
+    const indexEsmContent = getEsmContent(allExportsEsm);
+    const indexCjsContent = getCommonJsContent(allExportsCjs);
 
     fs.writeFileSync(path.join(workingDir, `${destination}.js`), indexEsmContent);
     fs.writeFileSync(path.join(workingDir, `${destination}.cjs`), indexCjsContent);

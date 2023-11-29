@@ -1,111 +1,21 @@
-// Default Module from: DomObserver
-const DomObserver = require('./src/DomObserver.js');
-// Default Module from: ElementHelper
-const ElementHelper = require('./src/ElementHelper.js');
-// Single Modules and Aliases from: PowerHelpers
-const {
-    PowerHelper,
-    addQuotes,
-    cleanStr,
-    convertKeysToSymbols,
-    findAndReplaceInArray,
-    findNested,
-    fixQuotes,
-    getArrObjFromString,
-    getDirectivesFromString,
-    getMatchBlock,
-    getChunks,
-    getMatchInBetween,
-    removeQuotes,
-    startAndEndWith,
-    setExpString,
-    setLookUpExp,
-    setWildCardString,
-    wildCardStringSearch,
-} = require('./src/PowerHelpers.js');
-// Default Module from: PowerHelpers
-const powerHelper = require('./src/PowerHelpers.js');
-// Default Module from: ProxyHelper
-const ProxyHelper = require('./src/ProxyHelper.js');
-// Default Module from: UrlHelper
-const UrlHelper = require('./src/UrlHelper.js');
-// Single Modules and Aliases from: Utility
-const {
-    utils,
-    utility,
-    convertToBool,
-    convertToNumber,
-    currencyToDecimal,
-    dateFormat,
-    decimalToCurrency,
-    emptyOrValue,
-    formatPhoneNumber,
-    getDynamicId,
-    getRandomId,
-    getGoogleMapsAddress,
-    includes,
-    isEmpty,
-    isNumber,
-    instanceOf,
-    openGoogleMapsAddress,
-    proxyObject,
-    selectElement,
-    toCurrency,
-    toDollarString,
-    typeOf,
-    validateEmail,
-    validatePhone,
-} = require('./src/Utility.js');
-// Default Module from: Utility
-const Utility = require('./src/Utility.js');
+// Single Modules and Aliases from: DomObserver.cjs
+const { DomObserver } = require('./dist/cjs/DomObserver.cjs');
+// Single Modules and Aliases from: ElementHelper.cjs
+const { ElementHelper } = require('./dist/cjs/ElementHelper.cjs');
+// Single Modules and Aliases from: PowerHelpers.cjs
+const { PowerHelpers } = require('./dist/cjs/PowerHelpers.cjs');
+// Single Modules and Aliases from: ProxyHelper.cjs
+const { ProxyHelper } = require('./dist/cjs/ProxyHelper.cjs');
+// Single Modules and Aliases from: UrlHelper.cjs
+const { UrlHelper } = require('./dist/cjs/UrlHelper.cjs');
+// Single Modules and Aliases from: Utility.cjs
+const { Utility } = require('./dist/cjs/Utility.cjs');
 
 module.exports = {
     DomObserver,
     ElementHelper,
-    PowerHelper,
-    addQuotes,
-    cleanStr,
-    convertKeysToSymbols,
-    findAndReplaceInArray,
-    findNested,
-    fixQuotes,
-    getArrObjFromString,
-    getDirectivesFromString,
-    getMatchBlock,
-    getChunks,
-    getMatchInBetween,
-    removeQuotes,
-    startAndEndWith,
-    setExpString,
-    setLookUpExp,
-    setWildCardString,
-    wildCardStringSearch,
-    powerHelper,
+    PowerHelpers,
     ProxyHelper,
     UrlHelper,
-    utils,
-    utility,
-    convertToBool,
-    convertToNumber,
-    currencyToDecimal,
-    dateFormat,
-    decimalToCurrency,
-    emptyOrValue,
-    formatPhoneNumber,
-    getDynamicId,
-    getRandomId,
-    getGoogleMapsAddress,
-    includes,
-    isEmpty,
-    isNumber,
-    instanceOf,
-    openGoogleMapsAddress,
-    proxyObject,
-    selectElement,
-    toCurrency,
-    toDollarString,
-    typeOf,
-    validateEmail,
-    validatePhone,
     Utility,
 };
