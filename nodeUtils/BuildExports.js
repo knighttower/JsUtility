@@ -30,9 +30,16 @@ function getExports(filePath) {
     //Example matches: module.exports = { myVar, myFunc }
     const matchModuleExports = helper.getMatchInBetween(content, /module\.exports\s*={/g, '}', true);
     const matchModuleExports2 = helper.getMatchInBetween(content, /module\.exports\./g, /(=|;)/, true);
+    const matchModuleExports3 = (content.match(/module\.exports\s*=\s*(\w+)/g) || []).map((module) =>
+        helper.cleanStr(module, 'module.exports', '='),
+    );
+
     //Example matches: modules.myModule = any
     const matchExports = (content.match(/modules\.(\w+)\s*=/g) || []).map((module) =>
         helper.cleanStr(module, 'modules.', '='),
+    );
+    const matchExports2 = (content.match(/(?!(\.))exports\.(\w+)\s*=/g) || []).map((module) =>
+        helper.cleanStr(module, 'exports.', '='),
     );
 
     // Storages
@@ -54,7 +61,7 @@ function getExports(filePath) {
     // --> Process the arrays to clean and pick the export
     // --------------------------
     // Handle single exports
-    [...matchSingleExps, ...matchExports].forEach((exp) => {
+    [...matchSingleExps, ...matchExports, ...matchExports2].forEach((exp) => {
         const parts = helper.cleanStr(exp, 'export').match(/\b\w+\b/g);
         if (parts.length === 1) {
             singleExports.push(parts[0]);
@@ -64,24 +71,26 @@ function getExports(filePath) {
     });
 
     // Handle aliases
-    [...matchAliasesExps, ...matchModuleExports, ...matchModuleExports2].forEach((aliasLine) => {
-        helper
-            // cleanup and create an array of aliases
-            .getChunks(helper.cleanStr(aliasLine, 'export', '{', '}'))
-            // exclude default export
-            .filter((chunk) => !chunk.includes('default'))
-            // iterate to pick the correct alias;
-            .forEach((chunk) => {
-                if (chunk.includes(' as ')) {
-                    const alias = helper.getChunks(chunk, ' as ');
-                    if (alias[1]) {
-                        aliasExports.push(alias[1]);
+    [...matchAliasesExps, ...matchModuleExports, ...matchModuleExports2, ...matchModuleExports3].forEach(
+        (aliasLine) => {
+            helper
+                // cleanup and create an array of aliases
+                .getChunks(helper.cleanStr(aliasLine, 'export', '{', '}'))
+                // exclude default export
+                .filter((chunk) => !chunk.includes('default'))
+                // iterate to pick the correct alias;
+                .forEach((chunk) => {
+                    if (chunk.includes(' as ')) {
+                        const alias = helper.getChunks(chunk, ' as ');
+                        if (alias[1]) {
+                            aliasExports.push(alias[1]);
+                        }
+                    } else {
+                        aliasExports.push(chunk);
                     }
-                } else {
-                    aliasExports.push(chunk);
-                }
-            });
-    });
+                });
+        },
+    );
 
     // Merge all named exports and filter
     namedExports = [...aliasExports, ...singleExports].filter((name) => name !== 'default' && name !== defaultExport);

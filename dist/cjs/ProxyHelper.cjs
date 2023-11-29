@@ -1,1 +1,87 @@
-(()=>{"use strict";var e={d:(o,r)=>{for(var t in r)e.o(r,t)&&!e.o(o,t)&&Object.defineProperty(o,t,{enumerable:!0,get:r[t]})},o:(e,o)=>Object.prototype.hasOwnProperty.call(e,o),r:e=>{"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})}},o={};function r(e){const o=new Map((e._private||["_private"]).map((e=>[e,!0]))),r=new Map([...o,...(e._protected||[]).map((e=>[e,!0]))]),t=new Map((e._mutable||[]).map((e=>[e,!0])));return new Proxy(e,{get:(e,r)=>r in e&&!o.has(String(r))?e[r]:void console.error("Prop is private, not set, or object is protected",r),set:(e,n,a)=>(n=String(n))in e?t.has(n)?(e[n]=a,!0):r.has(n)||o.has(n)?(console.error("The prop is protected or private and cannot be modified",n,a),!1):(e[n]=a,!0):(console.error("Protected Object, cannot set new props",n,a),!1)})}e.r(o),e.d(o,{default:()=>r}),module.exports.ProxyHelper=o})();
+'use strict';
+
+function _toConsumableArray(arr) {
+  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
+}
+function _arrayWithoutHoles(arr) {
+  if (Array.isArray(arr)) return _arrayLikeToArray(arr);
+}
+function _iterableToArray(iter) {
+  if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
+}
+function _unsupportedIterableToArray(o, minLen) {
+  if (!o) return;
+  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+  var n = Object.prototype.toString.call(o).slice(8, -1);
+  if (n === "Object" && o.constructor) n = o.constructor.name;
+  if (n === "Map" || n === "Set") return Array.from(o);
+  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+}
+function _arrayLikeToArray(arr, len) {
+  if (len == null || len > arr.length) len = arr.length;
+  for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
+  return arr2;
+}
+function _nonIterableSpread() {
+  throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+
+/* Author Knighttower
+    MIT License
+    [2023] [Knighttower] https://github.com/knighttower
+*/
+/**
+ * @module ProxyHelper
+ * Convert to proxy to protect objects
+ * Allows to declare _private, _protected and _mutable - all arrays with prop names
+ * @example ProxyHelper({objectProps..., _protected: array(...)})
+ * @param {Object} object
+ * @return {Proxy}
+ * @usage const proxy = ProxyHelper({objectProps..., _protected: array(...), _private: array(...), _mutable: array(...)})
+ * @usage _protected: array(...) -> Cannot be modified
+ * @usage _private: array(...) -> Cannot be accessed
+ * @usage _mutable: array(...) -> Can be modified
+ */
+function ProxyHelper(object) {
+
+  var _private = new Map((object._private || ['_private']).map(function (prop) {
+    return [prop, true];
+  }));
+  var _protected = new Map([].concat(_toConsumableArray(_private), _toConsumableArray((object._protected || []).map(function (prop) {
+    return [prop, true];
+  }))));
+  var _mutable = new Map((object._mutable || []).map(function (prop) {
+    return [prop, true];
+  }));
+  return new Proxy(object, {
+    get: function get(target, prop) {
+      if (prop in target && !_private.has(String(prop))) {
+        return target[prop];
+      } else {
+        console.error('Prop is private, not set, or object is protected', prop);
+        return undefined;
+      }
+    },
+    set: function set(target, prop, value) {
+      prop = String(prop);
+      if (prop in target) {
+        if (_mutable.has(prop)) {
+          target[prop] = value;
+          return true;
+        }
+        if (!_protected.has(prop) && !_private.has(prop)) {
+          target[prop] = value;
+          return true;
+        } else {
+          console.error('The prop is protected or private and cannot be modified', prop, value);
+          return false;
+        }
+      } else {
+        console.error('Protected Object, cannot set new props', prop, value);
+        return false;
+      }
+    }
+  });
+}
+
+module.exports = ProxyHelper;
