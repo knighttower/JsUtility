@@ -1,4 +1,4 @@
-var adaptive = (function () {
+var ElementHelper = (function () {
   'use strict';
 
   function _typeof(o) {

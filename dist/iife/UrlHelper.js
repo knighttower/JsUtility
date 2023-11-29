@@ -1,4 +1,4 @@
-var adaptive = (function () {
+var UrlHelper = (function () {
   'use strict';
 
   function _iterableToArrayLimit(r, l) {

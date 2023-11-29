@@ -1,7 +1,7 @@
 // Default Module from: DomObserver
-const DomObserver = require('./dist/cjs/DomObserver.js');
+const DomObserver = require('./src/DomObserver.js');
 // Default Module from: ElementHelper
-const ElementHelper = require('./dist/cjs/ElementHelper.js');
+const ElementHelper = require('./src/ElementHelper.js');
 // Single Modules and Aliases from: PowerHelpers
 const {
     PowerHelper,
@@ -22,13 +22,13 @@ const {
     setLookUpExp,
     setWildCardString,
     wildCardStringSearch,
-} = require('./dist/cjs/PowerHelpers.js');
+} = require('./src/PowerHelpers.js');
 // Default Module from: PowerHelpers
-const powerHelper = require('./dist/cjs/PowerHelpers.js');
+const powerHelper = require('./src/PowerHelpers.js');
 // Default Module from: ProxyHelper
-const ProxyHelper = require('./dist/cjs/ProxyHelper.js');
+const ProxyHelper = require('./src/ProxyHelper.js');
 // Default Module from: UrlHelper
-const UrlHelper = require('./dist/cjs/UrlHelper.js');
+const UrlHelper = require('./src/UrlHelper.js');
 // Single Modules and Aliases from: Utility
 const {
     utils,
@@ -55,9 +55,9 @@ const {
     typeOf,
     validateEmail,
     validatePhone,
-} = require('./dist/cjs/Utility.js');
+} = require('./src/Utility.js');
 // Default Module from: Utility
-const Utility = require('./dist/cjs/Utility.js');
+const Utility = require('./src/Utility.js');
 
 module.exports = {
     DomObserver,

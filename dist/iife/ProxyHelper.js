@@ -1,4 +1,4 @@
-var adaptive = (function () {
+var ProxyHelper = (function () {
   'use strict';
 
   function _toConsumableArray(arr) {

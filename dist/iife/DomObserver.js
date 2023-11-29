@@ -1,4 +1,4 @@
-var adaptive = (function () {
+var DomObserver = (function () {
   'use strict';
 
   function _unsupportedIterableToArray(o, minLen) {

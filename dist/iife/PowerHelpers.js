@@ -1,4 +1,4 @@
-var adaptive = (function (exports) {
+var PowerHelpers = (function (exports) {
   'use strict';
 
   function _iterableToArrayLimit(r, l) {

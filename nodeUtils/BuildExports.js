@@ -173,6 +173,6 @@ function getCommonJsContent(allExports) {
     const indexCjsContent = getCommonJsContent(allExports);
 
     fs.writeFileSync(path.join(workingDir, `${destination}.js`), indexEsmContent);
-    fs.writeFileSync(path.join(workingDir, `${destination}.cjs.js`), indexCjsContent);
+    fs.writeFileSync(path.join(workingDir, `${destination}.cjs`), indexCjsContent);
     console.log('indexes generated');
 })();

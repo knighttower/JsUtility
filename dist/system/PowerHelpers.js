@@ -1,4 +1,4 @@
-System.register('adaptive', [], (function (exports) {
+System.register('PowerHelpers', [], (function (exports) {
   'use strict';
   return {
     execute: (function () {

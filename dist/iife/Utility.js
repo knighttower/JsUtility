@@ -1,4 +1,4 @@
-var adaptive = (function (exports) {
+var Utility = (function (exports) {
   'use strict';
 
   function _typeof(o) {

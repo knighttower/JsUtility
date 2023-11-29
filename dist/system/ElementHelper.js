@@ -1,4 +1,4 @@
-System.register('adaptive', [], (function (exports) {
+System.register('ElementHelper', [], (function (exports) {
   'use strict';
   return {
     execute: (function () {

@@ -1,17 +1,25 @@
 const path = require('path');
 const workingDir = process.cwd();
-const { targets } = require(`${workingDir}/source-files.cjs`);
+const { targets, webpackFormats } = require(`${workingDir}/source-files.cjs`);
 
+const formats = webpackFormats ?? [
+    { type: 'umd', dir: 'umd', ext: 'js' },
+    { type: 'commonjs2', dir: 'cjs', ext: 'cjs' },
+    { type: 'window', dir: 'browser', ext: 'js' },
+];
 /**
  * Generates a Webpack configuration for a given library name and target.
  *
- * @param {string} libraryName - The name of the library.
+ * @param {string} fileSrc - The file source.
+ * @param {string} target - The target name.
+ * @param {string} dir - The directory name.
  * @param {string} libraryTarget - The library target format.
+ * @param {string} ext - The file extension.
  * @returns {Object} - The Webpack configuration.
  */
-const getWebpackConfig = (libraryName, libraryTarget, dir, ext) => ({
+const getWebpackConfig = (fileSrc, fileName, libraryTarget, dir, ext) => ({
     mode: 'production',
-    entry: `${workingDir}/src/${libraryName}.${ext}`,
+    entry: `${workingDir}/src/${fileSrc}`,
     resolve: {
         modules: [
             'node_modules',
@@ -23,8 +31,8 @@ const getWebpackConfig = (libraryName, libraryTarget, dir, ext) => ({
     },
     output: {
         path: path.resolve(__dirname, `${workingDir}/dist/${dir}`),
-        filename: `${libraryName}.js`,
-        library: libraryName,
+        filename: `${fileName}.${ext}`,
+        library: fileName,
         libraryTarget: libraryTarget,
         umdNamedDefine: true,
     },
@@ -32,10 +40,17 @@ const getWebpackConfig = (libraryName, libraryTarget, dir, ext) => ({
 });
 
 // Generate multiple configurations
-const configs = targets.flatMap((target) => [
-    // getWebpackConfig(target.name, 'umd', 'umd', target.ext),
-    // getWebpackConfig(target.name, 'commonjs2', 'cjs', target.ext),
-    getWebpackConfig(target.name, 'window', 'browser', target.ext),
-]);
+function getAllConfigs() {
+    const configs = [];
+    targets.forEach((target) => {
+        // Generate multiple configurations
+        for (const format of formats) {
+            configs.push(getWebpackConfig(target.file, target.file.split('.')[0], format.type, format.dir, format.ext));
+        }
+    });
+    return configs;
+}
+
+const configs = getAllConfigs();
 
 module.exports = configs;

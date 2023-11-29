@@ -7,9 +7,18 @@ const path = require('path');
 const workingDir = process.cwd();
 const { targets, rollupFormats } = require(`${workingDir}/source-files.cjs`);
 
-const formats = rollupFormats ?? [('amd', 'cjs', 'umd', 'iife', 'system', 'esm')];
+const formats = rollupFormats ?? [
+    { type: 'amd', ext: 'js' },
+    { type: 'cjs', ext: 'cjs' },
+    { type: 'umd', ext: 'js' },
+    { type: 'iife', ext: 'js' },
+    { type: 'system', ext: 'js' },
+    { type: 'esm', ext: 'mjs' },
+];
 
-function buildConfig({ filename, format, transpile = true, exportType = 'default' }) {
+function buildConfig({ file, format, transpile = true, exportType = 'default', exportExt = 'js' }) {
+    const fileName = file.split('.')[0];
+    const fileOutput = `${fileName}.${exportExt}`;
     const plugins = [
         resolve(),
         commonjs(),
@@ -23,11 +32,11 @@ function buildConfig({ filename, format, transpile = true, exportType = 'default
     }
 
     return {
-        input: path.resolve(`${workingDir}/src/${filename}`),
+        input: path.resolve(`${workingDir}/src/${file}`),
         output: {
-            name: 'adaptive',
+            name: fileName,
             format,
-            file: path.resolve(`${workingDir}/dist/${format}/${filename}`),
+            file: path.resolve(`${workingDir}/dist/${format}/${fileOutput}`),
             exports: exportType,
         },
         plugins,
@@ -40,7 +49,12 @@ function getAllConfigs() {
         // Generate multiple configurations
         for (const format of formats) {
             configs.push(
-                buildConfig({ filename: `${target.name}.${target.ext}`, format, exportType: target.exportType }),
+                buildConfig({
+                    file: target.file,
+                    format: format.type,
+                    exportType: target.exportType,
+                    exportExt: format.ext,
+                }),
             );
         }
     });
