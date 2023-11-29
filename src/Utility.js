@@ -3,7 +3,6 @@
 //  * @knighttower
 //  * @url knighttower.io
 //  * @git https://github.com/knighttower/
-//  * @license MIT
 //  */
 // // -----------------------------------------
 

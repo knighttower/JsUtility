@@ -124,10 +124,8 @@ function _toPropertyKey(arg) {
   return typeof key === "symbol" ? key : String(key);
 }
 
-/* Author Knighttower
-    MIT License
-    [2023] [Knighttower] https://github.com/knighttower
-*/
+// [2023] [Knighttower] https://github.com/knighttower
+
 /**
  * @module ProxyHelper
  * Convert to proxy to protect objects
