@@ -1,4 +1,4 @@
-define((function () { 'use strict';
+define(['exports'], (function (exports) { 'use strict';
 
   function _iterableToArrayLimit(r, l) {
     var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"];
@@ -332,6 +332,10 @@ define((function () { 'use strict';
     __u.readUrl = doc.URL;
   }
 
-  return UrlHelper;
+  exports.UrlHelper = UrlHelper;
+  exports.default = UrlHelper;
+  exports.urlHelper = UrlHelper;
+
+  Object.defineProperty(exports, '__esModule', { value: true });
 
 }));

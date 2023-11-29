@@ -1,4 +1,4 @@
-var ElementHelper = (function () {
+var ElementHelper = (function (exports) {
   'use strict';
 
   function _typeof(o) {
@@ -343,6 +343,12 @@ var ElementHelper = (function () {
     return ElementHelper;
   }();
 
-  return ElementHelper;
+  exports.ElementHelper = ElementHelper;
+  exports.default = ElementHelper;
+  exports.elementHelper = ElementHelper;
 
-})();
+  Object.defineProperty(exports, '__esModule', { value: true });
+
+  return exports;
+
+})({});

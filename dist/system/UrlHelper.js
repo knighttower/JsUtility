@@ -3,7 +3,11 @@ System.register('UrlHelper', [], (function (exports) {
   return {
     execute: (function () {
 
-      exports('default', UrlHelper);
+      exports({
+        UrlHelper: UrlHelper,
+        default: UrlHelper,
+        urlHelper: UrlHelper
+      });
 
       function _iterableToArrayLimit(r, l) {
         var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"];

@@ -1,4 +1,4 @@
-var ProxyHelper = (function () {
+var ProxyHelper = (function (exports) {
   'use strict';
 
   function _toConsumableArray(arr) {
@@ -83,6 +83,12 @@ var ProxyHelper = (function () {
     });
   }
 
-  return ProxyHelper;
+  exports.ProxyHelper = ProxyHelper;
+  exports.default = ProxyHelper;
+  exports.proxyHelper = ProxyHelper;
 
-})();
+  Object.defineProperty(exports, '__esModule', { value: true });
+
+  return exports;
+
+})({});

@@ -3,7 +3,11 @@ System.register('ProxyHelper', [], (function (exports) {
   return {
     execute: (function () {
 
-      exports('default', ProxyHelper);
+      exports({
+        ProxyHelper: ProxyHelper,
+        default: ProxyHelper,
+        proxyHelper: ProxyHelper
+      });
 
       function _toConsumableArray(arr) {
         return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();

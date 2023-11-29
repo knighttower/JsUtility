@@ -1,5 +1,7 @@
 'use strict';
 
+Object.defineProperty(exports, '__esModule', { value: true });
+
 function _toConsumableArray(arr) {
   return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
 }
@@ -82,4 +84,6 @@ function ProxyHelper(object) {
   });
 }
 
-module.exports = ProxyHelper;
+exports.ProxyHelper = ProxyHelper;
+exports.default = ProxyHelper;
+exports.proxyHelper = ProxyHelper;

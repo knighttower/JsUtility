@@ -1,5 +1,7 @@
 'use strict';
 
+Object.defineProperty(exports, '__esModule', { value: true });
+
 function _iterableToArrayLimit(r, l) {
   var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"];
   if (null != t) {
@@ -332,4 +334,6 @@ function UrlHelper(__u) {
   __u.readUrl = doc.URL;
 }
 
-module.exports = UrlHelper;
+exports.UrlHelper = UrlHelper;
+exports.default = UrlHelper;
+exports.urlHelper = UrlHelper;

@@ -1,4 +1,4 @@
-define((function () { 'use strict';
+define(['exports'], (function (exports) { 'use strict';
 
   function _unsupportedIterableToArray(o, minLen) {
     if (!o) return;
@@ -153,6 +153,10 @@ define((function () { 'use strict';
     cleanup: cleanup
   };
 
-  return DomObserver;
+  exports.DomObserver = DomObserver;
+  exports.default = DomObserver;
+  exports.domObserver = DomObserver;
+
+  Object.defineProperty(exports, '__esModule', { value: true });
 
 }));

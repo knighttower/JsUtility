@@ -80,4 +80,4 @@ function ProxyHelper(object) {
   });
 }
 
-export { ProxyHelper as default };
+export { ProxyHelper, ProxyHelper as default, ProxyHelper as proxyHelper };

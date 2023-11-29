@@ -149,12 +149,12 @@ System.register('DomObserver', [], (function (exports) {
           observer.observe(document.body, config);
         }
       })();
-      var DomObserver = exports('default', {
+      var DomObserver = {
         executeOnNodeChanged: executeOnNodeChanged,
         addOnNodeChange: addOnNodeChange,
         removeOnNodeChange: removeOnNodeChange,
         cleanup: cleanup
-      });
+      }; exports({ DomObserver: DomObserver, default: DomObserver, domObserver: DomObserver });
 
     })
   };

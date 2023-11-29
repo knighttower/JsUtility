@@ -1,5 +1,7 @@
 'use strict';
 
+Object.defineProperty(exports, '__esModule', { value: true });
+
 function _unsupportedIterableToArray(o, minLen) {
   if (!o) return;
   if (typeof o === "string") return _arrayLikeToArray(o, minLen);
@@ -153,4 +155,6 @@ var DomObserver = {
   cleanup: cleanup
 };
 
-module.exports = DomObserver;
+exports.DomObserver = DomObserver;
+exports.default = DomObserver;
+exports.domObserver = DomObserver;

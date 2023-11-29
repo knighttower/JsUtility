@@ -210,7 +210,7 @@ System.register('ElementHelper', [], (function (exports) {
        * @example new ElementHelper('elementSelector', domElement|window|document)
        *
        */
-      var ElementHelper = exports('default', /*#__PURE__*/function () {
+      var ElementHelper = /*#__PURE__*/function () {
         /**
          * Constructor
          * @param {String|Object} selector
@@ -343,7 +343,7 @@ System.register('ElementHelper', [], (function (exports) {
           }
         }]);
         return ElementHelper;
-      }());
+      }(); exports({ elementHelper: ElementHelper, default: ElementHelper, ElementHelper: ElementHelper });
 
     })
   };

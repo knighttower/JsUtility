@@ -1,5 +1,7 @@
 'use strict';
 
+Object.defineProperty(exports, '__esModule', { value: true });
+
 function _typeof(o) {
   "@babel/helpers - typeof";
 
@@ -342,4 +344,6 @@ var ElementHelper = /*#__PURE__*/function () {
   return ElementHelper;
 }();
 
-module.exports = ElementHelper;
+exports.ElementHelper = ElementHelper;
+exports.default = ElementHelper;
+exports.elementHelper = ElementHelper;

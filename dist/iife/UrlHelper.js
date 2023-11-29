@@ -1,4 +1,4 @@
-var UrlHelper = (function () {
+var UrlHelper = (function (exports) {
   'use strict';
 
   function _iterableToArrayLimit(r, l) {
@@ -333,6 +333,12 @@ var UrlHelper = (function () {
     __u.readUrl = doc.URL;
   }
 
-  return UrlHelper;
+  exports.UrlHelper = UrlHelper;
+  exports.default = UrlHelper;
+  exports.urlHelper = UrlHelper;
 
-})();
+  Object.defineProperty(exports, '__esModule', { value: true });
+
+  return exports;
+
+})({});

@@ -1,4 +1,4 @@
-var DomObserver = (function () {
+var DomObserver = (function (exports) {
   'use strict';
 
   function _unsupportedIterableToArray(o, minLen) {
@@ -154,6 +154,12 @@ var DomObserver = (function () {
     cleanup: cleanup
   };
 
-  return DomObserver;
+  exports.DomObserver = DomObserver;
+  exports.default = DomObserver;
+  exports.domObserver = DomObserver;
 
-})();
+  Object.defineProperty(exports, '__esModule', { value: true });
+
+  return exports;
+
+})({});

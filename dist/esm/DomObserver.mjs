@@ -151,4 +151,4 @@ var DomObserver = {
   cleanup: cleanup
 };
 
-export { DomObserver as default };
+export { DomObserver, DomObserver as default, DomObserver as domObserver };

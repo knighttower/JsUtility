@@ -330,4 +330,4 @@ function UrlHelper(__u) {
   __u.readUrl = doc.URL;
 }
 
-export { UrlHelper as default };
+export { UrlHelper, UrlHelper as default, UrlHelper as urlHelper };

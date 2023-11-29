@@ -1,7 +1,7 @@
 // Single Modules and Aliases from: DomObserver.cjs
-const { DomObserver } = require('./dist/cjs/DomObserver.cjs');
+const { DomObserver, domObserver } = require('./dist/cjs/DomObserver.cjs');
 // Single Modules and Aliases from: ElementHelper.cjs
-const { ElementHelper } = require('./dist/cjs/ElementHelper.cjs');
+const { ElementHelper, elementHelper } = require('./dist/cjs/ElementHelper.cjs');
 // Single Modules and Aliases from: PowerHelpers.cjs
 const {
     PowerHelper,
@@ -25,9 +25,9 @@ const {
     wildCardStringSearch,
 } = require('./dist/cjs/PowerHelpers.cjs');
 // Single Modules and Aliases from: ProxyHelper.cjs
-const { ProxyHelper } = require('./dist/cjs/ProxyHelper.cjs');
+const { ProxyHelper, proxyHelper } = require('./dist/cjs/ProxyHelper.cjs');
 // Single Modules and Aliases from: UrlHelper.cjs
-const { UrlHelper } = require('./dist/cjs/UrlHelper.cjs');
+const { UrlHelper, urlHelper } = require('./dist/cjs/UrlHelper.cjs');
 // Single Modules and Aliases from: Utility.cjs
 const {
     convertToBool,
@@ -60,7 +60,9 @@ const Utility = require('./dist/cjs/Utility.cjs');
 
 module.exports = {
     DomObserver,
+    domObserver,
     ElementHelper,
+    elementHelper,
     PowerHelper,
     addQuotes,
     cleanStr,
@@ -81,7 +83,9 @@ module.exports = {
     startAndEndWith,
     wildCardStringSearch,
     ProxyHelper,
+    proxyHelper,
     UrlHelper,
+    urlHelper,
     convertToBool,
     convertToNumber,
     currencyToDecimal,

@@ -1,4 +1,4 @@
-define((function () { 'use strict';
+define(['exports'], (function (exports) { 'use strict';
 
   function _typeof(o) {
     "@babel/helpers - typeof";
@@ -342,6 +342,10 @@ define((function () { 'use strict';
     return ElementHelper;
   }();
 
-  return ElementHelper;
+  exports.ElementHelper = ElementHelper;
+  exports.default = ElementHelper;
+  exports.elementHelper = ElementHelper;
+
+  Object.defineProperty(exports, '__esModule', { value: true });
 
 }));

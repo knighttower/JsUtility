@@ -340,4 +340,4 @@ var ElementHelper = /*#__PURE__*/function () {
   return ElementHelper;
 }();
 
-export { ElementHelper as default };
+export { ElementHelper, ElementHelper as default, ElementHelper as elementHelper };

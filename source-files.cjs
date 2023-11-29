@@ -1,9 +1,9 @@
 const targets = [
     { file: 'Utility.js', exportType: 'named' },
-    { file: 'DomObserver.js', exportType: 'default' },
-    { file: 'UrlHelper.js', exportType: 'default' },
-    { file: 'ElementHelper.js', exportType: 'default' },
-    { file: 'ProxyHelper.js', exportType: 'default' },
+    { file: 'DomObserver.js', exportType: 'named' },
+    { file: 'UrlHelper.js', exportType: 'named' },
+    { file: 'ElementHelper.js', exportType: 'named' },
+    { file: 'ProxyHelper.js', exportType: 'named' },
     { file: 'PowerHelpers.js', exportType: 'named' },
 ];
 

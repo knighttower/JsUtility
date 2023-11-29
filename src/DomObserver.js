@@ -68,10 +68,10 @@ const cleanup = () => {
         observer.observe(document.body, config);
     }
 })();
-const DomObserver = {
+export const DomObserver = {
     executeOnNodeChanged,
     addOnNodeChange,
     removeOnNodeChange,
     cleanup,
 };
-export default DomObserver;
+export { DomObserver as default, DomObserver as domObserver };

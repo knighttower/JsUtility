@@ -3,7 +3,7 @@
  *
  * @module urlHelper
  */
-export default function UrlHelper(__u) {
+function UrlHelper(__u) {
     'use strict';
 
     /**
@@ -216,3 +216,5 @@ export default function UrlHelper(__u) {
     __u.path = PATH;
     __u.readUrl = doc.URL;
 }
+
+export { UrlHelper, UrlHelper as urlHelper, UrlHelper as default };

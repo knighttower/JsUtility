@@ -12,7 +12,7 @@
  * @usage _private: array(...) -> Cannot be accessed
  * @usage _mutable: array(...) -> Can be modified
  */
-export default function ProxyHelper(object) {
+function ProxyHelper(object) {
     'use strict';
     const _private = new Map((object._private || ['_private']).map((prop) => [prop, true]));
     const _protected = new Map([..._private, ...(object._protected || []).map((prop) => [prop, true])]);
@@ -48,3 +48,5 @@ export default function ProxyHelper(object) {
         },
     });
 }
+
+export { ProxyHelper as proxyHelper, ProxyHelper as default, ProxyHelper };

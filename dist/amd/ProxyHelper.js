@@ -1,4 +1,4 @@
-define((function () { 'use strict';
+define(['exports'], (function (exports) { 'use strict';
 
   function _toConsumableArray(arr) {
     return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
@@ -82,6 +82,10 @@ define((function () { 'use strict';
     });
   }
 
-  return ProxyHelper;
+  exports.ProxyHelper = ProxyHelper;
+  exports.default = ProxyHelper;
+  exports.proxyHelper = ProxyHelper;
+
+  Object.defineProperty(exports, '__esModule', { value: true });
 
 }));
