@@ -16,19 +16,38 @@ const formats = rollupFormats ?? [
     { type: 'esm', ext: 'mjs' },
 ];
 
-function buildConfig({ file, format, transpile = true, exportType = 'default', exportExt = 'js' }) {
+/**
+ * Builds a configuration object for the rollup build process.
+ *
+ * @param {object} options - The options for the build configuration.
+ * @param {string} options.file - The input file name.
+ * @param {string} options.format - The output format (e.g., 'umd', 'cjs').
+ * @param {boolean} [options.transpile=true] - Whether to transpile the code into ES5 files
+ * @param {string} [options.exportType='default'] - The export type ('default', 'named', etc.).
+ * @param {string} [options.exportExt='js'] - The extension for the output file.
+ * @returns {object} The configuration object for the rollup build process.
+ */
+function buildConfig({ file, format, exportType = 'default', exportExt = 'js', transpile = false }) {
+    if (!file || !format) {
+        throw new Error('Missing required parameters: file and format');
+    }
+
     const fileName = file.split('.')[0];
     const fileOutput = `${fileName}.${exportExt}`;
-    const plugins = [
-        resolve(),
-        commonjs(),
-        babel({
-            presets: ['@babel/preset-env'],
-            babelHelpers: 'bundled',
-        }),
-    ];
+    const plugins = [resolve()];
+
     if (transpile) {
         plugins.push(buble());
+        plugins.push(
+            babel({
+                babelHelpers: 'bundled',
+                exclude: 'node_modules/**',
+            }),
+        );
+    }
+
+    if (format === 'esm') {
+        plugins.push(commonjs());
     }
 
     return {
@@ -54,6 +73,7 @@ function getAllConfigs() {
                     format: format.type,
                     exportType: target.exportType,
                     exportExt: format.ext,
+                    transpile: target.transpile ?? false,
                 }),
             );
         }

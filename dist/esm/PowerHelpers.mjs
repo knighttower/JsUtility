@@ -1,141 +1,3 @@
-function _iterableToArrayLimit(r, l) {
-  var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"];
-  if (null != t) {
-    var e,
-      n,
-      i,
-      u,
-      a = [],
-      f = !0,
-      o = !1;
-    try {
-      if (i = (t = t.call(r)).next, 0 === l) {
-        if (Object(t) !== t) return;
-        f = !1;
-      } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0);
-    } catch (r) {
-      o = !0, n = r;
-    } finally {
-      try {
-        if (!f && null != t.return && (u = t.return(), Object(u) !== u)) return;
-      } finally {
-        if (o) throw n;
-      }
-    }
-    return a;
-  }
-}
-function _typeof(o) {
-  "@babel/helpers - typeof";
-
-  return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) {
-    return typeof o;
-  } : function (o) {
-    return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o;
-  }, _typeof(o);
-}
-function _defineProperty(obj, key, value) {
-  key = _toPropertyKey(key);
-  if (key in obj) {
-    Object.defineProperty(obj, key, {
-      value: value,
-      enumerable: true,
-      configurable: true,
-      writable: true
-    });
-  } else {
-    obj[key] = value;
-  }
-  return obj;
-}
-function _slicedToArray(arr, i) {
-  return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
-}
-function _arrayWithHoles(arr) {
-  if (Array.isArray(arr)) return arr;
-}
-function _unsupportedIterableToArray(o, minLen) {
-  if (!o) return;
-  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
-  var n = Object.prototype.toString.call(o).slice(8, -1);
-  if (n === "Object" && o.constructor) n = o.constructor.name;
-  if (n === "Map" || n === "Set") return Array.from(o);
-  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
-}
-function _arrayLikeToArray(arr, len) {
-  if (len == null || len > arr.length) len = arr.length;
-  for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
-  return arr2;
-}
-function _nonIterableRest() {
-  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-}
-function _createForOfIteratorHelper(o, allowArrayLike) {
-  var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"];
-  if (!it) {
-    if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
-      if (it) o = it;
-      var i = 0;
-      var F = function () {};
-      return {
-        s: F,
-        n: function () {
-          if (i >= o.length) return {
-            done: true
-          };
-          return {
-            done: false,
-            value: o[i++]
-          };
-        },
-        e: function (e) {
-          throw e;
-        },
-        f: F
-      };
-    }
-    throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-  }
-  var normalCompletion = true,
-    didErr = false,
-    err;
-  return {
-    s: function () {
-      it = it.call(o);
-    },
-    n: function () {
-      var step = it.next();
-      normalCompletion = step.done;
-      return step;
-    },
-    e: function (e) {
-      didErr = true;
-      err = e;
-    },
-    f: function () {
-      try {
-        if (!normalCompletion && it.return != null) it.return();
-      } finally {
-        if (didErr) throw err;
-      }
-    }
-  };
-}
-function _toPrimitive(input, hint) {
-  if (typeof input !== "object" || input === null) return input;
-  var prim = input[Symbol.toPrimitive];
-  if (prim !== undefined) {
-    var res = prim.call(input, hint || "default");
-    if (typeof res !== "object") return res;
-    throw new TypeError("@@toPrimitive must return a primitive value.");
-  }
-  return (hint === "string" ? String : Number)(input);
-}
-function _toPropertyKey(arg) {
-  var key = _toPrimitive(arg, "string");
-  return typeof key === "symbol" ? key : String(key);
-}
-
 // Author Knighttower
 // MIT License
 // [2022] [Knighttower] https://github.com/knighttower
@@ -153,40 +15,40 @@ function _toPropertyKey(arg) {
  * Holds memory of registered functions
  * @private
  */
-var executeOnNodeChanged = {};
+const executeOnNodeChanged = {};
 /**
  * Observer
  * @private
  * @return {MutationObserver}
  */
-(function () {
-  if (typeof window !== 'undefined') {
-    var callback = function callback(mutationList) {
-      var _iterator = _createForOfIteratorHelper(mutationList),
-        _step;
-      try {
-        for (_iterator.s(); !(_step = _iterator.n()).done;) {
-          var mutation = _step.value;
-          if (mutation.type === 'childList') {
-            for (var id in executeOnNodeChanged) {
-              executeOnNodeChanged[id]();
+(() => {
+    if (typeof window !== 'undefined') {
+        const callback = (mutationList) => {
+            for (const mutation of mutationList) {
+                if (mutation.type === 'childList') {
+                    for (const id in executeOnNodeChanged) {
+                        executeOnNodeChanged[id]();
+                    }
+                }
             }
-          }
-        }
-      } catch (err) {
-        _iterator.e(err);
-      } finally {
-        _iterator.f();
-      }
-    };
-    var config = {
-      childList: true,
-      subtree: true
-    };
-    var observer = new MutationObserver(callback);
-    observer.observe(document.body, config);
-  }
+        };
+        const config = {
+            childList: true,
+            subtree: true,
+        };
+        const observer = new MutationObserver(callback);
+        observer.observe(document.body, config);
+    }
 })();
+
+// // -----------------------------------------
+// /**
+//  * @knighttower
+//  * @url knighttower.io
+//  * @git https://github.com/knighttower/
+//  */
+// // -----------------------------------------
+
 
 // -----------------------------
 // METHODS
@@ -205,16 +67,16 @@ var executeOnNodeChanged = {};
  * @usage convertToBool('false') // false
  */
 function convertToBool(val) {
-  switch (_typeof(val)) {
-    case 'boolean':
-      return val;
-    case 'string':
-      return val === 'false' || val === '0' ? false : true;
-    case 'number':
-      return val !== 0;
-    default:
-      return Boolean(val);
-  }
+    switch (typeof val) {
+        case 'boolean':
+            return val;
+        case 'string':
+            return val === 'false' || val === '0' ? false : true;
+        case 'number':
+            return val !== 0;
+        default:
+            return Boolean(val);
+    }
 }
 
 /**
@@ -230,12 +92,13 @@ function convertToBool(val) {
  * @example convertToNumber(null) // Output: null (original)
  */
 function convertToNumber(input) {
-  var isNum = isNumber(input);
-  if (isNum !== null) {
-    return isNum;
-  }
-  // Case: String that cannot be converted to a number
-  return input;
+    const isNum = isNumber(input);
+
+    if (isNum !== null) {
+        return isNum;
+    }
+    // Case: String that cannot be converted to a number
+    return input;
 }
 
 /**
@@ -259,22 +122,22 @@ function convertToNumber(input) {
  * @example var hello = {}; emptyOrValue(hello, 'default') // null
  * @example var hello = [...]; emptyOrValue(hello') // [...]
  */
-function emptyOrValue(value) {
-  var _default = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-  /**
-   * Test sequence:
-   * If it is a number 0> : true
-   * If is not undefined: true
-   * If it is boolean (true|false) prevents going to empty
-   * If it is not Empty, [], null, {}, 0, true, false: true
-   */
+function emptyOrValue(value, _default = null) {
+    /**
+     * Test sequence:
+     * If it is a number 0> : true
+     * If is not undefined: true
+     * If it is boolean (true|false) prevents going to empty
+     * If it is not Empty, [], null, {}, 0, true, false: true
+     */
 
-  if (isNumber(value) !== null || typeof value === 'boolean') {
-    return value;
-  } else if (!isEmpty(value)) {
-    return value;
-  }
-  return _default;
+    if (isNumber(value) !== null || typeof value === 'boolean') {
+        return value;
+    } else if (!isEmpty(value)) {
+        return value;
+    }
+
+    return _default;
 }
 
 /**
@@ -284,7 +147,7 @@ function emptyOrValue(value) {
  * @return string Format kn__000000__000
  */
 function getDynamicId() {
-  return 'kn__' + new Date().getTime() + '__' + Math.floor(Math.random() * (999 - 100));
+    return 'kn__' + new Date().getTime() + '__' + Math.floor(Math.random() * (999 - 100));
 }
 
 /**
@@ -294,7 +157,7 @@ function getDynamicId() {
  * @return string
  * @example getRandomId() // kn__000000__000
  */
-var getRandomId = getDynamicId;
+const getRandomId = getDynamicId;
 
 /**
  * Check if a value is empty
@@ -305,22 +168,27 @@ var getRandomId = getDynamicId;
  * @return {string}
  */
 function isEmpty(value) {
-  if (value === null || value === undefined) {
-    return true;
-  }
-  if (typeof value === 'string' || Array.isArray(value)) {
-    return value.length === 0;
-  }
-  if (value instanceof Map || value instanceof Set) {
-    return value.size === 0;
-  }
-  if (ArrayBuffer.isView(value)) {
-    return value.byteLength === 0;
-  }
-  if (_typeof(value) === 'object') {
-    return Object.keys(value).length === 0;
-  }
-  return false;
+    if (value === null || value === undefined) {
+        return true;
+    }
+
+    if (typeof value === 'string' || Array.isArray(value)) {
+        return value.length === 0;
+    }
+
+    if (value instanceof Map || value instanceof Set) {
+        return value.size === 0;
+    }
+
+    if (ArrayBuffer.isView(value)) {
+        return value.byteLength === 0;
+    }
+
+    if (typeof value === 'object') {
+        return Object.keys(value).length === 0;
+    }
+
+    return false;
 }
 
 /**
@@ -340,24 +208,26 @@ function isEmpty(value) {
  * @example isNumber("123.45") // true
  */
 function isNumber(value) {
-  var isType = _typeof(value);
-  switch (value) {
-    case null:
-    case undefined:
-    case '':
-      return null;
-    case '0':
-    case 0:
-      return 0;
-    default:
-      if (isType === 'number' || isType === 'string') {
-        if (typeof value === 'number' || !Number.isNaN(Number(value))) {
-          return +value;
-        }
-      }
-      break;
-  }
-  return null;
+    const isType = typeof value;
+    switch (value) {
+        case null:
+        case undefined:
+        case '':
+            return null;
+        case '0':
+        case 0:
+            return 0;
+        default:
+            if (isType === 'number' || isType === 'string') {
+                if (typeof value === 'number' || !Number.isNaN(Number(value))) {
+                    return +value;
+                }
+            }
+
+            break;
+    }
+
+    return null;
 }
 
 /**
@@ -373,45 +243,56 @@ function isNumber(value) {
  * @example typeOf({}) // returns 'object'
  */
 function typeOf(input, test) {
-  // Special case for null since it can be treated as an object
-  if (input === null) {
-    if (test) {
-      return test === null || test === 'null' ? true : false;
+    // Special case for null since it can be treated as an object
+    if (input === null) {
+        if (test) {
+            return test === null || test === 'null' ? true : false;
+        }
+        return 'null';
     }
-    return 'null';
-  }
-  var inputType;
-  switch (_typeof(input)) {
-    case 'number':
-    case 'string':
-    case 'boolean':
-    case 'undefined':
-    case 'bigint':
-    case 'symbol':
-    case 'function':
-      inputType = _typeof(input);
-      break;
-    case 'object':
-      inputType = Array.isArray(input) ? 'array' : 'object';
-      break;
-    default:
-      inputType = 'unknown';
-  }
-  if (test) {
-    return test === inputType;
-  }
-  return inputType;
+
+    let inputType;
+
+    switch (typeof input) {
+        case 'number':
+        case 'string':
+        case 'boolean':
+        case 'undefined':
+        case 'bigint':
+        case 'symbol':
+        case 'function':
+            inputType = typeof input;
+            break;
+        case 'object':
+            inputType = Array.isArray(input) ? 'array' : 'object';
+
+            break;
+        default:
+            inputType = 'unknown';
+    }
+
+    if (test) {
+        return test === inputType;
+    }
+
+    return inputType;
 }
+
+// Author Knighttower
+// MIT License
+// Copyright (c) [2022] [Knighttower] https://github.com/knighttower
+
 
 // @private
 function _removeBrackets(strExp) {
-  var regex = /^(\[|\{)(.*?)(\]|\})$/; // Match brackets at start and end
-  var match = strExp.match(regex);
-  if (match) {
-    return match[2].trim(); // Extract and trim the content between brackets
-  }
+    const regex = /^(\[|\{)(.*?)(\]|\})$/; // Match brackets at start and end
+    const match = strExp.match(regex);
 
-  return strExp; // Return the original string if no brackets found at start and end
+    if (match) {
+        return match[2].trim(); // Extract and trim the content between brackets
+    }
+
+    return strExp; // Return the original string if no brackets found at start and end
 }
 
 /**
@@ -421,9 +302,8 @@ function _removeBrackets(strExp) {
  * @return {String}
  * @example addQuotes('hello') // "hello"
  */
-function addQuotes(str) {
-  var q = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '"';
-  return "".concat(q).concat(str).concat(q);
+function addQuotes(str, q = '"') {
+    return `${q}${str}${q}`;
 }
 
 /**
@@ -440,22 +320,20 @@ function addQuotes(str) {
  * @example cleanStr('Hello World. Sunshine is here!', /Hello/g) // ' World. Sunshine is here!'
  * @example cleanStr('Hello World. Sunshine is here!', /Hello/g, /Sunshine/g) // ' World.  is here!'
  */
-function cleanStr(str) {
-  var arguments$1 = arguments;
+function cleanStr(str, ...args) {
+    if (!str) {
+        return;
+    }
+    if (typeof str !== 'string') {
+        return str;
+    }
 
-  if (!str) {
-    return;
-  }
-  if (typeof str !== 'string') {
-    return str;
-  }
-  for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-    args[_key - 1] = arguments$1[_key];
-  }
-  return args.reduce(function (accStr, arg) {
-    var regex = arg instanceof RegExp ? arg : new RegExp(setExpString(arg));
-    return accStr.replace(regex, '');
-  }, str).trim();
+    return args
+        .reduce((accStr, arg) => {
+            const regex = arg instanceof RegExp ? arg : new RegExp(setExpString(arg));
+            return accStr.replace(regex, '');
+        }, str)
+        .trim();
 }
 
 /**
@@ -466,18 +344,18 @@ function cleanStr(str) {
  * @example convertKeysToSymbols({a: 1, b: 2}) // returns {Symbol(a): 1, Symbol(b): 2, keyToSymbolMap: {a: Symbol(a), b: Symbol(b)}
  */
 function convertKeysToSymbols(obj) {
-  if (emptyOrValue(obj, null) === null) {
-    return {};
-  }
-  var newObj = {};
-  var keyToSymbolMap = {};
-  for (var key in obj) {
-    var symbolKey = Symbol(key);
-    newObj[symbolKey] = obj[key];
-    keyToSymbolMap[key] = symbolKey;
-  }
-  newObj.keyToSymbolMap = keyToSymbolMap;
-  return newObj;
+    if (emptyOrValue(obj, null) === null) {
+        return {};
+    }
+    const newObj = {};
+    const keyToSymbolMap = {};
+    for (const key in obj) {
+        const symbolKey = Symbol(key);
+        newObj[symbolKey] = obj[key];
+        keyToSymbolMap[key] = symbolKey;
+    }
+    newObj.keyToSymbolMap = keyToSymbolMap;
+    return newObj;
 }
 
 /**
@@ -490,28 +368,28 @@ function convertKeysToSymbols(obj) {
  * @example findAndReplaceInArray([1,2,3,4,5], 3, 'three') // [1,2,'three',4,5]
  */
 function findAndReplaceInArray(arr, find, value) {
-  var replaced = false;
-  var result = arr.map(function (prop) {
-    if (Array.isArray(prop)) {
-      var replacedArray = findAndReplaceInArray(prop, find, value);
-      if (replacedArray) {
-        replaced = true;
-        return replacedArray;
-      }
-      return prop;
-    }
-    if (prop === find) {
-      replaced = true;
-      if (Array.isArray(value)) {
-        return value.map(function (p) {
-          return Array.isArray(p) ? p : p.trim();
-        });
-      }
-      return value;
-    }
-    return prop;
-  });
-  return replaced ? result : null;
+    let replaced = false;
+
+    const result = arr.map((prop) => {
+        if (Array.isArray(prop)) {
+            const replacedArray = findAndReplaceInArray(prop, find, value);
+            if (replacedArray) {
+                replaced = true;
+                return replacedArray;
+            }
+            return prop;
+        }
+        if (prop === find) {
+            replaced = true;
+            if (Array.isArray(value)) {
+                return value.map((p) => (Array.isArray(p) ? p : p.trim()));
+            }
+            return value;
+        }
+        return prop;
+    });
+
+    return replaced ? result : null;
 }
 
 /**
@@ -523,29 +401,27 @@ function findAndReplaceInArray(arr, find, value) {
  * @return {string|null}
  * @example findNested('[[]hello [world]]', '[', ']') // [world]
  */
-function findNested(str) {
-  var start = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '[';
-  var end = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : ']';
-  if (typeof str !== 'string') {
-    return str;
-  }
-  // Find the last index of '['
-  var lastIndex = str.lastIndexOf(start);
-  // If '[' is not found, return null or some default value
-  if (lastIndex === -1) {
-    return null;
-  }
+function findNested(str, start = '[', end = ']') {
+    if (typeof str !== 'string') {
+        return str;
+    }
+    // Find the last index of '['
+    const lastIndex = str.lastIndexOf(start);
+    // If '[' is not found, return null or some default value
+    if (lastIndex === -1) {
+        return null;
+    }
 
-  // Extract the substring starting from the last '[' to the end
-  var substring = str.substring(lastIndex);
-  // Find the index of the first ']' in the substring
-  var endIndex = substring.indexOf(end);
-  // If ']' is not found, return null or some default value
-  if (endIndex === -1) {
-    return null;
-  }
-  // Extract and return the content between the last '[' and the next ']', including them
-  return substring.substring(0, endIndex + 1);
+    // Extract the substring starting from the last '[' to the end
+    const substring = str.substring(lastIndex);
+    // Find the index of the first ']' in the substring
+    const endIndex = substring.indexOf(end);
+    // If ']' is not found, return null or some default value
+    if (endIndex === -1) {
+        return null;
+    }
+    // Extract and return the content between the last '[' and the next ']', including them
+    return substring.substring(0, endIndex + 1);
 }
 
 /**
@@ -557,12 +433,11 @@ function findNested(str) {
  * @example fixQuotes("'hello'") // "hello"
  * @example fixQuotes('"hello"') // "hello"
  */
-function fixQuotes(str) {
-  var q = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '"';
-  if (typeof str !== 'string') {
-    return str;
-  }
-  return str.replace(/`|'|"/g, q);
+function fixQuotes(str, q = '"') {
+    if (typeof str !== 'string') {
+        return str;
+    }
+    return str.replace(/`|'|"/g, q);
 }
 
 /**
@@ -575,55 +450,60 @@ function fixQuotes(str) {
  * @example getArrObjFromString('{ y: hello, x: world, z: [value,value]}') // { y: 'hello', x: 'world', z: ['value', 'value'] }
  */
 function getArrObjFromString(strExp) {
-  // alredy typeof object or array just return it
-  if (typeOf(strExp, 'object') || typeOf(strExp, 'array')) {
-    return strExp;
-  }
-  var isObject = startAndEndWith(strExp, '{', '}');
-  var isArray = startAndEndWith(strExp, '[', ']');
-  // If it is other type of string, return it
-  if (!isObject && !isArray) {
-    return strExp;
-  }
-  var newCollection = isObject ? {} : [];
-  var nestedElements = {};
-
-  //remove the brackets
-  var newStrExp = _removeBrackets(strExp);
-  var loopNested = function loopNested() {
-    var objects = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-    // ignore eslint comment
-    // eslint-disable-next-line no-constant-condition
-    while (true) {
-      //find any nested arrays or objects
-      var matched = objects ? findNested(newStrExp, '{', '}') : findNested(newStrExp);
-      if (!matched) {
-        break;
-      }
-
-      //replace the nested array or object with a marker so that we can safely split the string
-      var marker = "__".concat(getRandomId(), "__");
-      nestedElements[marker] = matched;
-      newStrExp = newStrExp.replace(matched, marker);
+    // alredy typeof object or array just return it
+    if (typeOf(strExp, 'object') || typeOf(strExp, 'array')) {
+        return strExp;
     }
-  };
-  loopNested();
-  loopNested(true);
-  getChunks(newStrExp).forEach(function (chunk, index) {
-    var isObjectKey = chunk.includes(':') && isObject;
-    var chunkParts = isObjectKey ? getChunks(chunk, ':') : [];
-    var chunkKey = removeQuotes(emptyOrValue(chunkParts[0], index));
-    chunk = isObjectKey ? chunkParts[1] : chunk;
-    if (chunk in nestedElements) {
-      chunk = getArrObjFromString(nestedElements[chunk]);
+    const isObject = startAndEndWith(strExp, '{', '}');
+    const isArray = startAndEndWith(strExp, '[', ']');
+    // If it is other type of string, return it
+    if (!isObject && !isArray) {
+        return strExp;
     }
-    chunk = convertToNumber(removeQuotes(chunk));
-    // set back in the collection either as an object or array
-    isObject ? newCollection[chunkKey] = chunk : newCollection.push(chunk);
-  });
-  // uncomment to debug
-  // console.log('___ log ___', newCollection);
-  return newCollection;
+
+    const newCollection = isObject ? {} : [];
+    const nestedElements = {};
+
+    //remove the brackets
+    let newStrExp = _removeBrackets(strExp);
+
+    const loopNested = (objects = false) => {
+        // ignore eslint comment
+        // eslint-disable-next-line no-constant-condition
+        while (true) {
+            //find any nested arrays or objects
+            let matched = objects ? findNested(newStrExp, '{', '}') : findNested(newStrExp);
+
+            if (!matched) {
+                break;
+            }
+
+            //replace the nested array or object with a marker so that we can safely split the string
+            let marker = `__${getRandomId()}__`;
+            nestedElements[marker] = matched;
+
+            newStrExp = newStrExp.replace(matched, marker);
+        }
+    };
+
+    loopNested();
+    loopNested(true);
+
+    getChunks(newStrExp).forEach((chunk, index) => {
+        const isObjectKey = chunk.includes(':') && isObject;
+        const chunkParts = isObjectKey ? getChunks(chunk, ':') : [];
+        const chunkKey = removeQuotes(emptyOrValue(chunkParts[0], index));
+        chunk = isObjectKey ? chunkParts[1] : chunk;
+        if (chunk in nestedElements) {
+            chunk = getArrObjFromString(nestedElements[chunk]);
+        }
+        chunk = convertToNumber(removeQuotes(chunk));
+        // set back in the collection either as an object or array
+        isObject ? (newCollection[chunkKey] = chunk) : newCollection.push(chunk);
+    });
+    // uncomment to debug
+    // console.log('___ log ___', newCollection);
+    return newCollection;
 }
 
 /**
@@ -647,100 +527,106 @@ function getArrObjFromString(strExp) {
  * @example getDirectivesFromString('directive.tablet(...values)') // {directive: {tablet: 'values'}}
  */
 function getDirectivesFromString(stringDirective) {
-  var str = stringDirective;
-  if (!emptyOrValue(str)) {
-    return null;
-  }
-  var results = function results() {
-    var type = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-    var results = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-    return {
-      type: type,
-      directive: results
-    };
-  };
-  var matchArrayTypes = /^\[((.|\n)*?)\]$/gm;
-  // comment eslint to ignore
-  // eslint-disable-next-line no-useless-escape
-  var matchObjectTypes = /^\{((.|\n)*?)\:((.|\n)*?)\}/gm;
-  // eslint-disable-next-line no-useless-escape
-  var matchFunctionString = /^([a-zA-Z]+)(\()(\.|\#)(.*)(\))/g;
-  var regexDotObjectString = /([a-zA-Z]+)\.(.*?)\(((.|\n)*?)\)/gm;
-  var regexExObjectString = /([a-zA-Z]+)\[((.|\n)*?)\]\(((.|\n)*?)\)/gm;
-  var type = _typeof(str);
-  if (type === 'object' || type === 'array') {
-    return results(type, str);
-  } else {
-    switch (true) {
-      case !!str.match(matchArrayTypes):
-        // Matches the Array as string: [value, value] OR ['value','value']
-        // regexArrayLike = /^\[((.|\n)*?)\]$/gm;
-        // Matches a multi-array string like [[value,value]],value]
-        // regexMultiArrayString = /\[(\n|)(((.|\[)*)?)\](\,\n|)(((.|\])*)?)(\n|)\]/gm;
+    const str = stringDirective;
+    if (!emptyOrValue(str)) {
+        return null;
+    }
 
-        type = 'array';
-        break;
-      case !!str.match(matchObjectTypes):
-        // Matches the JSON objects as string: {'directive':{key:value}} OR {key:value}
-        // regexObjectLike = /^\{((.|\n)*?)\:((.|\n)*?)\}/gm;
-        type = 'object';
-        break;
-      case !!str.match(matchFunctionString):
-        // Mathes simple directive function style: directive(#idOr.Class)
-        // regexFunctionString
-        // eslint-disable-next-line
-        var directive = str.split('(')[0].trim();
-        return results('idOrClassWithDirective', _defineProperty({}, directive, getMatchInBetween(str, '(', ')')));
-      case !!str.match(regexDotObjectString):
-        // Matches object-style strings: directive.tablet(...values) OR directive[expression](...values)
-        // OR directive.breakdown|breakdown2(...values) OR directive.tablet(...values)&&directive.mobile(...values)
-        type = 'dotObject';
-        break;
-      case !!str.match(regexExObjectString):
-        type = 'dotObject';
-        break;
-      default:
-        return results('string', str);
+    const results = (type = null, results = null) => {
+        return {
+            type: type,
+            directive: results,
+        };
+    };
+    const matchArrayTypes = /^\[((.|\n)*?)\]$/gm;
+    // comment eslint to ignore
+    // eslint-disable-next-line no-useless-escape
+    const matchObjectTypes = /^\{((.|\n)*?)\:((.|\n)*?)\}/gm;
+    // eslint-disable-next-line no-useless-escape
+    const matchFunctionString = /^([a-zA-Z]+)(\()(\.|\#)(.*)(\))/g;
+    const regexDotObjectString = /([a-zA-Z]+)\.(.*?)\(((.|\n)*?)\)/gm;
+    const regexExObjectString = /([a-zA-Z]+)\[((.|\n)*?)\]\(((.|\n)*?)\)/gm;
+    let type = typeof str;
+
+    if (type === 'object' || type === 'array') {
+        return results(type, str);
+    } else {
+        switch (true) {
+            case !!str.match(matchArrayTypes):
+                // Matches the Array as string: [value, value] OR ['value','value']
+                // regexArrayLike = /^\[((.|\n)*?)\]$/gm;
+                // Matches a multi-array string like [[value,value]],value]
+                // regexMultiArrayString = /\[(\n|)(((.|\[)*)?)\](\,\n|)(((.|\])*)?)(\n|)\]/gm;
+
+                type = 'array';
+                break;
+            case !!str.match(matchObjectTypes):
+                // Matches the JSON objects as string: {'directive':{key:value}} OR {key:value}
+                // regexObjectLike = /^\{((.|\n)*?)\:((.|\n)*?)\}/gm;
+                type = 'object';
+                break;
+            case !!str.match(matchFunctionString):
+                // Mathes simple directive function style: directive(#idOr.Class)
+                // regexFunctionString
+                // eslint-disable-next-line
+                const directive = str.split('(')[0].trim();
+                return results('idOrClassWithDirective', { [directive]: getMatchInBetween(str, '(', ')') });
+            case !!str.match(regexDotObjectString):
+                // Matches object-style strings: directive.tablet(...values) OR directive[expression](...values)
+                // OR directive.breakdown|breakdown2(...values) OR directive.tablet(...values)&&directive.mobile(...values)
+                type = 'dotObject';
+                break;
+            case !!str.match(regexExObjectString):
+                type = 'dotObject';
+                break;
+
+            default:
+                return results('string', str);
+        }
     }
-  }
-  if (type === 'array' || type === 'object') {
-    var strQ = fixQuotes(str);
-    try {
-      return results(type, JSON.parse(strQ));
-    } catch (error) {
-      // uncomment to debug
-      // console.log('___ parse error ___', error);
+
+    if (type === 'array' || type === 'object') {
+        let strQ = fixQuotes(str);
+        try {
+            return results(type, JSON.parse(strQ));
+        } catch (error) {
+            // uncomment to debug
+            // console.log('___ parse error ___', error);
+        }
+
+        return results(type, getArrObjFromString(strQ));
     }
-    return results(type, getArrObjFromString(strQ));
-  }
-  if (type === 'dotObject') {
-    var values, breakDownId, _directive;
-    var setObject = {};
-    getChunks(str, '&&').forEach(function (command) {
-      if (command.match(regexExObjectString)) {
-        // Matches object-style strings: directive[expression](...values)
-        values = getMatchInBetween(command, '](', ')');
-        breakDownId = getMatchInBetween(command, '[', ']');
-        _directive = command.split('[')[0].trim();
-      } else {
-        // Matches object-style strings: directive.tablet(...values)
-        values = getMatchInBetween(command, '(', ')');
-        command = command.replace(getMatchBlock(command, '(', ')'), '');
-        var _getChunks = getChunks(command, '.');
-        var _getChunks2 = _slicedToArray(_getChunks, 2);
-        _directive = _getChunks2[0];
-        breakDownId = _getChunks2[1];
-      }
-      values = getArrObjFromString(values);
-      if (!setObject[_directive]) {
-        setObject[_directive] = {};
-      }
-      getChunks(breakDownId, '|').forEach(function (id) {
-        setObject[_directive][id] = values;
-      });
-    });
-    return results('dotObject', setObject);
-  }
+
+    if (type === 'dotObject') {
+        let values, breakDownId, directive;
+        const setObject = {};
+
+        getChunks(str, '&&').forEach((command) => {
+            if (command.match(regexExObjectString)) {
+                // Matches object-style strings: directive[expression](...values)
+                values = getMatchInBetween(command, '](', ')');
+                breakDownId = getMatchInBetween(command, '[', ']');
+                directive = command.split('[')[0].trim();
+            } else {
+                // Matches object-style strings: directive.tablet(...values)
+                values = getMatchInBetween(command, '(', ')');
+                command = command.replace(getMatchBlock(command, '(', ')'), '');
+                [directive, breakDownId] = getChunks(command, '.');
+            }
+
+            values = getArrObjFromString(values);
+
+            if (!setObject[directive]) {
+                setObject[directive] = {};
+            }
+
+            getChunks(breakDownId, '|').forEach((id) => {
+                setObject[directive][id] = values;
+            });
+        });
+
+        return results('dotObject', setObject);
+    }
 }
 
 /**
@@ -755,19 +641,18 @@ function getDirectivesFromString(stringDirective) {
  * @example getMatchBlock('is a hello world today', 'h', 'd', true) // ['hello world']
  * @example getMatchBlock('is a <hello world/> today', '<', '/>') // '<hello world/>'
  */
-function getMatchBlock(str, p1, p2) {
-  var all = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-  if (typeof str !== 'string') {
-    return str;
-  }
-  p1 = setExpString(p1);
-  p2 = setExpString(p2);
-  var regex = new RegExp(setLookUpExp(p1, p2), 'gm');
-  var matches = str.match(regex);
-  if (matches) {
-    return all ? matches : matches[0];
-  }
-  return null;
+function getMatchBlock(str, p1, p2, all = false) {
+    if (typeof str !== 'string') {
+        return str;
+    }
+    p1 = setExpString(p1);
+    p2 = setExpString(p2);
+    let regex = new RegExp(setLookUpExp(p1, p2), 'gm');
+    const matches = str.match(regex);
+    if (matches) {
+        return all ? matches : matches[0];
+    }
+    return null;
 }
 /**
  * Splits a string into chunks by a given splitter and cleans the chunks
@@ -775,19 +660,16 @@ function getMatchBlock(str, p1, p2) {
  * @param {string} splitter - The string/character to split the string by. Defaults to ','
  * @return {string|array}
  */
-function getChunks(str) {
-  var splitter = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : ',';
-  if (typeof str !== 'string') {
-    return str;
-  }
-  if (isEmpty(str)) {
-    return [];
-  }
-  str = cleanStr(str);
-  var chunks = str.split(splitter).map(function (t) {
-    return cleanStr(t);
-  });
-  return chunks.length === 1 && chunks[0] === '' ? [str] : chunks;
+function getChunks(str, splitter = ',') {
+    if (typeof str !== 'string') {
+        return str;
+    }
+    if (isEmpty(str)) {
+        return [];
+    }
+    str = cleanStr(str);
+    let chunks = str.split(splitter).map((t) => cleanStr(t));
+    return chunks.length === 1 && chunks[0] === '' ? [str] : chunks;
 }
 
 /**
@@ -802,16 +684,12 @@ function getChunks(str) {
  * @example getMatchInBetween('hello <world/>', '<', '/>', true) // ['world']
  * @example getMatchInBetween('hello <world/>', '<', '/>') // 'world'
  */
-function getMatchInBetween(str, p1, p2) {
-  var _getMatchBlock;
-  var all = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-  if (typeof str !== 'string') {
-    return str;
-  }
-  var matchBlock = (_getMatchBlock = getMatchBlock(str, p1, p2, all)) !== null && _getMatchBlock !== void 0 ? _getMatchBlock : all ? [] : str;
-  return all ? matchBlock.map(function (match) {
-    return cleanStr(match, p1, p2);
-  }) : cleanStr(matchBlock, p1, p2);
+function getMatchInBetween(str, p1, p2, all = false) {
+    if (typeof str !== 'string') {
+        return str;
+    }
+    const matchBlock = getMatchBlock(str, p1, p2, all) ?? (all ? [] : str);
+    return all ? matchBlock.map((match) => cleanStr(match, p1, p2)) : cleanStr(matchBlock, p1, p2);
 }
 
 /**
@@ -823,10 +701,10 @@ function getMatchInBetween(str, p1, p2) {
  * @example removeQuotes("'hello'") // hello
  */
 function removeQuotes(str) {
-  if (typeof str !== 'string') {
-    return str;
-  }
-  return str.replace(/`|'|"/g, '');
+    if (typeof str !== 'string') {
+        return str;
+    }
+    return str.replace(/`|'|"/g, '');
 }
 
 /**
@@ -838,10 +716,8 @@ function removeQuotes(str) {
  * @example startAndEndWith('hello world', 'h', 'd') // false
  * @example startAndEndWith('hello world', 'h', 'd') // true
  */
-function startAndEndWith(strExp) {
-  var start = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-  var end = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-  return (!start || strExp.startsWith(start)) && (!end || strExp.endsWith(end));
+function startAndEndWith(strExp, start = null, end = null) {
+    return (!start || strExp.startsWith(start)) && (!end || strExp.endsWith(end));
 }
 
 /**
@@ -854,13 +730,18 @@ function startAndEndWith(strExp) {
  * @example setExpString([hello]) // \\[hello\\/ then use like new new RegExp(setExpString(StringOrRegex))
  */
 function setExpString(exp) {
-  if (exp instanceof RegExp) {
-    return exp;
-  } else {
-    return exp.split('').map(function (_char) {
-      return ['$', '^', '.', '*', '+', '?', '(', ')', '[', ']', '{', '}', '|', '\\'].includes(_char) ? "\\".concat(_char) : _char;
-    }).join('');
-  }
+    if (exp instanceof RegExp) {
+        return exp;
+    } else {
+        return exp
+            .split('')
+            .map((char) =>
+                ['$', '^', '.', '*', '+', '?', '(', ')', '[', ']', '{', '}', '|', '\\'].includes(char)
+                    ? `\\${char}`
+                    : char,
+            )
+            .join('');
+    }
 }
 
 /**
@@ -877,29 +758,25 @@ const text = "Hello World. Sunshine is here! Have fun!";
 const matches = text.match(regex);
 console.log(matches);  // Output: [". Sunshine is here!"]
  */
-function setLookUpExp() {
-  var arguments$1 = arguments;
+function setLookUpExp(...args) {
+    if (args.length < 2) {
+        throw new Error('You need to pass at least two arguments');
+    }
+    let expression = '';
+    // loop through args
+    args.forEach((arg, index) => {
+        // if arg is a regex, return the source
+        if (arg instanceof RegExp) {
+            arg = arg.source;
+        }
+        if (index === 0) {
+            expression = arg;
+        } else {
+            expression += `((.|\n)*?)${arg}`;
+        }
+    });
 
-  for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-    args[_key2] = arguments$1[_key2];
-  }
-  if (args.length < 2) {
-    throw new Error('You need to pass at least two arguments');
-  }
-  var expression = '';
-  // loop through args
-  args.forEach(function (arg, index) {
-    // if arg is a regex, return the source
-    if (arg instanceof RegExp) {
-      arg = arg.source;
-    }
-    if (index === 0) {
-      expression = arg;
-    } else {
-      expression += "((.|\n)*?)".concat(arg);
-    }
-  });
-  return expression;
+    return expression;
 }
 
 /**
@@ -913,24 +790,26 @@ function setLookUpExp() {
  * @example setWildCardString('name.*', false, true) // returns 'name\.(.*?)$'
  * @example setWildCardString('name.**') // returns 'name\..*' greedy
  */
-function setWildCardString(str) {
-  var matchStart = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-  var matchEnd = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-  if (typeof str !== 'string') {
-    return str;
-  }
-  if (!str) {
-    return null;
-  }
-  matchStart = convertToBool(matchStart);
-  matchEnd = convertToBool(matchEnd);
-  // eslint-disable-next-line no-useless-escape
-  var regexStr = str.replace(/([.+?^${}()|\[\]\/\\])/g, '\\$&'); // escape all regex special chars
-  var regStart = matchStart ? '^' : '';
-  var regEnd = matchEnd ? '$' : '';
-  regexStr = regexStr.replace(/\*\*/g, '[_g_]') // Replace wildcard patterns with temporary markers
-  .replace(/\*/g, '(.*?)').replace(/\[_g_\]/g, '.*');
-  return "".concat(regStart).concat(regexStr).concat(regEnd);
+function setWildCardString(str, matchStart = false, matchEnd = false) {
+    if (typeof str !== 'string') {
+        return str;
+    }
+    if (!str) {
+        return null;
+    }
+    matchStart = convertToBool(matchStart);
+    matchEnd = convertToBool(matchEnd);
+    // eslint-disable-next-line no-useless-escape
+    let regexStr = str.replace(/([.+?^${}()|\[\]\/\\])/g, '\\$&'); // escape all regex special chars
+    let regStart = matchStart ? '^' : '';
+    let regEnd = matchEnd ? '$' : '';
+
+    regexStr = regexStr
+        .replace(/\*\*/g, '[_g_]') // Replace wildcard patterns with temporary markers
+        .replace(/\*/g, '(.*?)')
+        .replace(/\[_g_\]/g, '.*');
+
+    return `${regStart}${regexStr}${regEnd}`;
 }
 
 /**
@@ -943,41 +822,42 @@ function setWildCardString(str) {
  * @return {string[]|null} - Returns a list of strings that match the pattern, or null if no match is found
  * @example wildCardStringSearch('name.*', ['name.a', 'name.b', 'name.c']) // returns ['name.a', 'name.b', 'name.c']
  */
-function wildCardStringSearch(pattern, listOrString) {
-  var matchStart = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-  var matchEnd = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-  if (!pattern || !listOrString) {
-    return null;
-  }
-  var regex = new RegExp(setWildCardString(pattern, matchStart, matchEnd));
-  if (typeof listOrString === 'string') {
-    var matches = listOrString.match(regex);
-    return emptyOrValue(matches);
-  }
-  var filteredList = [];
-  filteredList = listOrString.filter(function (item) {
-    return regex.test(item);
-  });
-  return emptyOrValue(filteredList);
+function wildCardStringSearch(pattern, listOrString, matchStart = false, matchEnd = false) {
+    if (!pattern || !listOrString) {
+        return null;
+    }
+
+    const regex = new RegExp(setWildCardString(pattern, matchStart, matchEnd));
+
+    if (typeof listOrString === 'string') {
+        const matches = listOrString.match(regex);
+        return emptyOrValue(matches);
+    }
+
+    let filteredList = [];
+    filteredList = listOrString.filter((item) => regex.test(item));
+
+    return emptyOrValue(filteredList);
 }
-var powerHelper = {
-  addQuotes: addQuotes,
-  cleanStr: cleanStr,
-  convertKeysToSymbols: convertKeysToSymbols,
-  findAndReplaceInArray: findAndReplaceInArray,
-  findNested: findNested,
-  fixQuotes: fixQuotes,
-  getArrObjFromString: getArrObjFromString,
-  getChunks: getChunks,
-  getDirectivesFromString: getDirectivesFromString,
-  getMatchBlock: getMatchBlock,
-  getMatchInBetween: getMatchInBetween,
-  removeQuotes: removeQuotes,
-  startAndEndWith: startAndEndWith,
-  setExpString: setExpString,
-  setLookUpExp: setLookUpExp,
-  setWildCardString: setWildCardString,
-  wildCardStringSearch: wildCardStringSearch
+
+const powerHelper = {
+    addQuotes,
+    cleanStr,
+    convertKeysToSymbols,
+    findAndReplaceInArray,
+    findNested,
+    fixQuotes,
+    getArrObjFromString,
+    getChunks,
+    getDirectivesFromString,
+    getMatchBlock,
+    getMatchInBetween,
+    removeQuotes,
+    startAndEndWith,
+    setExpString,
+    setLookUpExp,
+    setWildCardString,
+    wildCardStringSearch,
 };
 
 export { powerHelper as PowerHelper, addQuotes, cleanStr, convertKeysToSymbols, powerHelper as default, findAndReplaceInArray, findNested, fixQuotes, getArrObjFromString, getChunks, getDirectivesFromString, getMatchBlock, getMatchInBetween, powerHelper, removeQuotes, setExpString, setLookUpExp, setWildCardString, startAndEndWith, wildCardStringSearch };

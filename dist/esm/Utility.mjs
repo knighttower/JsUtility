@@ -1,125 +1,3 @@
-function _typeof(o) {
-  "@babel/helpers - typeof";
-
-  return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) {
-    return typeof o;
-  } : function (o) {
-    return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o;
-  }, _typeof(o);
-}
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-function _defineProperties(target, props) {
-  for (var i = 0; i < props.length; i++) {
-    var descriptor = props[i];
-    descriptor.enumerable = descriptor.enumerable || false;
-    descriptor.configurable = true;
-    if ("value" in descriptor) descriptor.writable = true;
-    Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
-  }
-}
-function _createClass(Constructor, protoProps, staticProps) {
-  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
-  if (staticProps) _defineProperties(Constructor, staticProps);
-  Object.defineProperty(Constructor, "prototype", {
-    writable: false
-  });
-  return Constructor;
-}
-function _toConsumableArray(arr) {
-  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
-}
-function _arrayWithoutHoles(arr) {
-  if (Array.isArray(arr)) return _arrayLikeToArray(arr);
-}
-function _iterableToArray(iter) {
-  if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
-}
-function _unsupportedIterableToArray(o, minLen) {
-  if (!o) return;
-  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
-  var n = Object.prototype.toString.call(o).slice(8, -1);
-  if (n === "Object" && o.constructor) n = o.constructor.name;
-  if (n === "Map" || n === "Set") return Array.from(o);
-  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
-}
-function _arrayLikeToArray(arr, len) {
-  if (len == null || len > arr.length) len = arr.length;
-  for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
-  return arr2;
-}
-function _nonIterableSpread() {
-  throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-}
-function _createForOfIteratorHelper(o, allowArrayLike) {
-  var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"];
-  if (!it) {
-    if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
-      if (it) o = it;
-      var i = 0;
-      var F = function () {};
-      return {
-        s: F,
-        n: function () {
-          if (i >= o.length) return {
-            done: true
-          };
-          return {
-            done: false,
-            value: o[i++]
-          };
-        },
-        e: function (e) {
-          throw e;
-        },
-        f: F
-      };
-    }
-    throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-  }
-  var normalCompletion = true,
-    didErr = false,
-    err;
-  return {
-    s: function () {
-      it = it.call(o);
-    },
-    n: function () {
-      var step = it.next();
-      normalCompletion = step.done;
-      return step;
-    },
-    e: function (e) {
-      didErr = true;
-      err = e;
-    },
-    f: function () {
-      try {
-        if (!normalCompletion && it.return != null) it.return();
-      } finally {
-        if (didErr) throw err;
-      }
-    }
-  };
-}
-function _toPrimitive(input, hint) {
-  if (typeof input !== "object" || input === null) return input;
-  var prim = input[Symbol.toPrimitive];
-  if (prim !== undefined) {
-    var res = prim.call(input, hint || "default");
-    if (typeof res !== "object") return res;
-    throw new TypeError("@@toPrimitive must return a primitive value.");
-  }
-  return (hint === "string" ? String : Number)(input);
-}
-function _toPropertyKey(arg) {
-  var key = _toPrimitive(arg, "string");
-  return typeof key === "symbol" ? key : String(key);
-}
-
 // [2023] [Knighttower] https://github.com/knighttower
 
 /**
@@ -135,45 +13,39 @@ function _toPropertyKey(arg) {
  * @usage _mutable: array(...) -> Can be modified
  */
 function ProxyHelper(object) {
+    const _private = new Map((object._private || ['_private']).map((prop) => [prop, true]));
+    const _protected = new Map([..._private, ...(object._protected || []).map((prop) => [prop, true])]);
+    const _mutable = new Map((object._mutable || []).map((prop) => [prop, true]));
 
-  var _private = new Map((object._private || ['_private']).map(function (prop) {
-    return [prop, true];
-  }));
-  var _protected = new Map([].concat(_toConsumableArray(_private), _toConsumableArray((object._protected || []).map(function (prop) {
-    return [prop, true];
-  }))));
-  var _mutable = new Map((object._mutable || []).map(function (prop) {
-    return [prop, true];
-  }));
-  return new Proxy(object, {
-    get: function get(target, prop) {
-      if (prop in target && !_private.has(String(prop))) {
-        return target[prop];
-      } else {
-        console.error('Prop is private, not set, or object is protected', prop);
-        return undefined;
-      }
-    },
-    set: function set(target, prop, value) {
-      prop = String(prop);
-      if (prop in target) {
-        if (_mutable.has(prop)) {
-          target[prop] = value;
-          return true;
-        }
-        if (!_protected.has(prop) && !_private.has(prop)) {
-          target[prop] = value;
-          return true;
-        } else {
-          console.error('The prop is protected or private and cannot be modified', prop, value);
-          return false;
-        }
-      } else {
-        console.error('Protected Object, cannot set new props', prop, value);
-        return false;
-      }
-    }
-  });
+    return new Proxy(object, {
+        get(target, prop) {
+            if (prop in target && !_private.has(String(prop))) {
+                return target[prop];
+            } else {
+                console.error('Prop is private, not set, or object is protected', prop);
+                return undefined;
+            }
+        },
+        set(target, prop, value) {
+            prop = String(prop);
+            if (prop in target) {
+                if (_mutable.has(prop)) {
+                    target[prop] = value;
+                    return true;
+                }
+                if (!_protected.has(prop) && !_private.has(prop)) {
+                    target[prop] = value;
+                    return true;
+                } else {
+                    console.error('The prop is protected or private and cannot be modified', prop, value);
+                    return false;
+                }
+            } else {
+                console.error('Protected Object, cannot set new props', prop, value);
+                return false;
+            }
+        },
+    });
 }
 
 // Author Knighttower
@@ -193,76 +65,70 @@ function ProxyHelper(object) {
  * Holds memory of registered functions
  * @private
  */
-var executeOnNodeChanged = {};
+const executeOnNodeChanged = {};
 /**
  * When node change
  * @param {String} id
  * @param {Function} callback Callback when any node changes/ add/deleted/modified
  * @return {Void}
  */
-var addOnNodeChange = function addOnNodeChange(id, callback) {
-  if (callback) {
-    executeOnNodeChanged[id] = callback;
-  }
+const addOnNodeChange = (id, callback) => {
+    if (callback) {
+        executeOnNodeChanged[id] = callback;
+    }
 };
 /**
  * Remove from node change
  * @param {String} id
  * @return {Void}
  */
-var removeOnNodeChange = function removeOnNodeChange(id) {
-  if (id) {
-    delete executeOnNodeChanged[id];
-  }
+const removeOnNodeChange = (id) => {
+    if (id) {
+        delete executeOnNodeChanged[id];
+    }
 };
 /**
  * Deep cleanup
  * @return {Void}
  */
-var cleanup = function cleanup() {
-  Object.keys(executeOnNodeChanged).forEach(function (key) {
-    return delete executeOnNodeChanged[key];
-  });
+const cleanup = () => {
+    Object.keys(executeOnNodeChanged).forEach((key) => delete executeOnNodeChanged[key]);
 };
 /**
  * Observer
  * @private
  * @return {MutationObserver}
  */
-(function () {
-  if (typeof window !== 'undefined') {
-    var callback = function callback(mutationList) {
-      var _iterator = _createForOfIteratorHelper(mutationList),
-        _step;
-      try {
-        for (_iterator.s(); !(_step = _iterator.n()).done;) {
-          var mutation = _step.value;
-          if (mutation.type === 'childList') {
-            for (var id in executeOnNodeChanged) {
-              executeOnNodeChanged[id]();
+(() => {
+    if (typeof window !== 'undefined') {
+        const callback = (mutationList) => {
+            for (const mutation of mutationList) {
+                if (mutation.type === 'childList') {
+                    for (const id in executeOnNodeChanged) {
+                        executeOnNodeChanged[id]();
+                    }
+                }
             }
-          }
-        }
-      } catch (err) {
-        _iterator.e(err);
-      } finally {
-        _iterator.f();
-      }
-    };
-    var config = {
-      childList: true,
-      subtree: true
-    };
-    var observer = new MutationObserver(callback);
-    observer.observe(document.body, config);
-  }
+        };
+        const config = {
+            childList: true,
+            subtree: true,
+        };
+        const observer = new MutationObserver(callback);
+        observer.observe(document.body, config);
+    }
 })();
-var DomObserver = {
-  executeOnNodeChanged: executeOnNodeChanged,
-  addOnNodeChange: addOnNodeChange,
-  removeOnNodeChange: removeOnNodeChange,
-  cleanup: cleanup
+const DomObserver = {
+    executeOnNodeChanged,
+    addOnNodeChange,
+    removeOnNodeChange,
+    cleanup,
 };
+
+// Author Knighttower
+// MIT License
+// Copyright (c) [2022] [Knighttower] https://github.com/knighttower
+
 
 /**
  * @class Adds some extra functionality to interact with a DOM element
@@ -273,38 +139,33 @@ var DomObserver = {
  * @example new ElementHelper('elementSelector', domElement|window|document)
  *
  */
-var ElementHelper = /*#__PURE__*/function () {
-  /**
-   * Constructor
-   * @param {String|Object} selector
-   * @return {Object}
-   */
-  function ElementHelper(selector) {
-    var scope = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : document;
-    _classCallCheck(this, ElementHelper);
-    this.selector = selector;
-    if (_typeof(selector) === 'object') {
-      this.domElement = selector;
-    } else if (String(selector).includes('//')) {
-      this.domElement = this.getElementByXpath(selector);
-    } else {
-      this.domElement = scope.querySelector(selector);
+class ElementHelper {
+    /**
+     * Constructor
+     * @param {String|Object} selector
+     * @return {Object}
+     */
+    constructor(selector, scope = document) {
+        this.selector = selector;
+        if (typeof selector === 'object') {
+            this.domElement = selector;
+        } else if (String(selector).includes('//')) {
+            this.domElement = this.getElementByXpath(selector);
+        } else {
+            this.domElement = scope.querySelector(selector);
+        }
     }
-  }
 
-  // =========================================
-  // --> Public
-  // --------------------------
+    // =========================================
+    // --> Public
+    // --------------------------
 
-  /**
-   * Check if the element exists or is visible. It will keep querying
-   * @return {Boolean}
-   */
-  _createClass(ElementHelper, [{
-    key: "isInDom",
-    value: function isInDom() {
-      var _this$domElement;
-      return Boolean((_this$domElement = this.domElement) === null || _this$domElement === void 0 ? void 0 : _this$domElement.outerHTML);
+    /**
+     * Check if the element exists or is visible. It will keep querying
+     * @return {Boolean}
+     */
+    isInDom() {
+        return Boolean(this.domElement?.outerHTML);
     }
 
     /**
@@ -312,25 +173,24 @@ var ElementHelper = /*#__PURE__*/function () {
      * @function whenInDom
      * @return {Promise}
      */
-  }, {
-    key: "whenInDom",
-    value: function whenInDom() {
-      var $this = this;
-      var callbackId = Date.now() + Math.floor(Math.random() * 1000);
-      return new Promise(function (resolveThis) {
-        if (!$this.isInDom()) {
-          DomObserver.addOnNodeChange(callbackId, function () {
-            var element = new ElementHelper($this.selector);
-            if (element.isInDom()) {
-              $this = element;
-              resolveThis($this);
-              DomObserver.removeOnNodeChange(callbackId);
+    whenInDom() {
+        let $this = this;
+        let callbackId = Date.now() + Math.floor(Math.random() * 1000);
+
+        return new Promise(function (resolveThis) {
+            if (!$this.isInDom()) {
+                DomObserver.addOnNodeChange(callbackId, () => {
+                    let element = new ElementHelper($this.selector);
+                    if (element.isInDom()) {
+                        $this = element;
+                        resolveThis($this);
+                        DomObserver.removeOnNodeChange(callbackId);
+                    }
+                });
+            } else {
+                resolveThis($this);
             }
-          });
-        } else {
-          resolveThis($this);
-        }
-      });
+        });
     }
 
     /**
@@ -339,10 +199,8 @@ var ElementHelper = /*#__PURE__*/function () {
      * @example getElementByXpath("//html[1]/body[1]/div[1]")
      * @return {Object} DOM element
      */
-  }, {
-    key: "getElementByXpath",
-    value: function getElementByXpath(xpath) {
-      return document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+    getElementByXpath(xpath) {
+        return document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
     }
 
     /**
@@ -350,27 +208,29 @@ var ElementHelper = /*#__PURE__*/function () {
      * @author Based on https://stackoverflow.com/questions/2631820/how-do-i-ensure-saved-click-coordinates-can-be-reload-to-the-same-place-even-if/2631931#2631931
      * @return {String}
      */
-  }, {
-    key: "getXpathTo",
-    value: function getXpathTo() {
-      var element = this.domElement;
-      if (element.id) {
-        return "//*[@id='".concat(element.id, "']");
-      }
-      if (element === document.body) {
-        return '//' + element.tagName;
-      }
-      var ix = 0;
-      var siblings = element.parentNode.childNodes;
-      for (var i = 0; i < siblings.length; i++) {
-        var sibling = siblings[i];
-        if (sibling === element) {
-          return new ElementHelper(element.parentNode).getXpathTo() + '/' + element.tagName + '[' + (ix + 1) + ']';
+    getXpathTo() {
+        let element = this.domElement;
+
+        if (element.id) {
+            return `//*[@id='${element.id}']`;
         }
-        if (sibling.nodeType === 1 && sibling.tagName === element.tagName) {
-          ix++;
+        if (element === document.body) {
+            return '//' + element.tagName;
         }
-      }
+
+        let ix = 0;
+        let siblings = element.parentNode.childNodes;
+        for (let i = 0; i < siblings.length; i++) {
+            let sibling = siblings[i];
+            if (sibling === element) {
+                return (
+                    new ElementHelper(element.parentNode).getXpathTo() + '/' + element.tagName + '[' + (ix + 1) + ']'
+                );
+            }
+            if (sibling.nodeType === 1 && sibling.tagName === element.tagName) {
+                ix++;
+            }
+        }
     }
 
     /**
@@ -378,10 +238,8 @@ var ElementHelper = /*#__PURE__*/function () {
      * @param {String} attr Atrribute name
      * @return {String|Array|Object|Null}
      */
-  }, {
-    key: "getAttribute",
-    value: function getAttribute(attr) {
-      return this.domElement.getAttribute(attr) || null;
+    getAttribute(attr) {
+        return this.domElement.getAttribute(attr) || null;
     }
 
     /**
@@ -389,24 +247,32 @@ var ElementHelper = /*#__PURE__*/function () {
      * @author Based on https://www.geeksforgeeks.org/how-to-create-hash-from-string-in-javascript/
      * @return {String}
      */
-  }, {
-    key: "getHash",
-    value: function getHash() {
-      var string = String(this.getXpathTo());
-      var hash = 0;
-      if (string.length === 0) {
+    getHash() {
+        let string = String(this.getXpathTo());
+        let hash = 0;
+
+        if (string.length === 0) {
+            return hash;
+        }
+
+        for (let i = 0; i < string.length; i++) {
+            let char = string.charCodeAt(i);
+            hash = (hash << 5) - hash + char;
+            hash = hash & hash;
+        }
+
         return hash;
-      }
-      for (var i = 0; i < string.length; i++) {
-        var _char = string.charCodeAt(i);
-        hash = (hash << 5) - hash + _char;
-        hash = hash & hash;
-      }
-      return hash;
     }
-  }]);
-  return ElementHelper;
-}();
+}
+
+// // -----------------------------------------
+// /**
+//  * @knighttower
+//  * @url knighttower.io
+//  * @git https://github.com/knighttower/
+//  */
+// // -----------------------------------------
+
 
 // -----------------------------
 // METHODS
@@ -425,16 +291,16 @@ var ElementHelper = /*#__PURE__*/function () {
  * @usage convertToBool('false') // false
  */
 function convertToBool(val) {
-  switch (_typeof(val)) {
-    case 'boolean':
-      return val;
-    case 'string':
-      return val === 'false' || val === '0' ? false : true;
-    case 'number':
-      return val !== 0;
-    default:
-      return Boolean(val);
-  }
+    switch (typeof val) {
+        case 'boolean':
+            return val;
+        case 'string':
+            return val === 'false' || val === '0' ? false : true;
+        case 'number':
+            return val !== 0;
+        default:
+            return Boolean(val);
+    }
 }
 
 /**
@@ -450,12 +316,13 @@ function convertToBool(val) {
  * @example convertToNumber(null) // Output: null (original)
  */
 function convertToNumber(input) {
-  var isNum = isNumber(input);
-  if (isNum !== null) {
-    return isNum;
-  }
-  // Case: String that cannot be converted to a number
-  return input;
+    const isNum = isNumber(input);
+
+    if (isNum !== null) {
+        return isNum;
+    }
+    // Case: String that cannot be converted to a number
+    return input;
 }
 
 /**
@@ -467,7 +334,7 @@ function convertToNumber(input) {
  * @example currencyToDecimal('$123.45') // 123.45
  */
 function currencyToDecimal(amount) {
-  return Number(amount.replace(/[^0-9.-]+/g, ''));
+    return Number(amount.replace(/[^0-9.-]+/g, ''));
 }
 
 /**
@@ -483,30 +350,23 @@ function currencyToDecimal(amount) {
  * @example dateFormat('2201-01-01') // 01/01/2201
  */
 function dateFormat(dateTime, wTime) {
-  if (!dateTime || isNaN(new Date(dateTime).getTime())) {
-    return null;
-  }
-  var date = new Date(dateTime);
+    if (!dateTime || isNaN(new Date(dateTime).getTime())) {
+        return null;
+    }
 
-  // Ensuring that the time zone is taken into account.
-  var optionsDate = {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    timeZone: 'UTC'
-  };
-  var formattedDate = new Intl.DateTimeFormat('en-US', optionsDate).format(date);
-  if (wTime) {
-    var optionsTime = {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true,
-      timeZone: 'UTC'
-    };
-    var formattedTime = new Intl.DateTimeFormat('en-US', optionsTime).format(date);
-    return "".concat(formattedDate, " @ ").concat(formattedTime);
-  }
-  return formattedDate;
+    const date = new Date(dateTime);
+
+    // Ensuring that the time zone is taken into account.
+    const optionsDate = { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'UTC' };
+    const formattedDate = new Intl.DateTimeFormat('en-US', optionsDate).format(date);
+
+    if (wTime) {
+        const optionsTime = { hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'UTC' };
+        const formattedTime = new Intl.DateTimeFormat('en-US', optionsTime).format(date);
+        return `${formattedDate} @ ${formattedTime}`;
+    }
+
+    return formattedDate;
 }
 
 /**
@@ -519,10 +379,10 @@ function dateFormat(dateTime, wTime) {
  * @example decimalToCurrency(2123.46) // 2,123.46
  */
 function decimalToCurrency(amount) {
-  var formatConfig = {
-    minimumFractionDigits: 2
-  };
-  return new Intl.NumberFormat('en-GB', formatConfig).format(amount);
+    const formatConfig = {
+        minimumFractionDigits: 2,
+    };
+    return new Intl.NumberFormat('en-GB', formatConfig).format(amount);
 }
 
 /**
@@ -546,22 +406,22 @@ function decimalToCurrency(amount) {
  * @example var hello = {}; emptyOrValue(hello, 'default') // null
  * @example var hello = [...]; emptyOrValue(hello') // [...]
  */
-function emptyOrValue(value) {
-  var _default = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-  /**
-   * Test sequence:
-   * If it is a number 0> : true
-   * If is not undefined: true
-   * If it is boolean (true|false) prevents going to empty
-   * If it is not Empty, [], null, {}, 0, true, false: true
-   */
+function emptyOrValue(value, _default = null) {
+    /**
+     * Test sequence:
+     * If it is a number 0> : true
+     * If is not undefined: true
+     * If it is boolean (true|false) prevents going to empty
+     * If it is not Empty, [], null, {}, 0, true, false: true
+     */
 
-  if (isNumber(value) !== null || typeof value === 'boolean') {
-    return value;
-  } else if (!isEmpty(value)) {
-    return value;
-  }
-  return _default;
+    if (isNumber(value) !== null || typeof value === 'boolean') {
+        return value;
+    } else if (!isEmpty(value)) {
+        return value;
+    }
+
+    return _default;
 }
 
 /**
@@ -575,30 +435,31 @@ function emptyOrValue(value) {
  * @example console.log(formatPhoneNumber('(123) 456-7890', '000-0000-0000')); // Output: 123-4567-890
  */
 function formatPhoneNumber(phoneNumber, template) {
-  // Remove all non-numeric characters from the phone number
-  var cleaned = phoneNumber.replace(/\D/g, '');
+    // Remove all non-numeric characters from the phone number
+    const cleaned = phoneNumber.replace(/\D/g, '');
 
-  // Verify the length of the cleaned phone number
-  if (cleaned.length !== 10) {
-    throw new Error('Invalid phone number length');
-  }
-
-  // Initialize an array to hold the formatted phone number
-  var formatted = [];
-
-  // Initialize a pointer for the cleaned phone number
-  var cleanedPointer = 0;
-
-  // Loop through the template and replace placeholders with actual numbers
-  for (var i = 0; i < template.length; i++) {
-    if (template[i] === '0') {
-      formatted.push(cleaned[cleanedPointer]);
-      cleanedPointer++;
-    } else {
-      formatted.push(template[i]);
+    // Verify the length of the cleaned phone number
+    if (cleaned.length !== 10) {
+        throw new Error('Invalid phone number length');
     }
-  }
-  return formatted.join('');
+
+    // Initialize an array to hold the formatted phone number
+    let formatted = [];
+
+    // Initialize a pointer for the cleaned phone number
+    let cleanedPointer = 0;
+
+    // Loop through the template and replace placeholders with actual numbers
+    for (let i = 0; i < template.length; i++) {
+        if (template[i] === '0') {
+            formatted.push(cleaned[cleanedPointer]);
+            cleanedPointer++;
+        } else {
+            formatted.push(template[i]);
+        }
+    }
+
+    return formatted.join('');
 }
 
 /**
@@ -608,7 +469,7 @@ function formatPhoneNumber(phoneNumber, template) {
  * @return string Format kn__000000__000
  */
 function getDynamicId() {
-  return 'kn__' + new Date().getTime() + '__' + Math.floor(Math.random() * (999 - 100));
+    return 'kn__' + new Date().getTime() + '__' + Math.floor(Math.random() * (999 - 100));
 }
 
 /**
@@ -618,7 +479,7 @@ function getDynamicId() {
  * @return string
  * @example getRandomId() // kn__000000__000
  */
-var getRandomId = getDynamicId;
+const getRandomId = getDynamicId;
 
 /**
  * Form a valid Google search address
@@ -631,23 +492,25 @@ var getRandomId = getDynamicId;
  * @example getGoogleMapsAddress({ address: 'New York', city: 'New York', state: 'NY' }) // 'https://maps.google.it/maps?q=New+York+New+York+NY'
  */
 function getGoogleMapsAddress(address) {
-  if (!address) {
-    return false;
-  }
-  var search = '';
-  if (typeOf(address, 'string')) {
-    search = address;
-  } else {
-    var keys = ['address', 'address1', 'city', 'state', 'zip', 'zipcode'];
-    search = keys.reduce(function (acc, key) {
-      var value = Object.keys(address).find(function (aKey) {
-        return aKey.includes(key) && address[aKey];
-      });
-      return value ? "".concat(acc, " ").concat(address[value]) : acc;
-    }, '');
-  }
-  search = search.trim().replace(/\s+|,/g, '+');
-  return "https://maps.google.it/maps?q=".concat(search);
+    if (!address) {
+        return false;
+    }
+
+    let search = '';
+
+    if (typeOf(address, 'string')) {
+        search = address;
+    } else {
+        const keys = ['address', 'address1', 'city', 'state', 'zip', 'zipcode'];
+
+        search = keys.reduce((acc, key) => {
+            const value = Object.keys(address).find((aKey) => aKey.includes(key) && address[aKey]);
+            return value ? `${acc} ${address[value]}` : acc;
+        }, '');
+    }
+
+    search = search.trim().replace(/\s+|,/g, '+');
+    return `https://maps.google.it/maps?q=${search}`;
 }
 
 /**
@@ -657,21 +520,22 @@ function getGoogleMapsAddress(address) {
  * @param {fromIndex} fromIndex - The index to start searching from
  * @return {boolean} - True if the value is in the collection, false otherwise
  */
-function includes(collection, value) {
-  var fromIndex = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
-  if (Array.isArray(collection) || typeof collection === 'string') {
-    // Use native includes for arrays and strings
-    return collection.includes(value, fromIndex);
-  }
-  if (_typeof(collection) === 'object') {
-    // Search in object values
-    for (var key in collection) {
-      if (collection[key] === value) {
-        return true;
-      }
+function includes(collection, value, fromIndex = 0) {
+    if (Array.isArray(collection) || typeof collection === 'string') {
+        // Use native includes for arrays and strings
+        return collection.includes(value, fromIndex);
     }
-  }
-  return false;
+
+    if (typeof collection === 'object') {
+        // Search in object values
+        for (let key in collection) {
+            if (collection[key] === value) {
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 /**
@@ -683,22 +547,27 @@ function includes(collection, value) {
  * @return {string}
  */
 function isEmpty(value) {
-  if (value === null || value === undefined) {
-    return true;
-  }
-  if (typeof value === 'string' || Array.isArray(value)) {
-    return value.length === 0;
-  }
-  if (value instanceof Map || value instanceof Set) {
-    return value.size === 0;
-  }
-  if (ArrayBuffer.isView(value)) {
-    return value.byteLength === 0;
-  }
-  if (_typeof(value) === 'object') {
-    return Object.keys(value).length === 0;
-  }
-  return false;
+    if (value === null || value === undefined) {
+        return true;
+    }
+
+    if (typeof value === 'string' || Array.isArray(value)) {
+        return value.length === 0;
+    }
+
+    if (value instanceof Map || value instanceof Set) {
+        return value.size === 0;
+    }
+
+    if (ArrayBuffer.isView(value)) {
+        return value.byteLength === 0;
+    }
+
+    if (typeof value === 'object') {
+        return Object.keys(value).length === 0;
+    }
+
+    return false;
 }
 
 /**
@@ -718,24 +587,26 @@ function isEmpty(value) {
  * @example isNumber("123.45") // true
  */
 function isNumber(value) {
-  var isType = _typeof(value);
-  switch (value) {
-    case null:
-    case undefined:
-    case '':
-      return null;
-    case '0':
-    case 0:
-      return 0;
-    default:
-      if (isType === 'number' || isType === 'string') {
-        if (typeof value === 'number' || !Number.isNaN(Number(value))) {
-          return +value;
-        }
-      }
-      break;
-  }
-  return null;
+    const isType = typeof value;
+    switch (value) {
+        case null:
+        case undefined:
+        case '':
+            return null;
+        case '0':
+        case 0:
+            return 0;
+        default:
+            if (isType === 'number' || isType === 'string') {
+                if (typeof value === 'number' || !Number.isNaN(Number(value))) {
+                    return +value;
+                }
+            }
+
+            break;
+    }
+
+    return null;
 }
 
 /**
@@ -745,43 +616,53 @@ function isNumber(value) {
  * @return {string|boolean} - The type of the variable or boolean when test is provided
  */
 function instanceOf(input, test) {
-  var inputType = 'unknown';
-  if (input === null) {
-    return inputType;
-  }
-  var instanceMapping = [{
-    type: 'date',
-    inst: Date
-  }, {
-    type: 'regexp',
-    inst: RegExp
-  }, {
-    type: 'promise',
-    inst: Promise
-  }, {
-    type: 'map',
-    inst: Map
-  }, {
-    type: 'set',
-    inst: Set
-  }, {
-    type: 'weakMap',
-    inst: WeakMap
-  }, {
-    type: 'weakSet',
-    inst: WeakSet
-  }];
-  var instTotal = instanceMapping.length;
-  while (instTotal--) {
-    if (input instanceof instanceMapping[instTotal].inst) {
-      inputType = instanceMapping[instTotal].type;
-      break;
+    let inputType = 'unknown';
+    if (input === null) {
+        return inputType;
     }
-  }
-  if (test) {
-    return test === inputType;
-  }
-  return inputType;
+    const instanceMapping = [
+        {
+            type: 'date',
+            inst: Date,
+        },
+        {
+            type: 'regexp',
+            inst: RegExp,
+        },
+        {
+            type: 'promise',
+            inst: Promise,
+        },
+        {
+            type: 'map',
+            inst: Map,
+        },
+        {
+            type: 'set',
+            inst: Set,
+        },
+        {
+            type: 'weakMap',
+            inst: WeakMap,
+        },
+        {
+            type: 'weakSet',
+            inst: WeakSet,
+        },
+    ];
+    let instTotal = instanceMapping.length;
+    while (instTotal--) {
+        if (input instanceof instanceMapping[instTotal].inst) {
+            inputType = instanceMapping[instTotal].type;
+            break;
+        }
+    }
+
+    if (test) {
+        return test === inputType;
+    }
+
+    return inputType;
 }
 
 /**
@@ -795,14 +676,17 @@ function instanceOf(input, test) {
  * @example openGoogleMapsAddress({ address: 'New York', zip: '10001' }); // Opens Google Maps with the address 'New York 10001'
  */
 function openGoogleMapsAddress(object) {
-  if (!typeOf(object, 'string') || !typeOf(object, 'object')) {
-    throw new Error('The input must be a string or an object.');
-  }
-  var address = getGoogleMapsAddress(object);
-  if (!isEmpty(address) || !typeOf(address, 'string')) {
-    throw new Error('The address you are trying to open is invalid.');
-  }
-  return window.open(address, '_blank');
+    if (!typeOf(object, 'string') || !typeOf(object, 'object')) {
+        throw new Error('The input must be a string or an object.');
+    }
+
+    const address = getGoogleMapsAddress(object);
+
+    if (!isEmpty(address) || !typeOf(address, 'string')) {
+        throw new Error('The address you are trying to open is invalid.');
+    }
+
+    return window.open(address, '_blank');
 }
 
 /**
@@ -815,7 +699,7 @@ function openGoogleMapsAddress(object) {
  * @usage _mutable: array(...) -> Can be modified
  */
 function proxyObject(obj) {
-  return ProxyHelper(obj);
+    return ProxyHelper(obj);
 }
 
 /**
@@ -827,9 +711,8 @@ function proxyObject(obj) {
  * @uses ElementHelper @knighttower/element-helper (https://github.com/knighttower/ElementHelper)
  * @example selectElement('#test') // <div id="test"></div>
  */
-function selectElement(selector) {
-  var scope = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : document;
-  return new ElementHelper(selector, scope);
+function selectElement(selector, scope = document) {
+    return new ElementHelper(selector, scope);
 }
 
 /**
@@ -842,7 +725,7 @@ function selectElement(selector) {
  * @example toCurrency(2123.46) // 2,123.46
  */
 function toCurrency(amount) {
-  return decimalToCurrency(amount);
+    return decimalToCurrency(amount);
 }
 
 /**
@@ -856,16 +739,18 @@ function toCurrency(amount) {
  * @example toDollarString(2,500,000) // 2.5M
  */
 function toDollarString(amount) {
-  if (typeOf(amount, 'string')) {
-    amount = currencyToDecimal(amount);
-  }
-  if (Math.abs(amount) > 999 && Math.abs(amount) < 999999) {
-    return Math.sign(amount) * (Math.abs(amount) / 1000).toFixed(1) + 'K';
-  }
-  if (Math.abs(amount) > 999999) {
-    return Math.sign(amount) * (Math.abs(amount) / 1000000).toFixed(1) + 'M';
-  }
-  return Math.sign(amount) * Math.abs(amount);
+    if (typeOf(amount, 'string')) {
+        amount = currencyToDecimal(amount);
+    }
+
+    if (Math.abs(amount) > 999 && Math.abs(amount) < 999999) {
+        return Math.sign(amount) * (Math.abs(amount) / 1000).toFixed(1) + 'K';
+    }
+    if (Math.abs(amount) > 999999) {
+        return Math.sign(amount) * (Math.abs(amount) / 1000000).toFixed(1) + 'M';
+    }
+
+    return Math.sign(amount) * Math.abs(amount);
 }
 
 /**
@@ -881,34 +766,39 @@ function toDollarString(amount) {
  * @example typeOf({}) // returns 'object'
  */
 function typeOf(input, test) {
-  // Special case for null since it can be treated as an object
-  if (input === null) {
-    if (test) {
-      return test === null || test === 'null' ? true : false;
+    // Special case for null since it can be treated as an object
+    if (input === null) {
+        if (test) {
+            return test === null || test === 'null' ? true : false;
+        }
+        return 'null';
     }
-    return 'null';
-  }
-  var inputType;
-  switch (_typeof(input)) {
-    case 'number':
-    case 'string':
-    case 'boolean':
-    case 'undefined':
-    case 'bigint':
-    case 'symbol':
-    case 'function':
-      inputType = _typeof(input);
-      break;
-    case 'object':
-      inputType = Array.isArray(input) ? 'array' : 'object';
-      break;
-    default:
-      inputType = 'unknown';
-  }
-  if (test) {
-    return test === inputType;
-  }
-  return inputType;
+
+    let inputType;
+
+    switch (typeof input) {
+        case 'number':
+        case 'string':
+        case 'boolean':
+        case 'undefined':
+        case 'bigint':
+        case 'symbol':
+        case 'function':
+            inputType = typeof input;
+            break;
+        case 'object':
+            inputType = Array.isArray(input) ? 'array' : 'object';
+
+            break;
+        default:
+            inputType = 'unknown';
+    }
+
+    if (test) {
+        return test === inputType;
+    }
+
+    return inputType;
 }
 
 /**
@@ -924,8 +814,8 @@ function typeOf(input, test) {
  * @example validateEmail('test@test.com') // true
  */
 function validateEmail(email) {
-  var emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-  return emailRegex.test(email);
+    var emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    return emailRegex.test(email);
 }
 
 /**
@@ -941,35 +831,34 @@ function validateEmail(email) {
  * @example validatePhone('123-4567-89') // false
  */
 function validatePhone(phone) {
-  var phoneRegex = /^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/;
-  return phoneRegex.test(phone);
+    var phoneRegex = /^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/;
+    return phoneRegex.test(phone);
 }
 
 // export default Utility;
-var Utility = {
-  convertToBool: convertToBool,
-  currencyToDecimal: currencyToDecimal,
-  convertToNumber: convertToNumber,
-  dateFormat: dateFormat,
-  decimalToCurrency: decimalToCurrency,
-  emptyOrValue: emptyOrValue,
-  formatPhoneNumber: formatPhoneNumber,
-  getDynamicId: getDynamicId,
-  getGoogleMapsAddress: getGoogleMapsAddress,
-  getRandomId: getRandomId,
-  includes: includes,
-  isEmpty: isEmpty,
-  // from https://moderndash.io/
-  isNumber: isNumber,
-  instanceOf: instanceOf,
-  openGoogleMapsAddress: openGoogleMapsAddress,
-  proxyObject: proxyObject,
-  selectElement: selectElement,
-  toCurrency: toCurrency,
-  toDollarString: toDollarString,
-  typeOf: typeOf,
-  validateEmail: validateEmail,
-  validatePhone: validatePhone
+const Utility = {
+    convertToBool,
+    currencyToDecimal,
+    convertToNumber,
+    dateFormat,
+    decimalToCurrency,
+    emptyOrValue,
+    formatPhoneNumber,
+    getDynamicId,
+    getGoogleMapsAddress,
+    getRandomId,
+    includes,
+    isEmpty, // from https://moderndash.io/
+    isNumber,
+    instanceOf,
+    openGoogleMapsAddress,
+    proxyObject,
+    selectElement,
+    toCurrency,
+    toDollarString,
+    typeOf,
+    validateEmail,
+    validatePhone,
 };
 
 export { Utility, convertToBool, convertToNumber, currencyToDecimal, dateFormat, decimalToCurrency, Utility as default, emptyOrValue, formatPhoneNumber, getDynamicId, getGoogleMapsAddress, getRandomId, includes, instanceOf, isEmpty, isNumber, openGoogleMapsAddress, proxyObject, selectElement, toCurrency, toDollarString, typeOf, Utility as utility, Utility as utils, validateEmail, validatePhone };
