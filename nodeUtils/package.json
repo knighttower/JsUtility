@@ -1,5 +1,12 @@
 {
-    "main": "index.mjs",
+    "main": "index.cjs",
     "type": "module",
-    "module": "index.mjs"
+    "module": "index.mjs",
+    "exports": {
+        ".": {
+            "import": "./index.mjs",
+            "require": "./index.cjs"
+        },
+        "./*": "./*"
+    }
 }

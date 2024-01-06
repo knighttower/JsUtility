@@ -824,6 +824,15 @@ System.register('Utility', [], (function (exports) {
                 }
 
                 if (test) {
+                    if (test.includes('|')) {
+                        for (let type of test.split('|')) {
+                            if (inputType === type) {
+                                return type;
+                            }
+                        }
+                        return false;
+                    }
+
                     return test === inputType;
                 }
 
