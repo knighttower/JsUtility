@@ -1,6 +1,6 @@
 {
   "name": "@knighttower/js-utility-functions",
-  "version": "3.2.2",
+  "version": "3.2.3",
   "type": "module",
   "main": "index.cjs",
   "module": "index.js",
@@ -22,7 +22,8 @@
       "import": "./index.js",
       "require": "./index.cjs"
     },
-    "./dist/*": "./dist/*"
+    "./dist/*": "./dist/*",
+    "./node/": "./nodeUtils/*"
   },
   "keywords": [
     "Utility",
@@ -53,7 +54,7 @@
   "scripts": {
     "production": "npm run build",
     "build": "npm run webpack && npm run rollup && npm run buildExports && npm run bumpVersion",
-    "bumpVersion": "node ./nodeUtils/BumpVersion.cjs",
+    "bumpVersion": "node ./nodeUtils/BumpVersion.cjs --exe",
     "buildExports": "node ./nodeUtils/BuildExports.js --dir ./src --cdir ./dist/cjs",
     "rollup": "rollup -c ./nodeUtils/rollup.config.cjs",
     "webpack": "webpack --mode production --config ./nodeUtils/webpack.config.cjs",

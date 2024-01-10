@@ -4,8 +4,8 @@ import glob from 'glob';
 import { minify } from 'terser';
 const workingDir = process.cwd();
 
-function getFilesToMinify() {
-    const directory = workingDir + '/dist';
+function getFilesToMinify(destination = 'dist') {
+    const directory = workingDir + '/' + destination;
     const filePaths = glob.sync(`${directory}/**/*.{js,mjs,cjs}` || []);
     const allExports = [];
 

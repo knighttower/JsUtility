@@ -3,7 +3,7 @@ import path from 'path';
 import glob from 'glob';
 import { PowerHelper as helper } from '../src/PowerHelpers.js';
 import { Utility as utils } from '../src/Utility.js';
-import { getFlagValue } from './NodeHelpers.js';
+import { getFlagValue, runCommand } from './NodeHelpers.js';
 
 const workingDir = process.cwd();
 /**
@@ -199,7 +199,13 @@ function getCommonJsContent(allExports) {
     const indexEsmContent = getEsmContent(allExportsEsm);
     const indexCjsContent = getCommonJsContent(allExportsCjs);
 
-    fs.writeFileSync(path.join(workingDir, `${destination}.js`), indexEsmContent);
-    fs.writeFileSync(path.join(workingDir, `${destination}.cjs`), indexCjsContent);
+    const indexEsmPath = path.join(workingDir, `${destination}.js`);
+    const indexCjsPath = path.join(workingDir, `${destination}.cjs`);
+
+    fs.writeFileSync(indexEsmPath, indexEsmContent);
+    fs.writeFileSync(indexCjsPath, indexCjsContent);
+    console.log('--->', indexEsmPath);
+    const exeCommand = `npx prettier --config .prettierrc.json --write "${indexCjsPath}" --write "${indexEsmPath}`;
+    runCommand(exeCommand);
     console.log('indexes generated');
 })();
