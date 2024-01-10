@@ -1,13 +1,15 @@
+// include esm object to allow for es6 import/export syntax
+Object.defineProperty(exports, '__esModule', { value: true });
 const fs = require('fs');
 const path = require('path');
 const { getFlagValue } = require('./NodeHelpers.cjs');
-const Exports = {};
+
 /**
  * Read package.json and return its content.
  *
  * @returns {Object} - Parsed JSON content of package.json.
  */
-Exports.readPackageJson = (workingDir) => {
+exports.readPackageJson = (workingDir) => {
     const filePath = path.join(workingDir, 'package.json');
     const rawContent = fs.readFileSync(filePath, 'utf8');
     return JSON.parse(rawContent);
@@ -18,7 +20,7 @@ Exports.readPackageJson = (workingDir) => {
  *
  * @param {Object} content - The updated package.json content.
  */
-Exports.writePackageJson = (content, workingDir) => {
+exports.writePackageJson = (content, workingDir) => {
     const filePath = path.join(workingDir, 'package.json');
     const updatedContent = JSON.stringify(content, null, 2);
     fs.writeFileSync(filePath, updatedContent);
@@ -31,7 +33,7 @@ Exports.writePackageJson = (content, workingDir) => {
  * @param {string} flag - The flag that determines which part of the version to bump (major, minor, patch).
  * @returns {string} - New bumped version.
  */
-Exports.bumpVersion = (currentVersion, flag) => {
+exports.bumpVersion = (currentVersion, flag) => {
     const [major, minor, patch] = currentVersion.split('.').map(Number);
 
     switch (flag) {
@@ -44,27 +46,26 @@ Exports.bumpVersion = (currentVersion, flag) => {
     }
 };
 
-Exports.exe = () => {
+exports.exe = () => {
     const workingDir = process.cwd();
     // Parse command-line arguments
     const flag = getFlagValue('major') || getFlagValue('minor') || getFlagValue('patch');
 
     // Read package.json and get current version
-    const packageJson = Exports.readPackageJson(workingDir);
+    const packageJson = exports.readPackageJson(workingDir);
     const { version: currentVersion } = packageJson;
 
     // Bump the version
-    const newVersion = Exports.bumpVersion(currentVersion, flag);
+    const newVersion = exports.bumpVersion(currentVersion, flag);
 
     // Update package.json with the new version
     packageJson.version = newVersion;
-    Exports.writePackageJson(packageJson, workingDir);
+    exports.writePackageJson(packageJson, workingDir);
 
     // Log output
     console.log(`Version bumped from ${currentVersion} to ${newVersion}`);
 };
 
 if (getFlagValue('exe')) {
-    Exports.exe();
+    exports.exe();
 }
-module.exports = Exports;

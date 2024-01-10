@@ -1,6 +1,11 @@
+// include esm object to allow for es6 import/export syntax
+Object.defineProperty(exports, '__esModule', { value: true });
+
 const { execSync } = require('child_process');
 const { removeQuotes } = require('../dist/cjs/PowerHelpers.cjs');
 const { isEmpty } = require('../dist/cjs/Utility.cjs');
+const fs = require('fs');
+const path = require('path');
 
 /**
  * Get the value of a command line flag.
@@ -8,7 +13,7 @@ const { isEmpty } = require('../dist/cjs/Utility.cjs');
  * @param {string} flagName - The name of the flag to look for.
  * @returns {string|bool} The value of the flag if found, or null if not found.
  */
-function getFlagValue(flagName) {
+exports.getFlagValue = (flagName) => {
     let argValue = null;
     // allow only string values
     if (typeof flagName !== 'string') {
@@ -41,7 +46,7 @@ function getFlagValue(flagName) {
     }
     argValue = isEmpty(argValue) ? null : removeQuotes(argValue);
     return argValue;
-}
+};
 
 /**
  * Function to run shell command and return its output
@@ -49,7 +54,7 @@ function getFlagValue(flagName) {
  * @param {string} stdio - The stdio setting ('inherit' or 'pipe')
  * @returns {string|boolean} - The stdout as a string or boolean indicating success/failure
  */
-const runCommand = (command, returnOutput = false) => {
+exports.runCommand = (command, returnOutput = false) => {
     try {
         const options = { encoding: 'utf8', stdio: 'inherit' };
         if (returnOutput) {
@@ -64,4 +69,25 @@ const runCommand = (command, returnOutput = false) => {
     }
 };
 
-module.exports = { getFlagValue, runCommand };
+/**
+ * Recursively get all files with specified extensions from a directory.
+ * @param {string} dirPath - The directory to search in.
+ * @param {string[]} extensions - Array of extensions to include in the result.
+ * @param {string[]} files - Accumulator for files found.
+ * @returns {string[]} Array of file paths.
+ */
+
+exports.getAllFiles = function (dirPath, extensions = ['.js', '.mjs', '.cjs'], files = []) {
+    const filesInDirectory = fs.readdirSync(dirPath);
+
+    for (const file of filesInDirectory) {
+        const filePath = path.join(dirPath, file);
+        if (fs.statSync(filePath).isDirectory()) {
+            exports.getAllFiles(filePath, extensions, files);
+        } else if (extensions.includes(path.extname(file))) {
+            files.push(filePath);
+        }
+    }
+
+    return files;
+};
