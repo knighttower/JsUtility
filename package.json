@@ -1,6 +1,6 @@
 {
   "name": "@knighttower/js-utility-functions",
-  "version": "3.2.4",
+  "version": "3.2.5",
   "type": "module",
   "main": "index.cjs",
   "module": "index.js",
@@ -23,7 +23,8 @@
       "require": "./index.cjs"
     },
     "./dist/*": "./dist/*",
-    "./node/": "./nodeUtils/*"
+    "./node/*": "./nodeUtils/*",
+    "./nodeUtils/*": "./nodeUtils/*"
   },
   "keywords": [
     "Utility",
