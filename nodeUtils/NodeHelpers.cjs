@@ -77,14 +77,60 @@ exports.runCommand = (command, returnOutput = false) => {
  * @returns {string[]} Array of file paths.
  */
 
-exports.getAllFiles = function (dirPath, extensions = ['.js', '.mjs', '.cjs'], files = []) {
+exports.getAllFilesByExtension = function (dirPath, extensions = ['.js', '.mjs', '.cjs'], files = []) {
     const filesInDirectory = fs.readdirSync(dirPath);
 
     for (const file of filesInDirectory) {
         const filePath = path.join(dirPath, file);
         if (fs.statSync(filePath).isDirectory()) {
-            exports.getAllFiles(filePath, extensions, files);
+            exports.getAllFilesByExtension(filePath, extensions, files);
         } else if (extensions.includes(path.extname(file))) {
+            files.push(filePath);
+        }
+    }
+
+    return files;
+};
+
+/**
+ * Recursively searches for a file by name in the given directory and its subdirectories.
+ * @param {string} fileName - The name of the file to find.
+ * @param {string} [dirPath=process.cwd()] - The directory path to start the search in.
+ * @returns {string|null} The path of the found file, or null if not found.
+ */
+exports.getFileByName = function (fileName, dirPath = process.cwd()) {
+    const filesInDirectory = fs.readdirSync(dirPath);
+
+    for (const file of filesInDirectory) {
+        const filePath = path.join(dirPath, file);
+        if (fs.statSync(filePath).isDirectory()) {
+            const found = exports.getFileByName(fileName, filePath);
+            if (found) {
+                return found;
+            }
+        } else if (file === fileName) {
+            return filePath;
+        }
+    }
+
+    return null;
+};
+
+/**
+ * Recursively searches for all files matching the specified names in the given directory and its subdirectories.
+ * @param {string} dirPath - The directory path to start the search in.
+ * @param {string[]} [fileNames=['index.js']] - An array of file names to search for.
+ * @param {string[]} [files=[]] - Accumulator array for found file paths.
+ * @returns {string[]} An array of paths for the found files.
+ */
+exports.getAllFilesByName = function (fileNames = ['index.js'], dirPath = process.cwd(), files = []) {
+    const filesInDirectory = fs.readdirSync(dirPath);
+
+    for (const file of filesInDirectory) {
+        const filePath = path.join(dirPath, file);
+        if (fs.statSync(filePath).isDirectory()) {
+            exports.getAllFilesByName(filePath, fileNames, files);
+        } else if (fileNames.includes(file)) {
             files.push(filePath);
         }
     }
