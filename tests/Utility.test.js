@@ -247,10 +247,13 @@ test('typeof - ', () => {
 
 test('instanceOf - ', () => {
     // create test for new Date() = date
-    let results = instanceOf(new Date(), 'date');
+    let results = instanceOf(new Date(), 'Date');
+    assert.equal(results, true);
+
+    results = instanceOf(new Date(), 'date');
     assert.equal(results, true);
 
     // create test for new RegExp() = regexp
-    results = instanceOf(new RegExp(), 'regexp');
+    results = instanceOf(new RegExp(), RegExp);
     assert.equal(results, true);
 });

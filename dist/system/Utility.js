@@ -642,6 +642,7 @@ System.register('Utility', [], (function (exports) {
              * Check the instance of a variable, and get the correct type for it. It also accepts simple comparisons
              * For more advance type checking see https://github.com/knighttower/JsTypeCheck
              * @param {any} input - The variable to check
+             * @param {string|instance} test - The types to check against, piped string
              * @return {string|boolean} - The type of the variable or boolean when test is provided
              */
             function instanceOf(input, test) {
@@ -649,46 +650,18 @@ System.register('Utility', [], (function (exports) {
                 if (input === null) {
                     return inputType;
                 }
-                const instanceMapping = [
-                    {
-                        type: 'date',
-                        inst: Date,
-                    },
-                    {
-                        type: 'regexp',
-                        inst: RegExp,
-                    },
-                    {
-                        type: 'promise',
-                        inst: Promise,
-                    },
-                    {
-                        type: 'map',
-                        inst: Map,
-                    },
-                    {
-                        type: 'set',
-                        inst: Set,
-                    },
-                    {
-                        type: 'weakMap',
-                        inst: WeakMap,
-                    },
-                    {
-                        type: 'weakSet',
-                        inst: WeakSet,
-                    },
-                ];
+                const instanceMapping = [Date, RegExp, Promise, Map, Set, WeakMap, WeakSet, ArrayBuffer, DataView];
                 let instTotal = instanceMapping.length;
                 while (instTotal--) {
-                    if (input instanceof instanceMapping[instTotal].inst) {
-                        inputType = instanceMapping[instTotal].type;
+                    if (input instanceof instanceMapping[instTotal]) {
+                        inputType = instanceMapping[instTotal].name;
                         break;
                     }
                 }
 
                 if (test) {
-                    return test === inputType;
+                    test = typeof test === 'string' ? test.toLowerCase() : test.name.toLowerCase();
+                    return test === inputType.toLowerCase();
                 }
 
                 return inputType;
