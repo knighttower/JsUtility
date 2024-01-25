@@ -620,9 +620,11 @@ define(['exports'], (function (exports) { 'use strict';
      */
     function instanceOf(input, test) {
         let inputType = 'unknown';
-        if (input === null) {
+        const isValid = typeof input === 'function' || typeof input === 'object';
+        if (input === null || !isValid) {
             return inputType;
         }
+
         const instanceMapping = [Date, RegExp, Promise, Map, Set, WeakMap, WeakSet, ArrayBuffer, DataView];
         let instTotal = instanceMapping.length;
         while (instTotal--) {
@@ -634,6 +636,10 @@ define(['exports'], (function (exports) { 'use strict';
 
         if (test) {
             test = typeof test === 'string' ? test.toLowerCase() : test.name.toLowerCase();
+            // In case that the input is a custom instance
+            if (inputType === 'unknown') {
+                inputType = input.name;
+            }
             return test === inputType.toLowerCase();
         }
 

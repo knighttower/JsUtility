@@ -256,4 +256,7 @@ test('instanceOf - ', () => {
     // create test for new RegExp() = regexp
     results = instanceOf(new RegExp(), RegExp);
     assert.equal(results, true);
+    var a = function hello() {};
+    results = instanceOf(a, 'hello');
+    assert.equal(results, true);
 });
