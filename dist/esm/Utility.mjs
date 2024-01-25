@@ -620,7 +620,7 @@ function instanceOf(input, test) {
     let inputType = 'unknown';
     const isValid = typeof input === 'function' || typeof input === 'object';
     if (input === null || !isValid) {
-        return inputType;
+        return false;
     }
 
     const instanceMapping = [Date, RegExp, Promise, Map, Set, WeakMap, WeakSet, ArrayBuffer, DataView];
