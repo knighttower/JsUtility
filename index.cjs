@@ -1,8 +1,8 @@
-// Single Modules and Aliases from: DomObserver.cjs
+// Single Modules and Aliases from: DomObserver
 const { DomObserver, domObserver } = require('./dist/cjs/DomObserver.cjs');
-// Single Modules and Aliases from: ElementHelper.cjs
+// Single Modules and Aliases from: ElementHelper
 const { ElementHelper, elementHelper } = require('./dist/cjs/ElementHelper.cjs');
-// Single Modules and Aliases from: PowerHelpers.cjs
+// Single Modules and Aliases from: PowerHelpers
 const {
     PowerHelper,
     addQuotes,
@@ -24,11 +24,11 @@ const {
     startAndEndWith,
     wildCardStringSearch,
 } = require('./dist/cjs/PowerHelpers.cjs');
-// Single Modules and Aliases from: ProxyHelper.cjs
+// Single Modules and Aliases from: ProxyHelper
 const { ProxyHelper, proxyHelper } = require('./dist/cjs/ProxyHelper.cjs');
-// Single Modules and Aliases from: UrlHelper.cjs
+// Single Modules and Aliases from: UrlHelper
 const { UrlHelper, urlHelper } = require('./dist/cjs/UrlHelper.cjs');
-// Single Modules and Aliases from: Utility.cjs
+// Single Modules and Aliases from: Utility
 const {
     convertToBool,
     convertToNumber,
@@ -55,7 +55,7 @@ const {
     validateEmail,
     validatePhone,
 } = require('./dist/cjs/Utility.cjs');
-// Default Module from: Utility.cjs
+// Default Module from: Utility
 const Utility = require('./dist/cjs/Utility.cjs');
 
 module.exports = {

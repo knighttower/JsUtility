@@ -12,6 +12,8 @@ const path = require('path');
  *
  * @param {string} flagName - The name of the flag to look for.
  * @returns {string|bool} The value of the flag if found, or null if not found.
+ * @usage
+ * const flagValue = getFlagValue('flagName'); // catches --flagName=value or --flagName value or -flagName=value or -flagName value
  */
 exports.getFlagValue = (flagName) => {
     let argValue = null;
@@ -51,8 +53,10 @@ exports.getFlagValue = (flagName) => {
 /**
  * Function to run shell command and return its output
  * @param {string} command - The shell command to run
- * @param {string} stdio - The stdio setting ('inherit' or 'pipe')
+ * @param {boolean} [returnOutput=false] - Whether to return the output of the command. Defaults to false.
  * @returns {string|boolean} - The stdout as a string or boolean indicating success/failure
+ * @usage
+ * const output = runCommand('ls -la', true); // returns the output of the command
  */
 exports.runCommand = (command, returnOutput = false) => {
     try {
@@ -70,11 +74,42 @@ exports.runCommand = (command, returnOutput = false) => {
 };
 
 /**
+ * Function to check if npm script exists
+ * @param {string} scriptName - The npm script name to check
+ * @returns {boolean} - True if script exists, otherwise false
+ * @usage
+ * const exists = checkNpmScript('test');
+ */
+exports.checkNpmScript = (scriptName) => {
+    const npmScripts = exports.runCommand('npm run-script', true);
+    return npmScripts ? npmScripts.includes(scriptName) : false;
+};
+
+/**
+ * Tests if a given command exists in the system synchronously.
+ * @param {string} command - The command to check.
+ * @returns {boolean} - Returns true if the command exists, false otherwise.
+ * @usage
+ * const exists = commandExistsSync('node');
+console.log(`Does node command exist? ${exists}`);
+ */
+exports.commandExistsSync = (command) => {
+    try {
+        execSync(`${command} --version`, { stdio: 'ignore' });
+        return true;
+    } catch (error) {
+        return false;
+    }
+};
+
+/**
  * Recursively get all files with specified extensions from a directory.
  * @param {string} dirPath - The directory to search in.
  * @param {string[]} extensions - Array of extensions to include in the result.
  * @param {string[]} files - Accumulator for files found.
  * @returns {string[]} Array of file paths.
+ * @usage
+ * const files = getAllFilesByExtension('src', ['.js', '.mjs', '.cjs']);
  */
 
 exports.getAllFilesByExtension = function (dirPath, extensions = ['.js', '.mjs', '.cjs'], files = []) {

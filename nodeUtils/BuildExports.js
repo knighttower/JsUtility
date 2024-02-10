@@ -3,7 +3,7 @@ import path from 'path';
 import glob from 'glob';
 import { PowerHelper as helper } from '../src/PowerHelpers.js';
 import { Utility as utils } from '../src/Utility.js';
-import { getFlagValue, runCommand } from './NodeHelpers.js';
+import { getFlagValue, runCommand, commandExistsSync } from './NodeHelpers.js';
 
 const workingDir = process.cwd();
 /**
@@ -144,7 +144,7 @@ function getCommonJsContent(allExports) {
     let exports = [];
 
     for (const [filePath, { named, default: defaultExport }] of Object.entries(allExports)) {
-        const moduleName = path.basename(filePath).replace(/\.js|\.mjs/, '');
+        const moduleName = path.basename(filePath).replace(/\.js|\.cjs/, '');
         const relativePath = path.relative(workingDir, filePath).replace(/\\/g, '/');
         const commentSingle = `// Single Modules and Aliases from: ${moduleName}\n`;
         const commentDefault = `// Default Module from: ${moduleName}\n`;
@@ -169,43 +169,48 @@ function getCommonJsContent(allExports) {
 
 /**
  * Main function to generate the index.js file.
+ * @flags
+ * -dir: The directory to search for modules. Defaults to './src'.
+ * -type: The type of module to generate. Defaults to 'js'. Options: 'js', 'esm', 'cjs'.
+ * -file: A single file to generate an index for. Defaults to false.
+ * -out: The name of the output file. Defaults to 'index.js'.
+ * @returns {void}
  */
 (function generateIndex() {
-    const esmDir = getFlagValue('dir') ?? './src';
-    const commonJsDir = getFlagValue('cdir') ?? esmDir;
-    const singleFile = getFlagValue('single') ?? false;
+    const dir = getFlagValue('dir') ?? './src';
+    let type = getFlagValue('type') ?? 'js';
+    type = ['js', 'esm', 'cjs'].includes(type) ? type : 'js';
+    const ext = type === 'esm' ? 'js' : type;
+    const singleFile = getFlagValue('file') ?? false;
     const out = getFlagValue('out') ? helper.cleanStr(getFlagValue('out'), '.js', '.mjs', '.cjs', '.ts') : null;
-    const destination = out ?? './index';
+    const destination = out ? `${out}.${ext}` : `./index.${ext}`;
     // Synchronously fetch all file paths within a esmDir and its subdirectories
     // that have a .js or .mjs extension
-    const filePathsEsm = !singleFile ? glob.sync(`${esmDir}/**/*.{js,mjs,cjs}`) : glob.sync(`${singleFile}`);
-    const filePathsCjs = !singleFile ? glob.sync(`${commonJsDir}/**/*.{js,mjs,cjs}`) : glob.sync(`${singleFile}`);
 
-    const allExportsEsm = {};
-    const allExportsCjs = {};
+    const processFiles = () => {
+        const filePaths = !singleFile ? glob.sync(`${dir}/**/*.{js,mjs,cjs}`) : glob.sync(`${singleFile}`);
+        const allExports = {};
 
-    filePathsEsm.forEach((filePath) => {
-        if (!path.basename(filePath).includes('index')) {
-            allExportsEsm[filePath] = getExports(filePath);
+        filePaths.forEach((filePath) => {
+            if (!path.basename(filePath).includes('index')) {
+                allExports[filePath] = getExports(filePath);
+            }
+        });
+
+        const indexContent = type === 'cjs' ? getCommonJsContent(allExports) : getEsmContent(allExports);
+        const indexPath = path.join(workingDir, destination);
+
+        fs.writeFileSync(indexPath, indexContent);
+        console.log(' Generated In:--->', indexPath);
+        console.log('index generated');
+        if (commandExistsSync('npx prettier')) {
+            const exeCommand = `npx prettier --config .prettierrc.json --write "${indexPath}"`;
+            runCommand(exeCommand);
+        } else {
+            console.log(
+                'NPX or Prettier is not installed. Skipping formatting. If you want to format the files, please install prettier globally or locally.',
+            );
         }
-    });
-
-    filePathsCjs.forEach((filePath) => {
-        if (!path.basename(filePath).includes('index')) {
-            allExportsCjs[filePath] = getExports(filePath);
-        }
-    });
-
-    const indexEsmContent = getEsmContent(allExportsEsm);
-    const indexCjsContent = getCommonJsContent(allExportsCjs);
-
-    const indexEsmPath = path.join(workingDir, `${destination}.js`);
-    const indexCjsPath = path.join(workingDir, `${destination}.cjs`);
-
-    fs.writeFileSync(indexEsmPath, indexEsmContent);
-    fs.writeFileSync(indexCjsPath, indexCjsContent);
-    console.log('--->', indexEsmPath);
-    const exeCommand = `npx prettier --config .prettierrc.json --write "${indexCjsPath}" --write "${indexEsmPath}`;
-    runCommand(exeCommand);
-    console.log('indexes generated');
+    };
+    processFiles();
 })();

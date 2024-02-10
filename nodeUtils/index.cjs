@@ -6,6 +6,8 @@ const {
     runCommand,
     getFileByName,
     getAllFilesByName,
+    commandExistsSync,
+    checkNpmScript,
 } = require('./NodeHelpers.cjs');
 const { readPackageJson, writePackageJson, bumpVersion } = require('./BumpVersion.cjs');
 exports.getFlagValue = getFlagValue;
@@ -16,3 +18,5 @@ exports.runCommand = runCommand;
 exports.readPackageJson = readPackageJson;
 exports.writePackageJson = writePackageJson;
 exports.bumpVersion = bumpVersion;
+exports.commandExistsSync = commandExistsSync;
+exports.checkNpmScript = checkNpmScript;

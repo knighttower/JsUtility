@@ -564,7 +564,7 @@ logThis({ key: 'value' }); // Logs { key: 'value' } to the console
 
 ## Dependencies
 
--   Lodash: for utility functions
+-   <strike>Lodash: for utility functions</strike> (deprecated)
 -   JsObjectProxyHelper: for proxying objects
 -   JsUrlHelper: for URL handling
 
