@@ -1,6 +1,6 @@
 {
   "name": "@knighttower/js-utility-functions",
-  "version": "3.4.0",
+  "version": "3.4.1",
   "type": "module",
   "main": "index.cjs",
   "module": "index.js",

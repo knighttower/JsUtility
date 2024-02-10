@@ -77,7 +77,7 @@ function getExports(filePath) {
                 // cleanup and create an array of aliases
                 .getChunks(helper.cleanStr(aliasLine, 'export', '{', '}'))
                 // exclude default export
-                .filter((chunk) => !chunk.includes('default'))
+                .filter((chunk) => chunk && !chunk.includes('default'))
                 // iterate to pick the correct alias;
                 .forEach((chunk) => {
                     if (chunk.includes(' as ')) {
