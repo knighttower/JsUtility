@@ -221,6 +221,18 @@ function getDynamicId() {
  * @example getRandomId() // kn__000000__000
  */
 const getRandomId = getDynamicId;
+const randomId = getDynamicId;
+
+const uuid = (max = 20) => {
+    const rnd = () => Math.random().toString(36).substring(2, 15);
+    max = max || 40;
+    var str = '';
+    for (var i = 0; i < max / 3 + 1; i++) {
+        str += rnd();
+    }
+    return str.substring(0, max);
+};
+const uniqueId = uuid;
 
 /**
  * Form a valid Google search address
@@ -561,6 +573,8 @@ const Utility = {
     validateEmail,
     validatePhone,
     makeArray,
+    uuid,
+    uniqueId,
 };
 
-export { Utility, convertToBool, convertToNumber, currencyToDecimal, dateFormat, decimalToCurrency, Utility as default, emptyOrValue, formatPhoneNumber, getDynamicId, getGoogleMapsAddress, getRandomId, includes, instanceOf, isEmpty, isNumber, makeArray, openGoogleMapsAddress, toCurrency, toDollarString, typeOf, Utility as utility, Utility as utils, validateEmail, validatePhone };
+export { Utility, convertToBool, convertToNumber, currencyToDecimal, dateFormat, decimalToCurrency, Utility as default, emptyOrValue, formatPhoneNumber, getDynamicId, getGoogleMapsAddress, getRandomId, includes, instanceOf, isEmpty, isNumber, makeArray, openGoogleMapsAddress, randomId, toCurrency, toDollarString, typeOf, uniqueId, Utility as utility, Utility as utils, uuid, validateEmail, validatePhone };

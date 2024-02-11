@@ -19,12 +19,14 @@ import {
     convertToBool,
     typeOf,
     instanceOf,
-    selectElement,
     convertToNumber,
+    uuid,
 } from '../index';
 
-console.log(selectElement('body'));
-
+test('uuid - should return a string', () => {
+    const result = uuid(40);
+    assert.equal(typeof result, 'string');
+});
 // convertToNumber
 test('convertToNumber - Convert to number', () => {
     assert.equal(convertToNumber('123'), 123);

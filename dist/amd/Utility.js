@@ -223,6 +223,18 @@ define(['exports'], (function (exports) { 'use strict';
      * @example getRandomId() // kn__000000__000
      */
     const getRandomId = getDynamicId;
+    const randomId = getDynamicId;
+
+    const uuid = (max = 20) => {
+        const rnd = () => Math.random().toString(36).substring(2, 15);
+        max = max || 40;
+        var str = '';
+        for (var i = 0; i < max / 3 + 1; i++) {
+            str += rnd();
+        }
+        return str.substring(0, max);
+    };
+    const uniqueId = uuid;
 
     /**
      * Form a valid Google search address
@@ -563,6 +575,8 @@ define(['exports'], (function (exports) { 'use strict';
         validateEmail,
         validatePhone,
         makeArray,
+        uuid,
+        uniqueId,
     };
 
     exports.Utility = Utility;
@@ -583,11 +597,14 @@ define(['exports'], (function (exports) { 'use strict';
     exports.isNumber = isNumber;
     exports.makeArray = makeArray;
     exports.openGoogleMapsAddress = openGoogleMapsAddress;
+    exports.randomId = randomId;
     exports.toCurrency = toCurrency;
     exports.toDollarString = toDollarString;
     exports.typeOf = typeOf;
+    exports.uniqueId = uniqueId;
     exports.utility = Utility;
     exports.utils = Utility;
+    exports.uuid = uuid;
     exports.validateEmail = validateEmail;
     exports.validatePhone = validatePhone;
 

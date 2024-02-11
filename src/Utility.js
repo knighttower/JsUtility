@@ -221,6 +221,18 @@ export function getDynamicId() {
  * @example getRandomId() // kn__000000__000
  */
 export const getRandomId = getDynamicId;
+export const randomId = getDynamicId;
+
+export const uuid = (max = 20) => {
+    const rnd = () => Math.random().toString(36).substring(2, 15);
+    max = max || 40;
+    var str = '';
+    for (var i = 0; i < max / 3 + 1; i++) {
+        str += rnd();
+    }
+    return str.substring(0, max);
+};
+export const uniqueId = uuid;
 
 /**
  * Form a valid Google search address
@@ -561,6 +573,8 @@ export const Utility = {
     validateEmail,
     validatePhone,
     makeArray,
+    uuid,
+    uniqueId,
 };
 
 // Export ES6 modules

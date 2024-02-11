@@ -248,6 +248,18 @@ System.register('Utility', [], (function (exports) {
              * @example getRandomId() // kn__000000__000
              */
             const getRandomId = exports('getRandomId', getDynamicId);
+            const randomId = exports('randomId', getDynamicId);
+
+            const uuid = exports('uuid', (max = 20) => {
+                const rnd = () => Math.random().toString(36).substring(2, 15);
+                max = max || 40;
+                var str = '';
+                for (var i = 0; i < max / 3 + 1; i++) {
+                    str += rnd();
+                }
+                return str.substring(0, max);
+            });
+            const uniqueId = exports('uniqueId', uuid);
 
             /**
              * Form a valid Google search address
@@ -588,6 +600,8 @@ System.register('Utility', [], (function (exports) {
                 validateEmail,
                 validatePhone,
                 makeArray,
+                uuid,
+                uniqueId,
             }; exports({ Utility: Utility, default: Utility, utils: Utility, utility: Utility });
 
         })
