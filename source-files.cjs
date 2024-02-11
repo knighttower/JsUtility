@@ -3,7 +3,8 @@ const targets = [
     { file: 'DomObserver.js', exportType: 'named' },
     { file: 'UrlHelper.js', exportType: 'named' },
     { file: 'ElementHelper.js', exportType: 'named' },
-    { file: 'ProxyHelper.js', exportType: 'named' },
+    { file: 'ProxyObject.js', exportType: 'named' },
+    { file: 'ProxyClass.js', exportType: 'named' },
     { file: 'PowerHelpers.js', exportType: 'named' },
 ];
 

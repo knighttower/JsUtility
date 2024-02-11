@@ -220,6 +220,7 @@ define(['exports'], (function (exports) { 'use strict';
     exports.ElementHelper = ElementHelper;
     exports.default = ElementHelper;
     exports.elementHelper = ElementHelper;
+    exports.selectElement = ElementHelper;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 

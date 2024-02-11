@@ -145,4 +145,4 @@ class ElementHelper {
  * @todo enhance to extend the prototype like https://stackoverflow.com/questions/779880/in-javascript-can-you-extend-the-dom
  */
 
-export { ElementHelper as elementHelper, ElementHelper as default, ElementHelper };
+export { ElementHelper as elementHelper, ElementHelper as default, ElementHelper, ElementHelper as selectElement };

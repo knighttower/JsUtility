@@ -3,7 +3,7 @@ import { domObserver } from './src/DomObserver.js';
 // Default Module from: DomObserver
 import DomObserver from './src/DomObserver.js';
 // Single Modules and Aliases from: ElementHelper
-import { elementHelper } from './src/ElementHelper.js';
+import { elementHelper, selectElement } from './src/ElementHelper.js';
 // Default Module from: ElementHelper
 import ElementHelper from './src/ElementHelper.js';
 // Single Modules and Aliases from: PowerHelpers
@@ -29,10 +29,14 @@ import {
 } from './src/PowerHelpers.js';
 // Default Module from: PowerHelpers
 import powerHelper from './src/PowerHelpers.js';
-// Single Modules and Aliases from: ProxyHelper
-import { proxyHelper } from './src/ProxyHelper.js';
-// Default Module from: ProxyHelper
-import ProxyHelper from './src/ProxyHelper.js';
+// Single Modules and Aliases from: ProxyClass
+import { ProxyClass } from './src/ProxyClass.js';
+// Default Module from: ProxyClass
+import proxyClass from './src/ProxyClass.js';
+// Single Modules and Aliases from: ProxyObject
+import { ProxyObject } from './src/ProxyObject.js';
+// Default Module from: ProxyObject
+import proxyObject from './src/ProxyObject.js';
 // Single Modules and Aliases from: UrlHelper
 import { urlHelper } from './src/UrlHelper.js';
 // Default Module from: UrlHelper
@@ -48,6 +52,7 @@ import {
     decimalToCurrency,
     emptyOrValue,
     formatPhoneNumber,
+    makeArray,
     getDynamicId,
     getRandomId,
     getGoogleMapsAddress,
@@ -56,8 +61,6 @@ import {
     isNumber,
     instanceOf,
     openGoogleMapsAddress,
-    proxyObject,
-    selectElement,
     toCurrency,
     toDollarString,
     typeOf,
@@ -71,6 +74,7 @@ export {
     domObserver,
     DomObserver,
     elementHelper,
+    selectElement,
     ElementHelper,
     PowerHelper,
     addQuotes,
@@ -91,8 +95,10 @@ export {
     setWildCardString,
     wildCardStringSearch,
     powerHelper,
-    proxyHelper,
-    ProxyHelper,
+    ProxyClass,
+    proxyClass,
+    ProxyObject,
+    proxyObject,
     urlHelper,
     UrlHelper,
     utils,
@@ -104,6 +110,7 @@ export {
     decimalToCurrency,
     emptyOrValue,
     formatPhoneNumber,
+    makeArray,
     getDynamicId,
     getRandomId,
     getGoogleMapsAddress,
@@ -112,8 +119,6 @@ export {
     isNumber,
     instanceOf,
     openGoogleMapsAddress,
-    proxyObject,
-    selectElement,
     toCurrency,
     toDollarString,
     typeOf,

@@ -222,3 +222,4 @@ class ElementHelper {
 exports.ElementHelper = ElementHelper;
 exports.default = ElementHelper;
 exports.elementHelper = ElementHelper;
+exports.selectElement = ElementHelper;

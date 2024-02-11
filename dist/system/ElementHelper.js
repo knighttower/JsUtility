@@ -218,7 +218,7 @@ System.register('ElementHelper', [], (function (exports) {
 
                     return hash;
                 }
-            } exports({ elementHelper: ElementHelper, default: ElementHelper, ElementHelper: ElementHelper });
+            } exports({ elementHelper: ElementHelper, default: ElementHelper, ElementHelper: ElementHelper, selectElement: ElementHelper });
 
         })
     };

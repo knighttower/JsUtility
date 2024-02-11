@@ -6,12 +6,6 @@
 //  */
 // // -----------------------------------------
 
-// @see https://github.com/knighttower/JsObjectProxyHelper
-import ProxyHelper from './ProxyHelper.js';
-
-// @see https://github.com/knighttower/ElementHelper
-import ElementHelper from './ElementHelper.js';
-
 // -----------------------------
 // METHODS
 // -----------------------------
@@ -199,6 +193,15 @@ export function formatPhoneNumber(phoneNumber, template) {
 
     return formatted.join('');
 }
+
+/**
+ * Make sure the the item is an array or convert it to an array
+ * @function makeArray
+ * @param {String|Array} item
+ * @return array
+ * @example makeArray('test') // ['test']
+ */
+export const makeArray = (item) => (Array.isArray(item) ? item : [item]);
 
 /**
  * Generate unique ids
@@ -407,32 +410,6 @@ export function openGoogleMapsAddress(object) {
 }
 
 /**
- * @example ProxyHelper({objectProps..., _protected: array(...)})
- * @param {Object} object
- * @return {Proxy}
- * @usage const proxy = ProxyHelper({objectProps..., _protected: array(...), _private: array(...), _mutable: array(...)})
- * @usage _protected: array(...) -> Cannot be modified
- * @usage _private: array(...) -> Cannot be accessed
- * @usage _mutable: array(...) -> Can be modified
- */
-export function proxyObject(obj) {
-    return ProxyHelper(obj);
-}
-
-/**
- * Dom Element selector
- * @function selectElement
- * @param {String} selector - The selector to search for
- * @param {Object} scope - The scope to search in
- * @return {String} - The first element that matches the selector
- * @uses ElementHelper @knighttower/element-helper (https://github.com/knighttower/ElementHelper)
- * @example selectElement('#test') // <div id="test"></div>
- */
-export function selectElement(selector, scope = document) {
-    return new ElementHelper(selector, scope);
-}
-
-/**
  * Alias to getDynamicId
  * @function toCurrency
  * @memberof Utility
@@ -578,13 +555,12 @@ export const Utility = {
     isNumber,
     instanceOf,
     openGoogleMapsAddress,
-    proxyObject,
-    selectElement,
     toCurrency,
     toDollarString,
     typeOf,
     validateEmail,
     validatePhone,
+    makeArray,
 };
 
 // Export ES6 modules

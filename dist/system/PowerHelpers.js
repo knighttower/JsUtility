@@ -23,49 +23,6 @@ System.register('PowerHelpers', [], (function (exports) {
                 wildCardStringSearch: wildCardStringSearch
             });
 
-            // Author Knighttower
-            // MIT License
-            // [2022] [Knighttower] https://github.com/knighttower
-            /**
-             * @module DomObserver
-             * Detect DOM changes
-             * @name DomObserver
-             * @param {window} selector
-             * @param {Function}
-             * @return DomObserver
-             * @example DomObserver.addOnNodeChange('elementIdentifier', () => { console.log('Node changed') })
-             * @example DomObserver.removeOnNodeChange('elementIdentifier')
-             */
-            /**
-             * Holds memory of registered functions
-             * @private
-             */
-            const executeOnNodeChanged = {};
-            /**
-             * Observer
-             * @private
-             * @return {MutationObserver}
-             */
-            (() => {
-                if (typeof window !== 'undefined') {
-                    const callback = (mutationList) => {
-                        for (const mutation of mutationList) {
-                            if (mutation.type === 'childList') {
-                                for (const id in executeOnNodeChanged) {
-                                    executeOnNodeChanged[id]();
-                                }
-                            }
-                        }
-                    };
-                    const config = {
-                        childList: true,
-                        subtree: true,
-                    };
-                    const observer = new MutationObserver(callback);
-                    observer.observe(document.body, config);
-                }
-            })();
-
             // // -----------------------------------------
             // /**
             //  * @knighttower
@@ -73,7 +30,6 @@ System.register('PowerHelpers', [], (function (exports) {
             //  * @git https://github.com/knighttower/
             //  */
             // // -----------------------------------------
-
 
             // -----------------------------
             // METHODS

@@ -9,6 +9,16 @@ Ex: convertToBool(value) converts a value to a boolean, accepts int, string and 
 <br/>
 
 **PowerHelper** was designed to work for other specific libraries, but the fucntions for regex and string manipulation were actually so good to use in other projects that it was decided to share as well here.  
+
+Other libraries are also included in the dist folder, but they are not yet documented here.
+ProxyObject, UrlHelper, DomObserver, ElementHelper, NodeHelpers, ProxyClass
+See via Github explorer:
+[ProxyObject](https://github.com/knighttower/JsUtility/blob/development/src/ProxyObject.js)
+[UrlHelper](https://github.com/knighttower/JsUtility/blob/development/src/UrlHelper.js)
+[DomObserver](https://github.com/knighttower/JsUtility/blob/development/src/DomObserver.js)
+[ElementHelper](https://github.com/knighttower/JsUtility/blob/development/src/ElementHelper.js)
+[NodeHelpers](https://github.com/knighttower/JsUtility/blob/development/nodeUtils/)
+[ProxyClass](https://github.com/knighttower/JsUtility/blob/development/src/ProxyClass.js)
 <br/>
 
 Most functions here are extremely handy without the overhead of big libraries.  
@@ -16,9 +26,9 @@ However, for other most advance features it is recomended to also use other libr
 
 It also Uses some features from other KnightTower packages:
 
--   [JsObjectProxyHelper](https://github.com/knighttower/JsObjectProxyHelper)
--   [JsUrlHelper](https://github.com/knighttower/JsUrlHelper)
--   [JsDomObserver](https://github.com/knighttower/JsDomObserver)
+-   <strike>[JsObjectProxyHelper](https://github.com/knighttower/JsObjectProxyHelper)</strike> (deprecated) (it has now been merged into this library but still will be available as a standalone library)
+-   <strike>[JsUrlHelper](https://github.com/knighttower/JsUrlHelper)</strike> (deprecated) (it has now been merged into this library but still will be available as a standalone library)
+-   <strike>[JsDomObserver](https://github.com/knighttower/JsDomObserver)</strike> (deprecated) (it has now been merged into this library but still will be available as a standalone library)
 -   <strike>[JsPowerHelperFunctions](https://github.com/knighttower/JsPowerHelperFunctions)</strike> (deprecated) (it has now been merged into this library but still will be available as a standalone library)
 
 All functions are handy, but the most handy of all is **"emptyOrValue"** which helps to mitigate a lot of headaches when dealing with variables to know whether or not they have a value or even to set a default value when empty. From the PowerHelpers, there are a lot of regex and string functions that are very handy.
@@ -46,14 +56,13 @@ All Functions have also been Unit Tested and tests are in the source code if you
   isEmpty: "checks if a given value is empty, checks arrays, objects, etc",
   logThis: "logs a message to the console with a specified prefix",
   openGoogleMapsAddress: "opens Google Maps in a new tab with a specified address",
-  proxyObject: "creates a proxy object that allows for intercepting and modifying property access, set private and protected properties",
-  selectElement: "selects a DOM element by ID or class name, or Xpath. Return xpath, if in DOM or promise if not found",
   toCurrency: "formats a number to a currency string",
   toDollarString: "formats a number to a dollar string",
   typeOf: "gets the type of a value and can also return simple comparisons. For more advanced type-checking, use the 'typeCheck' library https://github.com/knighttower/JsTypeCheck",
   instanceOf: "gets the instance of a value and can also return simple comparisons",
   validateEmail: "validates an email address string to ensure it is in a valid format",
   validatePhone: "validates a phone number string to ensure it is in a valid format"
+  makeArray: "converts a value to an array, if it is not already an array"
 }
 
 ```
@@ -85,6 +94,8 @@ You can see the src with github and explore the functions by using the "symbols 
 ```
 
 You can see the src with github and explore the functions by using the "symbols explorer" from Github [here](https://github.com/knighttower/JsUtility/blob/development/src/PowerHelpers.js)
+
+
 
 ## Installation
 
@@ -565,8 +576,6 @@ logThis({ key: 'value' }); // Logs { key: 'value' } to the console
 ## Dependencies
 
 -   <strike>Lodash: for utility functions</strike> (deprecated)
--   JsObjectProxyHelper: for proxying objects
--   JsUrlHelper: for URL handling
 
 ## License
 

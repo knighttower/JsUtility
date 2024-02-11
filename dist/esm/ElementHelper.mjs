@@ -215,4 +215,4 @@ class ElementHelper {
     }
 }
 
-export { ElementHelper, ElementHelper as default, ElementHelper as elementHelper };
+export { ElementHelper, ElementHelper as default, ElementHelper as elementHelper, ElementHelper as selectElement };

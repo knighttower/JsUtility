@@ -1,7 +1,7 @@
 // Single Modules and Aliases from: DomObserver
 const { DomObserver, domObserver } = require('./dist/cjs/DomObserver.cjs');
 // Single Modules and Aliases from: ElementHelper
-const { ElementHelper, elementHelper } = require('./dist/cjs/ElementHelper.cjs');
+const { ElementHelper, elementHelper, selectElement } = require('./dist/cjs/ElementHelper.cjs');
 // Single Modules and Aliases from: PowerHelpers
 const {
     PowerHelper,
@@ -24,8 +24,12 @@ const {
     startAndEndWith,
     wildCardStringSearch,
 } = require('./dist/cjs/PowerHelpers.cjs');
+// Single Modules and Aliases from: ProxyClass
+const { ProxyClass, proxyClass } = require('./dist/cjs/ProxyClass.cjs');
 // Single Modules and Aliases from: ProxyHelper
 const { ProxyHelper, proxyHelper } = require('./dist/cjs/ProxyHelper.cjs');
+// Single Modules and Aliases from: ProxyObject
+const { ProxyObject, proxyObject } = require('./dist/cjs/ProxyObject.cjs');
 // Single Modules and Aliases from: UrlHelper
 const { UrlHelper, urlHelper } = require('./dist/cjs/UrlHelper.cjs');
 // Single Modules and Aliases from: Utility
@@ -44,9 +48,8 @@ const {
     instanceOf,
     isEmpty,
     isNumber,
+    makeArray,
     openGoogleMapsAddress,
-    proxyObject,
-    selectElement,
     toCurrency,
     toDollarString,
     typeOf,
@@ -63,6 +66,7 @@ module.exports = {
     domObserver,
     ElementHelper,
     elementHelper,
+    selectElement,
     PowerHelper,
     addQuotes,
     cleanStr,
@@ -82,8 +86,12 @@ module.exports = {
     setWildCardString,
     startAndEndWith,
     wildCardStringSearch,
+    ProxyClass,
+    proxyClass,
     ProxyHelper,
     proxyHelper,
+    ProxyObject,
+    proxyObject,
     UrlHelper,
     urlHelper,
     convertToBool,
@@ -100,9 +108,8 @@ module.exports = {
     instanceOf,
     isEmpty,
     isNumber,
+    makeArray,
     openGoogleMapsAddress,
-    proxyObject,
-    selectElement,
     toCurrency,
     toDollarString,
     typeOf,
