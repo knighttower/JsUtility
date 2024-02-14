@@ -2,6 +2,8 @@
 const { DomObserver, domObserver } = require('./dist/cjs/DomObserver.cjs');
 // Single Modules and Aliases from: ElementHelper
 const { ElementHelper, elementHelper, selectElement } = require('./dist/cjs/ElementHelper.cjs');
+// Single Modules and Aliases from: EventBus
+const { EventBus, _eventBus } = require('./dist/cjs/EventBus.cjs');
 // Single Modules and Aliases from: PowerHelpers
 const {
     PowerHelper,
@@ -24,6 +26,8 @@ const {
     startAndEndWith,
     wildCardStringSearch,
 } = require('./dist/cjs/PowerHelpers.cjs');
+// Single Modules and Aliases from: PromiseQueue
+const { PromisePool, PromiseQueue, doPoll, promisePool, promiseQueue } = require('./dist/cjs/PromiseQueue.cjs');
 // Single Modules and Aliases from: ProxyClass
 const { ProxyClass, proxyClass } = require('./dist/cjs/ProxyClass.cjs');
 // Single Modules and Aliases from: ProxyHelper
@@ -70,6 +74,8 @@ module.exports = {
     ElementHelper,
     elementHelper,
     selectElement,
+    EventBus,
+    _eventBus,
     PowerHelper,
     addQuotes,
     cleanStr,
@@ -89,6 +95,11 @@ module.exports = {
     setWildCardString,
     startAndEndWith,
     wildCardStringSearch,
+    PromisePool,
+    PromiseQueue,
+    doPoll,
+    promisePool,
+    promiseQueue,
     ProxyClass,
     proxyClass,
     ProxyHelper,

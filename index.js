@@ -6,6 +6,10 @@ import DomObserver from './src/DomObserver.js';
 import { elementHelper, selectElement } from './src/ElementHelper.js';
 // Default Module from: ElementHelper
 import ElementHelper from './src/ElementHelper.js';
+// Single Modules and Aliases from: EventBus
+import { _eventBus } from './src/EventBus.js';
+// Default Module from: EventBus
+import EventBus from './src/EventBus.js';
 // Single Modules and Aliases from: PowerHelpers
 import {
     PowerHelper,
@@ -29,6 +33,8 @@ import {
 } from './src/PowerHelpers.js';
 // Default Module from: PowerHelpers
 import powerHelper from './src/PowerHelpers.js';
+// Single Modules and Aliases from: PromiseQueue
+import { promisePool, PromisePool, PromiseQueue, promiseQueue, doPoll } from './src/PromiseQueue.js';
 // Single Modules and Aliases from: ProxyClass
 import { ProxyClass } from './src/ProxyClass.js';
 // Default Module from: ProxyClass
@@ -79,6 +85,8 @@ export {
     elementHelper,
     selectElement,
     ElementHelper,
+    _eventBus,
+    EventBus,
     PowerHelper,
     addQuotes,
     cleanStr,
@@ -98,6 +106,11 @@ export {
     setWildCardString,
     wildCardStringSearch,
     powerHelper,
+    promisePool,
+    PromisePool,
+    PromiseQueue,
+    promiseQueue,
+    doPoll,
     ProxyClass,
     proxyClass,
     ProxyObject,

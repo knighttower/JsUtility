@@ -6,6 +6,8 @@ const targets = [
     { file: 'ProxyObject.js', exportType: 'named' },
     { file: 'ProxyClass.js', exportType: 'named' },
     { file: 'PowerHelpers.js', exportType: 'named' },
+    { file: 'PromiseQueue.js', exportType: 'named' },
+    { file: 'EventBus.js', exportType: 'named' },
 ];
 
 const rollupFormats = [
@@ -19,7 +21,7 @@ const rollupFormats = [
 
 const webpackFormats = [
     { type: 'umd', dir: 'umd', ext: 'js' },
-    // { type: 'commonjs2', dir: 'cjs', ext: 'cjs' },
+    // { type: 'commonjs2', dir: 'common', ext: 'cjs' },
     { type: 'window', dir: 'browser', ext: 'js' },
 ];
 
