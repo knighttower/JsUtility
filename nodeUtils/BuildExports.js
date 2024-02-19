@@ -184,7 +184,7 @@ function getCommonJsContent(allExports) {
     const ext = type === 'esm' ? 'js' : type;
     const singleFile = getFlagValue('file') ?? false;
     const out = getFlagValue('out') ? helper.cleanStr(getFlagValue('out'), '.js', '.mjs', '.cjs', '.ts') : null;
-    const destination = out ? `${out}.${ext}` : `./index.${ext}`;
+    const destination = out ? `${out}.${ext}` : `${workingDir}/index.${ext}`;
     // Synchronously fetch all file paths within a esmDir and its subdirectories
     // that have a .js or .mjs extension
 
@@ -199,13 +199,12 @@ function getCommonJsContent(allExports) {
         });
 
         const indexContent = type === 'cjs' ? getCommonJsContent(allExports) : getEsmContent(allExports);
-        const indexPath = path.join(workingDir, destination);
 
-        fs.writeFileSync(indexPath, indexContent);
-        console.log(' Generated In:--->', indexPath);
+        fs.writeFileSync(destination, indexContent);
+        console.log(' Generated In:--->', destination);
         console.log('index generated');
         if (commandExistsSync('npx prettier')) {
-            const exeCommand = `npx prettier --config .prettierrc.json --write "${indexPath}"`;
+            const exeCommand = `npx prettier --config .prettierrc.json --write "${destination}"`;
             runCommand(exeCommand);
         } else {
             console.log(
