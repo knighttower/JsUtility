@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 // include esm object to allow for es6 import/export syntax
 Object.defineProperty(exports, '__esModule', { value: true });
 const fs = require('fs');
