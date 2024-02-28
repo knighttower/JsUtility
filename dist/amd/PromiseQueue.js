@@ -417,7 +417,13 @@ define(['exports'], (function (exports) { 'use strict';
      * @param {Object} options - Configuration options for polling.
      * @param {number} [options.interval=200] - The interval in milliseconds between each poll.
      * @param {number} [options.timeout=1000] - The maximum time in milliseconds to continue polling.
-     * @returns {Object} An object containing the polling promise and a cancel function.
+     * @returns {Object} { promise, stop } - An object containing the polling promise and a cancel function.
+     * @fails returns 'failed' if the polling times out or is cancelled.
+     * @example
+     * const { promise, stop } = doPoll(() => {
+     *    // Polling logic here
+     *   return true; // or return a promise
+     * }
      */
     const doPoll = (fn, options = {}) => {
         if (typeof fn !== 'function') {
@@ -430,7 +436,8 @@ define(['exports'], (function (exports) { 'use strict';
 
         const stop = () => {
             clearTimers();
-            rejectPromise(console.error('Polling was cancelled or timed out.'));
+            console.error('Polling was cancelled or timed out.');
+            rejectPromise('failed');
         };
 
         const done = (result) => {
