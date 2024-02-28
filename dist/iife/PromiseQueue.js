@@ -437,8 +437,7 @@ var PromiseQueue = (function (exports) {
 
         const stop = () => {
             clearTimers();
-            console.error('Polling was cancelled or timed out.');
-            rejectPromise('failed');
+            rejectPromise(console.error('Polling was cancelled or timed out.'));
         };
 
         const done = (result) => {

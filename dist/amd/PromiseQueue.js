@@ -436,8 +436,7 @@ define(['exports'], (function (exports) { 'use strict';
 
         const stop = () => {
             clearTimers();
-            console.error('Polling was cancelled or timed out.');
-            rejectPromise('failed');
+            rejectPromise(console.error('Polling was cancelled or timed out.'));
         };
 
         const done = (result) => {

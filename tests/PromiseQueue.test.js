@@ -92,4 +92,25 @@ test('polling', async () => {
         },
     );
     expect(done).toBe(true);
+    // response = false;
+    // const done2 = await vi.waitUntil(
+    //     () => {
+    //         const poll = doPoll(
+    //             () => {
+    //                 console.log('44');
+    //             },
+    //             { timeout: 100, interval: 50 },
+    //         );
+
+    //         poll.promise.catch((result) => {
+    //             console.log('======result', result);
+    //             return result;
+    //         });
+    //     },
+    //     {
+    //         timeout: 3000, // default is 1000
+    //         interval: 200, // default is 50
+    //     },
+    // );
+    // expect(done).toBe(true);
 });
