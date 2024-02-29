@@ -422,6 +422,9 @@ System.register('PromiseQueue', [], (function (exports) {
              * @param {number} [options.timeout=1000] - The maximum time in milliseconds to continue polling.
              * @returns {Object} { promise, stop } - An object containing the polling promise and a cancel function.
              * @fails returns 'failed' if the polling times out or is cancelled.
+             * @options: {}
+             * - interval: The interval in milliseconds between each poll.
+             * - timeout: The maximum time in milliseconds to continue polling.
              * @example
              * const { promise, stop } = doPoll(() => {
              *    // Polling logic here
@@ -439,7 +442,7 @@ System.register('PromiseQueue', [], (function (exports) {
 
                 const stop = () => {
                     clearTimers();
-                    rejectPromise(console.error('Polling was cancelled or timed out.'));
+                    rejectPromise(console.info('===> doPoll: cancelled or timed out.'));
                 };
 
                 const done = (result) => {
