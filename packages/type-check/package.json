@@ -1,0 +1,64 @@
+{
+  "name": "@knighttower/type-check-js",
+  "version": "4.1.14",
+  "type": "module",
+  "description": "TypeCheck JS",
+  "main": "index.cjs",
+  "module": "index.js",
+  "unpkg": "dist/browser/TypeCheck.js",
+  "jsdelivr": "dist/browser/TypeCheck.js",
+  "browser": "dist/browser/TypeCheck.js",
+  "license": "MIT",
+  "files": [
+    "dist",
+    "src",
+    "index.js",
+    "index.cjs"
+  ],
+  "exports": {
+    ".": {
+      "import": "./index.js",
+      "require": "./index.cjs"
+    },
+    "./dist/*": "./dist/*"
+  },
+  "keywords": [
+    "Utility",
+    "Vue",
+    "react",
+    "library",
+    "plugin",
+    "URL",
+    "Vue 2",
+    "Vue 3",
+    "javascript",
+    "DOM",
+    "functions",
+    "helper",
+    "knighttower",
+    "typeCheck",
+    "type checking"
+  ],
+  "scripts": {
+    "production": "npm run build",
+    "build": "npm run webpack && npm run rollup && npm run buildExports && npm run bumpVersion",
+    "fixIndexFormat": "prettier --config .prettierrc.json --write ./index.js && prettier --config .prettierrc.json --write ./index.cjs",
+    "bumpVersion": "node ./node_modules/@knighttower/js-utility-functions/nodeUtils/BumpVersion.cjs --exe",
+    "buildExports": "node ./node_modules/@knighttower/js-utility-functions/nodeUtils/BuildExports.js --file ./src/TypeCheck.js && node ./node_modules/@knighttower/js-utility-functions/nodeUtils/BuildExports.js --file ./dist/cjs/TypeCheck.cjs --type=cjs",
+    "rollup": "rollup -c ./node_modules/@knighttower/js-utility-functions/nodeUtils/rollup.config.cjs",
+    "webpack": "webpack --mode production --config ./node_modules/@knighttower/js-utility-functions/nodeUtils/webpack.config.cjs",
+    "dev": "webpack --mode development",
+    "watch": "webpack --mode development --watch",
+    "test": "npm run format && npm run eslint && vitest",
+    "format": "prettier --config .prettierrc.json --write ./src",
+    "format-check": "prettier --config .prettierrc.json --check ./src",
+    "eslint": "eslint -c .eslintrc.json --fix ./src --ext .js,.cjs,.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/knighttower/typeCheckJs.git"
+  },
+  "dependencies": {
+    "@knighttower/js-utility-functions": "^4.2.9"
+  }
+}

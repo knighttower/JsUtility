@@ -1,0 +1,60 @@
+
+Possible type patterns:
+
+// basic string
+'type' // only one test
+'type | type' // returns to test one or more types
+'type?' // is type or null/undefined
+'type | type?' // the second type would be type or null/undefined
+
+
+// basic array 
+'[type]' // returns test to test all the keys
+'[type | type]' // returns test to test all key with one or more
+'[[type],[type]]'
+
+// basic object
+'{key1: type}' 
+'{key1: type | type}' 
+'{key1: type, key2: type}' 
+'{key1: type, key2?: type}' // if key2 is not present or null/undefined, it will not be tested
+'{key1: type, key2: type?}' // if key2 is not set or null/undefined, it will not be tested
+'{key1: type | type, key2: type | type}' 
+'{any: type}' // any key
+'{any: type | type}' // any key
+'{key1: type, any: type}' // specific key, and all other "any"
+'{key1: type | type, ...}' // specific key, and all other no test
+
+
+// ADVANCE
+// array of objects
+'[{key1: type}]' // returns test to test all the keys
+'[{key1: type | type}]' // returns test to test all key with one or more
+'[{key1: type, key2: type}]' // returns
+'[{key1: type, key2: type}, {key1: type, key2: type}]'
+'[{key1: type | type, key2: type | type}, {key1: type | type, key2: type | type}]'
+'[{key1: type, any: type}]'
+
+
+// Builder Object gets a Map() with the following keys. For nested maps, the same keys are used.
+for basic types
+Map(){
+    testMethod: basic,
+    tests: [test1, test2, test3],
+}
+
+for array
+Map(){
+    testMethod: array,
+    tests: [test1, test2, test3],
+}
+
+for object
+Map(){
+    testMethod: object,
+    tests: Map(test1, test2, test3),
+    optionalKeys: [],// keys that are optional and may not tested if not found
+    testFew: [], // when 'Any' is in the test, testFew will be used to test the keys here and all other with Any"
+    testAllAny: boolean, // it will test all keys with the 'any' test
+    testOnly: boolean, // when this is set, only this keys will be tested. It works when the test has '...'
+}
