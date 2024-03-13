@@ -3,6 +3,7 @@ const { runCommand } = require('./packages/utility/nodeUtils');
 const workingDir = process.cwd();
 const webpackConfig = `${workingDir}/packages/utility/nodeUtils/webpack.config.cjs`;
 const rollupConfig = `${workingDir}/packages/utility/nodeUtils/rollup.config.cjs`;
+const minify = `${workingDir}/packages/utility/nodeUtils/Minify.cjs`;
 const buildExports = `${workingDir}/packages/utility/nodeUtils/BuildExports.js`;
 const bumpVersion = `${workingDir}/packages/utility/nodeUtils/BumpVersion.cjs`;
 const pretty = `${workingDir}/.prettierrc.json`;
@@ -11,14 +12,24 @@ const eslint = `${workingDir}/.eslintrc.json`;
 // runCommand(`cd ./packages/type-check && npm run build`);
 
 // runCommand('ncu -u && npm i');
-// build TypeCheck
-const typeCheckBuild = runCommand(
+// Event Bus
+runCommand(
     `\
-    cd ./packages/type-check \
-    && npx webpack --mode production --config "${webpackConfig}" \
+    cd ./packages/event-bus \
+    && npx tsc -p "${workingDir}/tsconfig.json" \
     && npx rollup -c "${rollupConfig}" \
+    && npx webpack --config "${webpackConfig}" \
+    && node "${minify}"
     `
 );
+// build TypeCheck
+// const typeCheckBuild = runCommand(
+//     `\
+//     cd ./packages/type-check \
+//     && npx webpack --mode production --config "${webpackConfig}" \
+//     && npx rollup -c "${rollupConfig}" \
+//     `
+// );
 
 // runCommand(`npx tsc -p "${workingDir}/tsconfig.json"`);
 // runCommand(`npx rollup -c "${workingDir}/.build/rollup.config.cjs"`);
