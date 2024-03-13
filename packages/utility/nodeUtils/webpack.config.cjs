@@ -1,5 +1,7 @@
 const path = require('path');
-const workingDir = process.cwd();
+const { getFlagValue } = require('./NodeHelpers.cjs');
+const workingDir = getFlagValue('workingDir') ?? process.cwd();
+console.log( '______log______', workingDir );
 const { targets, webpackFormats } = require(`${workingDir}/source-files.cjs`);
 
 const formats = webpackFormats ?? [
