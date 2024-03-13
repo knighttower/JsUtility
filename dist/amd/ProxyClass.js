@@ -43,6 +43,18 @@ define(['exports'], (function (exports) { 'use strict';
                 const _protected = new Set([..._private, ...(instance._protected || [])]);
                 const _mutable = new Set(instance._mutable || []);
 
+                const canMutate = (prop) => {
+                    if (_protected.has(prop) && !_mutable.has(prop)) {
+                        console.error(`Attempt to modify protected property: ${prop}`);
+                        return false;
+                    }
+                    if (_private.has(prop) && !_mutable.has(prop)) {
+                        console.error(`Attempt to modify private property: ${prop}`);
+                        return false;
+                    }
+                    return true;
+                };
+
                 return new Proxy(instance, {
                     get(target, prop, receiver) {
                         if (_private.has(prop)) {
@@ -52,22 +64,19 @@ define(['exports'], (function (exports) { 'use strict';
                         return Reflect.get(target, prop, receiver);
                     },
                     set(target, prop, value) {
-                        if (_private.has(prop) || (_protected.has(prop) && !_mutable.has(prop))) {
-                            console.error('Attempt to modify protected/private property:', prop);
+                        if (!canMutate(prop)) {
                             return false; // Or throw an Error
                         }
                         return Reflect.set(target, prop, value);
                     },
                     deleteProperty(target, prop) {
-                        if (_private.has(prop) || _protected.has(prop)) {
-                            console.error('Attempt to delete protected/private property:', prop);
+                        if (!canMutate(prop)) {
                             return false; // Or throw an Error
                         }
                         return Reflect.deleteProperty(target, prop);
                     },
                     defineProperty(target, prop, descriptor) {
-                        if (_private.has(prop) || _protected.has(prop)) {
-                            console.error('Attempt to define protected/private property:', prop);
+                        if (!canMutate(prop)) {
                             return false; // Or throw an Error
                         }
                         return Reflect.defineProperty(target, prop, descriptor);
@@ -75,6 +84,19 @@ define(['exports'], (function (exports) { 'use strict';
                     ownKeys(target) {
                         const keys = Reflect.ownKeys(target);
                         return keys.filter((key) => !_private.has(key));
+                    },
+                    enumerate(target) {
+                        const keys = Reflect.enumerate(target);
+                        return keys.filter((key) => !_private.has(key));
+                    },
+                    has(target, prop) {
+                        return !_private.has(prop) && Reflect.has(target, prop);
+                    },
+                    getOwnPropertyDescriptor(target, prop) {
+                        if (_private.has(prop)) {
+                            return undefined;
+                        }
+                        return Reflect.getOwnPropertyDescriptor(target, prop);
                     },
                 });
             },
