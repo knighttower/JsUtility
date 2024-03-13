@@ -76,6 +76,6 @@
     "minify": "node ./nodeUtils/Minify.js"
   },
   "dependencies": {
-    "@knighttower/js-event-bus": "^3.3.0"
+    "@knighttower/js-event-bus": "*"
   }
 }

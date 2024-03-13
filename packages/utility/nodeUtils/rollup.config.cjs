@@ -42,7 +42,7 @@ function buildConfig({ file, format, exportType = 'default', exportExt = 'js', t
             babel({
                 babelHelpers: 'bundled',
                 exclude: 'node_modules/**',
-            }),
+            })
         );
     }
 
@@ -74,7 +74,7 @@ function getAllConfigs() {
                     exportType: target.exportType,
                     exportExt: format.ext,
                     transpile: target.transpile ?? false,
-                }),
+                })
             );
         }
     });

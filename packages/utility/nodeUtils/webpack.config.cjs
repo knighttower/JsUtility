@@ -17,7 +17,7 @@ const formats = webpackFormats ?? [
  * @param {string} ext - The file extension.
  * @returns {Object} - The Webpack configuration.
  */
-const getWebpackConfig = (fileSrc, fileName, libraryTarget, dir, ext) => ({
+const getWebpackConfig = (fileSrc, fileName, libraryTarget, dir, ext, exportName) => ({
     mode: 'production',
     entry: `${workingDir}/src/${fileSrc}`,
     resolve: {
@@ -32,7 +32,7 @@ const getWebpackConfig = (fileSrc, fileName, libraryTarget, dir, ext) => ({
     output: {
         path: path.resolve(__dirname, `${workingDir}/dist/${dir}`),
         filename: `${fileName}.${ext}`,
-        library: fileName,
+        library: exportName,
         libraryTarget: libraryTarget,
         umdNamedDefine: true,
     },
@@ -45,7 +45,16 @@ function getAllConfigs() {
     targets.forEach((target) => {
         // Generate multiple configurations
         for (const format of formats) {
-            configs.push(getWebpackConfig(target.file, target.file.split('.')[0], format.type, format.dir, format.ext));
+            configs.push(
+                getWebpackConfig(
+                    target.file,
+                    target.file.split('.')[0],
+                    format.type,
+                    format.dir,
+                    format.ext,
+                    target.exportName ?? target.file.split('.')[0]
+                )
+            );
         }
     });
     return configs;

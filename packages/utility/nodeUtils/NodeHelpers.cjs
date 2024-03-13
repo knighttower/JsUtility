@@ -68,7 +68,7 @@ exports.runCommand = (command, returnOutput = false) => {
         const stdout = execSync(command, options);
         return stdout;
     } catch (error) {
-        console.log(`Error executing command: ${command}`, error);
+        console.error(`Error executing command: ${command}`, error);
         return false;
     }
 };

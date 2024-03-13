@@ -1,4 +1,4 @@
-const targets = [{ file: 'eventBus.js', exportType: 'named', exportName: 'EventBus'}];
+const targets = [{ file: 'eventBus.js', exportType: 'named', exportName: 'EventBus' }];
 
 const rollupFormats = [
     { type: 'amd', ext: 'js' },
