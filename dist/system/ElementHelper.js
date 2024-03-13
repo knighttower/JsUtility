@@ -218,7 +218,12 @@ System.register('ElementHelper', [], (function (exports) {
 
                     return hash;
                 }
-            } exports({ elementHelper: ElementHelper, default: ElementHelper, ElementHelper: ElementHelper, selectElement: ElementHelper });
+            } exports({ elementHelper: ElementHelper, default: ElementHelper, ElementHelper: ElementHelper });
+
+            // =========================================
+            // --> Utilities
+            // --------------------------
+            const selectElement = exports('selectElement', (selector, scope = document) => new ElementHelper(selector, scope));
 
         })
     };

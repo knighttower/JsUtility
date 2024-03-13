@@ -139,10 +139,15 @@ class ElementHelper {
     }
 }
 
+// =========================================
+// --> Utilities
+// --------------------------
+const selectElement = (selector, scope = document) => new ElementHelper(selector, scope);
+
 /**
  * Future
  * @private
  * @todo enhance to extend the prototype like https://stackoverflow.com/questions/779880/in-javascript-can-you-extend-the-dom
  */
 
-export { ElementHelper as elementHelper, ElementHelper as default, ElementHelper, ElementHelper as selectElement };
+export { ElementHelper as elementHelper, ElementHelper as default, ElementHelper, selectElement };

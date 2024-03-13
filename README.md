@@ -1,38 +1,6 @@
 # JS Utility Library Documentation
 
-## Overview
-
-**Utility** Tiny collection of mighty utility functions with extended functionality for common cases (only 4k gzip and ESM). It was created to address the need of repetive need of some very common functions without the need of loading entire libraries for just a few functions while providing extra functionality:  
-Ex: emptyOrValue(value) or emptyOrValue(value, default) checks if the value is empty or undefined and returns the value or a default value if empty. Very helpful when dealing with variables that may or may not have a value.  
-Ex: typeOf(value) or typeOf(value, 'string') or typeOf(value, 'string|number') checks the type of a value and can also return comparisons (can take piped).
-Ex: convertToBool(value) converts a value to a boolean, accepts int, string and boolean. Typical Js Boolean() only accepts strings and booleans but not 'true', 'false' as string
-<br/>
-
-**PowerHelper** was designed to work for other specific libraries, but the fucntions for regex and string manipulation were actually so good to use in other projects that it was decided to share as well here.  
-
-Other libraries are also included in the dist folder, but they are not yet documented here.
-ProxyObject, UrlHelper, DomObserver, ElementHelper, NodeHelpers, ProxyClass
-See via Github explorer:
-[ProxyObject](https://github.com/knighttower/JsUtility/blob/development/src/ProxyObject.js)
-[UrlHelper](https://github.com/knighttower/JsUtility/blob/development/src/UrlHelper.js)
-[DomObserver](https://github.com/knighttower/JsUtility/blob/development/src/DomObserver.js)
-[ElementHelper](https://github.com/knighttower/JsUtility/blob/development/src/ElementHelper.js)
-[NodeHelpers](https://github.com/knighttower/JsUtility/blob/development/nodeUtils/)
-[ProxyClass](https://github.com/knighttower/JsUtility/blob/development/src/ProxyClass.js)
-<br/>
-
-Most functions here are extremely handy without the overhead of big libraries.  
-However, for other most advance features it is recomended to also use other libraries, like if you need extensive use of Money, date, numbers functions (ex. money.js, moment.js, validate.js, lodash, v8n.js, jquery, moderndash, etc)
-
-It also Uses some features from other KnightTower packages:
-
--   <strike>[JsObjectProxyHelper](https://github.com/knighttower/JsObjectProxyHelper)</strike> (deprecated) (it has now been merged into this library but still will be available as a standalone library)
--   <strike>[JsUrlHelper](https://github.com/knighttower/JsUrlHelper)</strike> (deprecated) (it has now been merged into this library but still will be available as a standalone library)
--   <strike>[JsDomObserver](https://github.com/knighttower/JsDomObserver)</strike> (deprecated) (it has now been merged into this library but still will be available as a standalone library)
--   <strike>[JsPowerHelperFunctions](https://github.com/knighttower/JsPowerHelperFunctions)</strike> (deprecated) (it has now been merged into this library but still will be available as a standalone library)
-
-All functions are handy, but the most handy of all is **"emptyOrValue"** which helps to mitigate a lot of headaches when dealing with variables to know whether or not they have a value or even to set a default value when empty. From the PowerHelpers, there are a lot of regex and string functions that are very handy.
-All Functions have also been Unit Tested and tests are in the source code if you want to experiment or see more examples.
+## Collection of libraries with classes and functions for JavaScript
 
 [![release version](https://github.com/knighttower/JsUtility/actions/workflows/pre-release.yml/badge.svg)](https://github.com/knighttower/JsUtility/actions/workflows/pre-release.yml)
 [![NPM published](https://github.com/knighttower/JsUtility/actions/workflows/to-npm.yml/badge.svg)](https://github.com/knighttower/JsUtility/actions/workflows/to-npm.yml)
@@ -139,6 +107,43 @@ It loads as a 'window' object --> window.Utility
 By default the "import" or "require", will load the indexes automatically. But, in case of wanting to use individual files or other specific formats, all Files are available in the dist folder as ESM, CJS, AMD, IIFE, Browser, UMD and System formats. For ESM + JS 'next', use the files in the src folder or import directly from the index.js file.  
 **Bonus:** Also included into this monorepo are files for use in NodeJS Projects, see the "nodeUtils" folder for more information.
 
+<br/>
+
+## Overview
+
+**Utility** Tiny collection of mighty utility functions with extended functionality for common cases (only 4k gzip and ESM). It was created to address the need of repetive need of some very common functions without the need of loading entire libraries for just a few functions while providing extra functionality:  
+Ex: emptyOrValue(value) or emptyOrValue(value, default) checks if the value is empty or undefined and returns the value or a default value if empty. Very helpful when dealing with variables that may or may not have a value.  
+Ex: typeOf(value) or typeOf(value, 'string') or typeOf(value, 'string|number') checks the type of a value and can also return comparisons (can take piped).
+Ex: convertToBool(value) converts a value to a boolean, accepts int, string and boolean. Typical Js Boolean() only accepts strings and booleans but not 'true', 'false' as string
+<br/>
+
+**PowerHelper** was designed to work for other specific libraries, but the fucntions for regex and string manipulation were actually so good to use in other projects that it was decided to share as well here.  
+
+Other libraries are also included in the dist folder, but they are not yet documented here.
+ProxyObject, UrlHelper, DomObserver, ElementHelper, NodeHelpers, ProxyClass
+See via Github explorer:
+[ProxyObject](https://github.com/knighttower/JsUtility/blob/development/src/ProxyObject.js)
+[UrlHelper](https://github.com/knighttower/JsUtility/blob/development/src/UrlHelper.js)
+[DomObserver](https://github.com/knighttower/JsUtility/blob/development/src/DomObserver.js)
+[ElementHelper](https://github.com/knighttower/JsUtility/blob/development/src/ElementHelper.js)
+[NodeHelpers](https://github.com/knighttower/JsUtility/blob/development/nodeUtils/)
+[ProxyClass](https://github.com/knighttower/JsUtility/blob/development/src/ProxyClass.js)
+<br/>
+
+Most functions here are extremely handy without the overhead of big libraries.  
+However, for other most advance features it is recomended to also use other libraries, like if you need extensive use of Money, date, numbers functions (ex. money.js, moment.js, validate.js, lodash, v8n.js, jquery, moderndash, etc)
+
+It also Uses some features from other KnightTower packages:
+
+-   <strike>[JsObjectProxyHelper](https://github.com/knighttower/JsObjectProxyHelper)</strike> (deprecated) (it has now been merged into this library but still will be available as a standalone library)
+-   <strike>[JsUrlHelper](https://github.com/knighttower/JsUrlHelper)</strike> (deprecated) (it has now been merged into this library but still will be available as a standalone library)
+-   <strike>[JsDomObserver](https://github.com/knighttower/JsDomObserver)</strike> (deprecated) (it has now been merged into this library but still will be available as a standalone library)
+-   <strike>[JsPowerHelperFunctions](https://github.com/knighttower/JsPowerHelperFunctions)</strike> (deprecated) (it has now been merged into this library but still will be available as a standalone library)
+
+All functions are handy, but the most handy of all is **"emptyOrValue"** which helps to mitigate a lot of headaches when dealing with variables to know whether or not they have a value or even to set a default value when empty. From the PowerHelpers, there are a lot of regex and string functions that are very handy.
+All Functions have also been Unit Tested and tests are in the source code if you want to experiment or see more examples.
+
+<br/>
 <br/>
 
 ## Usage

@@ -215,4 +215,9 @@ class ElementHelper {
     }
 }
 
-export { ElementHelper, ElementHelper as default, ElementHelper as elementHelper, ElementHelper as selectElement };
+// =========================================
+// --> Utilities
+// --------------------------
+const selectElement = (selector, scope = document) => new ElementHelper(selector, scope);
+
+export { ElementHelper, ElementHelper as default, ElementHelper as elementHelper, selectElement };
