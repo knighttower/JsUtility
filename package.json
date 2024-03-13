@@ -36,7 +36,7 @@
     "url": "git://github.com/knighttower/JsUtility.git"
   },
   "scripts": {
-    "build": "npm run bumpVersion",
+    "build": "node ./build.cjs",
     "bumpVersion": "node ./nodeUtils/BumpVersion.cjs --exe"
   },
   "devDependencies": {
