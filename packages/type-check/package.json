@@ -63,6 +63,6 @@
     "directory": "packages/type-check"
   },
   "dependencies": {
-    "@knighttower/js-utility-functions": "workspace:*"
+    "@knighttower/js-utility-functions": "*"
   }
 }
