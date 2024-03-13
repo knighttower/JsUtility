@@ -16,7 +16,7 @@ const eslint = `${workingDir}/.eslintrc.json`;
 runCommand(
     `\
     cd ./packages/event-bus \
-    && npx tsc -p "${workingDir}/tsconfig.json" \
+    && npx tsc -p "${workingDir}/packages/event-bus/tsconfig.json" \
     && npx rollup -c "${rollupConfig}" \
     && npx webpack --config "${webpackConfig}" \
     && node "${minify}"
