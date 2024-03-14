@@ -1,10 +1,110 @@
-vendor/
-**/vendor/
+# Sensitive files
+.*
+**/.*
+.env
+**/.db.cnf
+.aws
+.ssh
+auth.json
+
+!.github
+
+# Build artifacts
+vendor
+**/vendor
+!resources/views/vendor
 node_modules
 **/node_modules
-.gitcommands
-.gitconfig
-**/.gitconfig
-**/.gitcommands
-*.
-!.github
+npm-debug.log
+yarn-error.log
+
+# setting files
+*.cache
+**/.idea
+/.fleet
+/.vscode
+
+# OS meta files
+.DS_Store
+**/.DS_Store
+*.bak
+_notes/
+*.orig
+
+# Application artifacts
+error_log
+**/cache/*
+/storage/*.key
+/storage/exports/
+/storage/framework/sessions/*
+**/logs
+logs/*
+**/error_log*
+*.log
+**/.log
+
+# Development artifacts
+/.vagrant
+/Homestead.json
+/Homestead.yaml
+_ide_helper.php
+.favorites.json
+.phpunit.result.cache
+/.phpunit.cache
+
+# phpDocumentor
+.phpdoc/
+/phpdoc/*
+phpDocumentor.phar
+rr
+.rr.yaml
+
+# public files
+/public/build
+/public/hot
+/public/storage
+**/wp-admin
+**/wp-includes
+**/wp-*.php
+
+# Nuxt dev/build outputs
+.output
+.data
+.nuxt
+.nitro
+.cache
+dist
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Logs
+logs
+*.log
+
+# Misc
+.fleet
+.idea
+
+# Local env files
+.env.*
+!.env.example
+
+# Logs (from File B)
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+dist-ssr
+coverage
+*.local
+
+/cypress/videos/
+/cypress/screenshots/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json

@@ -1,6 +1,6 @@
 {
   "name": "knighttower",
-  "version": "5.0.20",
+  "version": "5.0.21",
   "type": "commonjs",
   "engines": {
     "node": ">=20.11.1"
@@ -17,14 +17,18 @@
     "./packages/utility/nodeUtils",
     "./packages/utility/index.js",
     "./packages/utility/index.cjs",
+    "./packages/utility/package.json",
     "./packages/type-check/dist",
     "./packages/type-check/index.js",
     "./packages/type-check/index.cjs",
+    "./packages/type-check/package.json",
     "./packages/event-bus/dist",
     "./packages/event-bus/src",
+    "./packages/event-bus/package.json",
     "./packages/bootstrap-mini-css/dist",
     "./packages/bootstrap-mini-css/src",
-    "./packages/bootstrap-mini-css/index.js"
+    "./packages/bootstrap-mini-css/index.js",
+    "./packages/bootstrap-mini-css/package.json"
   ],
   "sass": "./packages/bootstrap-mini-css/src/bootstrapmini.scss",
   "style": "./packages/bootstrap-mini-css/dist/bootstrapmini.css",
