@@ -1,6 +1,6 @@
 {
   "name": "knighttower",
-  "version": "5.0.27",
+  "version": "5.0.29",
   "type": "commonjs",
   "engines": {
     "node": ">=20.11.1"
@@ -88,6 +88,9 @@
   },
   "scripts": {
     "build": "node ./build.cjs"
+  },
+  "dependencies": {
+    "bootstrap": "^5.3.3"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",

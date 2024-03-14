@@ -27,8 +27,8 @@
         "development": "npm mix",
         "watch": "npm mix watch"
     },
-    "dependencies": {
-        "bootstrap": "^5.3.1"
+    "peerDependencies": {
+        "bootstrap": "^5.3.3"
     },
     "main": "index.js",
     "sass": "src/bootstrapmini.scss",
