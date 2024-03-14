@@ -1,0 +1,20 @@
+$visibleStates: (hide, show);
+
+@each $state in $visibleStates {
+    @each $screen in $screenSizes {
+        @if $state == hide {
+            .--#{$state}-#{$screen} {
+                @include breakpoint($screen) {
+                    @include hideEl(important);
+                }
+            }
+        }
+        @if $state == show {
+            .--#{$state}-#{$screen} {
+                @include breakpoint($screen, null, true) {
+                    @include hideEl(important);
+                }
+            }
+        }
+    }
+}

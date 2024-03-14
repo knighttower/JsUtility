@@ -1,0 +1,88 @@
+@use "sass:meta";
+@import "breakpoints";
+
+// it matches the breakpoint array key
+$screenSizes: (desktop, tablet, mobile, sm, md, lg, xl, xxl) !default;
+
+$percentSizes: (
+    0: 0%,
+    10: 10%,
+    20: 20%,
+    25: 25%,
+    30: 30%,
+    33: 33%,
+    40: 40%,
+    50: 50%,
+    60: 60%,
+    66: 66%,
+    70: 70%,
+    75: 75%,
+    80: 80%,
+    90: 90%,
+    100: 100%,
+    auto: auto,
+) !default;
+
+$zIndex: (
+    0: 0,
+    10: 10,
+    20: 20,
+    25: 25,
+    30: 30,
+    40: 40,
+    50: 50,
+    auto: auto,
+) !default;
+
+// =========================================
+// --> Presets that can be modified
+// --------------------------
+$miniPrefix: bs- !default;
+$miniColumns: 12 !default;
+$miniGutterWidth: 1.5rem !default;
+$miniRowColumns: 6 !default;
+$miniFontSizeBase: 1rem !default;
+
+$miniEnableMargins: true !default;
+$miniEnablePadding: true !default;
+$miniEnableWidth: true !default;
+$miniEnableHeight: true !default;
+$miniEnableZIndex: true !default;
+$miniEnableFlex: true !default;
+$miniEnableFloat: true !default;
+$miniEnablePosition: true !default;
+$miniEnableDisplay: true !default;
+$miniEnableVisibility: true !default;
+$miniEnableContainer: true !default;
+$miniEnableGridClasses: true !default;
+$miniEnableCssGrid: true !default;
+
+// -----------------------------------------
+// Custom bootstrap load
+$prefix: $miniPrefix;
+$enable-rfs: false;
+$enable-important-utilities: false;
+
+$grid-columns: $miniColumns;
+$grid-gutter-width: $miniGutterWidth;
+$grid-row-columns: $miniRowColumns;
+$enable-grid-classes: $miniEnableGridClasses;
+$enable-container-classes: $miniEnableContainer;
+$enable-cssgrid: $miniEnableCssGrid;
+
+$font-size-base: $miniFontSizeBase;
+$font-size-sm: $font-size-base * 0.875;
+$font-size-lg: $font-size-base * 1.25;
+
+$miniUtilsMapping: (
+    margin: $miniEnableMargins,
+    padding: $miniEnablePadding,
+    width: $miniEnableWidth,
+    height: $miniEnableHeight,
+    z-index: $miniEnableZIndex,
+    flex: $miniEnableFlex,
+    float: $miniEnableFloat,
+    position: $miniEnablePosition,
+    display: $miniEnableDisplay,
+    visibility: $miniEnableVisibility,
+);

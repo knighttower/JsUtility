@@ -68,8 +68,28 @@ const typeCheck = () => {
     );
 };
 
+const bootstrapMini = () => {
+    runCommand(
+        `\
+    cd ./packages/bootstrap-mini-css \
+    && npx mix --production \
+    && node "${bumpVersion}" --exe \
+    && npm publish --access public
+    `
+    );
+};
+
+const mono = () => {
+    runCommand(
+        `\
+    node "${bumpVersion}" --exe \
+    && npm publish --access public
+    `
+    );
+};
+
 runCommand('ncu -u && npm i');
-let workspaces = getSubfolders(`${workingDir}/packages`);
+let workspaces = ['bootstrap-mini-css', 'event-bus', 'type-check', 'utility'];
 
 const answer = select({
     message: 'what to build',
@@ -84,6 +104,10 @@ const answer = select({
             {
                 name: 'all',
                 value: 'all',
+            },
+            {
+                name: 'mono',
+                value: 'mono',
             },
         ],
     ],
@@ -101,6 +125,7 @@ answer.then((answer) => {
         utility();
         typeCheck();
     }
-    // Bump the MonoRepo version
-    runCommand(`node "${bumpVersion}" --exe`);
+    mono();
+    // // Bump the MonoRepo version
+    // runCommand(`node "${bumpVersion}" --exe`);
 });

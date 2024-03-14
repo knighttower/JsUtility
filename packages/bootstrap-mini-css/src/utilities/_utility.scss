@@ -1,0 +1,189 @@
+// /* ================================ */
+// /* ================================ */
+// /* DO NOT MODIFY THIS FILE */
+// /* ================================ */
+// /* ================================ */
+@use "sass:list";
+
+// /**
+// * __comment__
+// * @param {String|null} $i null|important
+// * @return {String}
+// */
+@mixin hideEl($i: null) {
+    @if $i == important {
+        display: none !important;
+    } @else {
+        display: none;
+    }
+}
+
+// /**
+// * // @mixin breakpoint
+// * BreakPoint print utility
+// * @param {String} $screen <breakdown name>|size in px
+// * @param {Null|String} $param Keywords:landscape, portrait|<custom query>ex:max-width:800px
+// * @param {Null|Bool} $exclude null | true to negate the query use with caution.
+// * @return Media Query
+// * @example
+// * // @include breakpoint(<breakdown name>){rules...}; or
+// * // @include breakpoint(000px,'max-width:800px'){rules...}; or
+// * // @include breakpoint(<breakdown name>,landscape){rules...}; or
+// * // @include breakpoint(<breakdown name>,'max-width:800px'){rules...};, etc...
+// */
+@mixin breakpoint($screen, $param: null, $exclude: null) {
+    $values: map-get($sparkBreakpoints, $screen);
+    $min: 0;
+    $max: 0;
+
+    @if $values != null {
+        $min: nth($values, 1);
+        $max: nth($values, 2);
+    }
+    @if $exclude == true {
+        @if $values != null {
+            @media (not (min-width: $min)) and (not (max-width: $max)) {
+                @content;
+            }
+        }
+    } @else {
+        @if $values != null {
+            // when min-width and max-width are set
+            // landscape queries only
+            @if $param == landscape and $max != 0 {
+                @media (min-width: $min) and (max-width: $max) and (orientation: landscape) {
+                    @content;
+                }
+            }
+            // when min-width and max-width are set
+            // --custom 3rd parameter [ex: max-width:800px ]
+            @else if $param != null and $max != 0 {
+                @media (min-width: $min) and (max-width: $max) and ($param) {
+                    @content;
+                }
+            }
+            // when min-width and max-width are set
+            @else if $max != 0 {
+                @media (min-width: $min) and (max-width: $max) {
+                    @content;
+                }
+            }
+            // when a only min-width is needed or set
+            @else if $max == 0 {
+                @media (min-width: $min) {
+                    @content;
+                }
+            }
+        }
+
+        // when a single unit is passed ex: 300px and extra param
+        @else if $screen != null and $param != null {
+            @media (min-width: $screen) and ($param) {
+                @content;
+            }
+        }
+        // when a single unit is passed ex: 300px
+        @else if $screen != null {
+            @media (min-width: $screen) {
+                @content;
+            }
+        } // when no value
+        @else {
+            @warn "no value could be found for `#{$screen}`. "
+			+ "Please make sure it is defined in `$sparkBreakpoints` map.";
+        }
+    }
+}
+
+// /**
+// * Experimental to batch, needs review
+// * @param {String} __param__
+// * @return {String}
+// */
+@mixin set-headers-value($prop, $value) {
+    $headers: (h1, h2, h3, h4, h5, ".h1", ".h2", ".h3", ".h4", ".h5");
+    @each $tag in $headers {
+        #{$tag} {
+            #{$prop}: #{$value};
+        }
+    }
+}
+
+// /**
+// * add transition effect to an element
+// * @mixin transitionProp
+// * @param {String} $property Property name
+// * @param {Number} $duration 0.5s
+// * @param {String} $method ease
+// * @param {Number} $delay 0s
+// * @return {String}
+// * @example
+// * // .class{ @include transitionProp(all, 0.5s, ease, 0s);}
+// */
+@mixin transitionProp($property, $duration: 0.5s, $method: ease, $delay: 0s) {
+    transition: $property $duration $method $delay;
+    -moz-transition: $property $duration $method $delay;
+    -webkit-transition: $property $duration $method $delay;
+    -o-transition: $property $duration $method $delay;
+}
+
+// /**
+// * @mixin disabled
+// * Add "disabled" state to an element
+// * @return {String}
+// * @example
+// * // .class{ @include disabled();}
+// */
+@mixin disabled() {
+    &,
+    &:hover {
+        background: var(--bs-disabled);
+        color: var(--bs-disabled);
+        border-color: var(--bs-disabled);
+        position: relative;
+    }
+
+    &:before {
+        position: absolute;
+        height: 1px;
+        width: 100%;
+        top: 50%;
+        left: 0;
+
+        display: block;
+        border-bottom: 1px solid var(--bs-gray-300);
+        content: " ";
+        transform: rotate(15deg);
+    }
+
+    &:hover {
+        cursor: not-allowed;
+    }
+}
+
+// /**
+// * Merge maps
+// * @param {Array} $maps Array or list of Arrays of maps to merge
+// * @return {Array}
+// * @example
+// * $button-group: ($base-hiearchy, $base-states, $shared-states);
+// * $buttons: mapMerge($button-group);
+// */
+@function mapMerge($maps...) {
+    $m: ();
+
+    // Check if single list of lists
+    @if type-of(nth($maps, 1)) == "list" and length($maps) == 1 {
+        @each $map in nth($maps, 1) {
+            $m: map-merge($m, $map);
+        }
+    }
+    // Multiple parameters
+    @else {
+        @each $map in $maps {
+            $m: map-merge($m, $map);
+        }
+    }
+
+    @return $m;
+}

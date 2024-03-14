@@ -1,0 +1,47 @@
+{
+    "name": "@knighttower/bootstrapmini",
+    "author": "knighttower (https://github.com/knighttower)",
+    "description": "Abstracted Bootstrap for utility prototypes",
+    "version": "0.1.2",
+    "keywords": [
+        "css",
+        "sass",
+        "responsive",
+        "front-end",
+        "framework",
+        "web",
+        "bootstrap",
+        "utility",
+        "prototyping",
+        "abstracted"
+    ],
+    "homepage": "https://github.com/knighttower/JsUtility",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/knighttower/JsUtility.git",
+        "directory": "packages/bootstrap-mini-css"
+    },
+    "scripts": {
+        "dev": "npm run development",
+        "development": "npm mix",
+        "watch": "npm mix watch"
+    },
+    "dependencies": {
+        "bootstrap": "^5.3.1"
+    },
+    "main": "index.js",
+    "sass": "src/bootstrapmini.scss",
+    "style": "dist/bootstrapmini.css",
+    "files": [
+        "dist",
+        "src",
+        "index.js"
+    ],
+    "exports": {
+        ".": {
+            "import": "./index.js",
+            "require": "./dist/bootstrapmini.css"
+        }
+    }
+}

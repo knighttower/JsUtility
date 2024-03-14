@@ -1,7 +1,6 @@
 {
   "name": "knighttower",
-  "private": true,
-  "version": "5.0.15",
+  "version": "5.0.19",
   "type": "commonjs",
   "engines": {
     "node": ">=20.11.1"
@@ -13,9 +12,76 @@
     "type": "git",
     "url": "git://github.com/knighttower/JsUtility.git"
   },
+  "files": [
+    "./packages/utility/dist",
+    "./packages/utility/nodeUtils",
+    "./packages/utility/index.js",
+    "./packages/utility/index.cjs",
+    "./packages/type-check/dist",
+    "./packages/type-check/index.js",
+    "./packages/type-check/index.cjs",
+    "./packages/event-bus/dist",
+    "./packages/event-bus/src",
+    "./packages/bootstrap-mini-css/dist",
+    "./packages/bootstrap-mini-css/src",
+    "./packages/bootstrap-mini-css/index.js"
+  ],
+  "sass": "./packages/bootstrap-mini-css/src/bootstrapmini.scss",
+  "style": "./packages/bootstrap-mini-css/dist/bootstrapmini.css",
+  "bin": {
+    "buildExports": "./packages/utility/nodeUtils/BuildExports.js",
+    "bumpVersion": "./packages/utility/nodeUtils/BumpVersion.js"
+  },
+  "exports": {
+    "./utility": {
+      "import": "./packages/utility/index.js",
+      "require": "./packages/utility/index.cjs"
+    },
+    "./packages/utility": {
+      "import": "./packages/utility/index.js",
+      "require": "./packages/utility/index.cjs"
+    },
+    "./utility/dist/*": "./packages/utility/dist/*",
+    "./utility/node/*": "./packages/utility/nodeUtils/*",
+    "./utility/nodeUtils/*": "./packages/utility/nodeUtils/*",
+    "./utility/nodeUtils": "./packages/utility/nodeUtils/index.cjs",
+    "./packages/utility/dist/*": "./packages/utility/dist/*",
+    "./packages/utility/node/*": "./packages/utility/nodeUtils/*",
+    "./packages/utility/nodeUtils/*": "./packages/utility/nodeUtils/*",
+    "./packages/utility/nodeUtils": "./packages/utility/nodeUtils/index.cjs",
+    "./type-check": {
+      "import": "./packages/type-check/index.js",
+      "require": "./packages/type-check/index.cjs"
+    },
+    "./packages/type-check": {
+      "import": "./packages/type-check/index.js",
+      "require": "./packages/type-check/index.cjs"
+    },
+    "./type-check/dist/*": "./packages/type-check/dist/*",
+    "./packages/type-check/dist/*": "./packages/type-check/dist/*",
+    "./event-bus": {
+      "import": "./packages/event-bus/dist/esm/eventBus.mjs",
+      "require": "./packages/event-bus/dist/cjs/eventBus.cjs"
+    },
+    "./packages/event-bus": {
+      "import": "./packages/event-bus/dist/esm/eventBus.mjs",
+      "require": "./packages/event-bus/dist/cjs/eventBus.cjs"
+    },
+    "./event-bus/dist/*": "./packages/event-bus/dist/*",
+    "./packages/event-bus/dist/*": "./packages/event-bus/dist/*",
+    "./event-bus/src/*": "./packages/event-bus/src/*",
+    "./packages/event-bus/src/*": "./packages/event-bus/src/*",
+    "./bootstrap-mini-css": {
+      "import": "./packages/bootstrap-mini-css/index.js",
+      "require": "./packages/bootstrap-mini-css/dist/bootstrapmini.css"
+    },
+    "./packages/bootstrap-mini-css": {
+      "import": "./packages/bootstrap-mini-css/index.js",
+      "require": "./packages/bootstrap-mini-css/dist/bootstrapmini.css"
+    }
+  },
   "scripts": {
-    "build": "node ./build.cjs",
-    "bumpVersion": "node ./nodeUtils/BumpVersion.cjs --exe"
+    "build": "node ./build.cjs"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",
@@ -30,20 +96,32 @@
     "@stylistic/eslint-plugin": "^1.7.0",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
     "@typescript-eslint/parser": "^7.2.0",
+    "autoprefixer": "^10.4.18",
     "compression-webpack-plugin": "^11.1.0",
+    "cross-env": "^7.0.3",
     "dotenv": "^16.4.5",
     "eslint": "^8.57.0",
     "eslint-plugin-prettier": "^5.1.3",
+    "find-unused-sass-variables": "^5.0.0",
     "jsdom": "^24.0.0",
     "jshint": "^2.13.6",
+    "laravel-mix": "^6.0.49",
+    "laravel-mix-compress": "^3.0.0",
     "npm-check-updates": "^16.14.15",
+    "postcss": "^8.4.35",
+    "postcss-import": "^16.0.1",
     "prettier": "^3.2.5",
     "rollup": "^4.13.0",
+    "sass": "^1.72.0",
+    "sass-loader": "^14.1.1",
     "terser": "^5.29.2",
     "ts-loader": "^9.5.1",
     "typescript": "^5.4.2",
     "vitest": "*",
     "webpack": "^5.90.3",
     "webpack-cli": "^5.1.4"
+  },
+  "dependencies": {
+    "knighttower": "^5.0.19"
   }
 }
