@@ -1,7 +1,7 @@
 {
   "name": "knighttower",
   "private": true,
-  "version": "5.0.3",
+  "version": "5.0.4",
   "type": "commonjs",
   "engines": {
     "node": ">=20.11.1"
