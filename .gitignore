@@ -8,6 +8,11 @@
 auth.json
 
 !.github
+!.gitignore
+!.gitattributes
+!.eslintrc.json
+!.prettierrc
+!/prettierignore
 
 # Build artifacts
 vendor
