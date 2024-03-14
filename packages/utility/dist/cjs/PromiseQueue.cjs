@@ -293,7 +293,7 @@ const promisePool = () => {
             });
 
             const statuses = instances.every(
-                (promise) => promise.status === 'completed' || promise.status === 'rejected',
+                (promise) => promise.status === 'completed' || promise.status === 'rejected'
             );
 
             _status = statuses ? 'done' : 'in-progress';

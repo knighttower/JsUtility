@@ -705,7 +705,7 @@ define(['exports'], (function (exports) { 'use strict';
                 .map((char) =>
                     ['$', '^', '.', '*', '+', '?', '(', ')', '[', ']', '{', '}', '|', '\\'].includes(char)
                         ? `\\${char}`
-                        : char,
+                        : char
                 )
                 .join('');
         }

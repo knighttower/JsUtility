@@ -7,7 +7,7 @@ const minify = `${workingDir}/packages/utility/nodeUtils/Minify.js`;
 const buildExports = `${workingDir}/packages/utility/nodeUtils/BuildExports.js`;
 const bumpVersion = `${workingDir}/packages/utility/nodeUtils/BumpVersion.cjs`;
 const pretty = `${workingDir}/.prettierrc.json`;
-const eslint = `${workingDir}/.eslintrc.json`;
+const eslint = `${workingDir}/.eslintrc.js`;
 
 // runCommand(`cd ./packages/type-check && npm run build`);
 
@@ -25,9 +25,13 @@ const eslint = `${workingDir}/.eslintrc.json`;
 
 runCommand(
     `cd ./packages/utility \
+    && eslint -c "${eslint}" --fix ./src --ext .js,.cjs,.mjs \
     && npx webpack --mode production --config "${webpackConfig}" \
     && npx rollup -c "${rollupConfig}" \
-    && node "${buildExports}" --dir ./dist/cjs --type=cjs
+    && node "${buildExports}" --dir ./dist/cjs --type=cjs \
+    && node "${buildExports}" --dir ./dist/esm --type=esm \
+    && prettier --config "${pretty}" --write ./index.js \
+    && prettier --config "${pretty}" --write ./index.cjs
     `
 );
 

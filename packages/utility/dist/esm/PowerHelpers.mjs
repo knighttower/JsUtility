@@ -703,7 +703,7 @@ function setExpString(exp) {
             .map((char) =>
                 ['$', '^', '.', '*', '+', '?', '(', ')', '[', ']', '{', '}', '|', '\\'].includes(char)
                     ? `\\${char}`
-                    : char,
+                    : char
             )
             .join('');
     }

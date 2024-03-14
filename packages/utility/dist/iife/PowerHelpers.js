@@ -706,7 +706,7 @@ var PowerHelpers = (function (exports) {
                 .map((char) =>
                     ['$', '^', '.', '*', '+', '?', '(', ')', '[', ']', '{', '}', '|', '\\'].includes(char)
                         ? `\\${char}`
-                        : char,
+                        : char
                 )
                 .join('');
         }

@@ -4,7 +4,7 @@ import path from 'path';
 import glob from 'glob';
 import { PowerHelper as helper } from '../src/PowerHelpers.js';
 import { Utility as utils } from '../src/Utility.js';
-import { getFlagValue, runCommand, commandExistsSync } from './NodeHelpers.js';
+import { getFlagValue } from './NodeHelpers.js';
 
 const workingDir = process.cwd();
 /**
@@ -23,7 +23,7 @@ function getExports(filePath) {
     // Example matches: export default Name, Name as default
     const matchDefSingles =
         content.match(
-            /export\s+default\s+(\b(?!(\{|\(|(class|function)))\w+\b)|(?<=\{[^}]*)\w+\s+as\s+default(?=[^}]*\})/,
+            /export\s+default\s+(\b(?!(\{|\(|(class|function)))\w+\b)|(?<=\{[^}]*)\w+\s+as\s+default(?=[^}]*\})/
         ) || [];
     // Example matches: export { myVar, myFunc }
     const matchAliasesExps = content.match(/export\s*{([^}]+)}/g) || [];
@@ -32,15 +32,15 @@ function getExports(filePath) {
     const matchModuleExports = helper.getMatchInBetween(content, /module\.exports\s*={/g, '}', true);
     const matchModuleExports2 = helper.getMatchInBetween(content, /module\.exports\./g, /(=|;)/, true);
     const matchModuleExports3 = (content.match(/module\.exports\s*=\s*(\w+)/g) || []).map((module) =>
-        helper.cleanStr(module, 'module.exports', '='),
+        helper.cleanStr(module, 'module.exports', '=')
     );
 
     //Example matches: modules.myModule = any
     const matchExports = (content.match(/modules\.(\w+)\s*=/g) || []).map((module) =>
-        helper.cleanStr(module, 'modules.', '='),
+        helper.cleanStr(module, 'modules.', '=')
     );
     const matchExports2 = (content.match(/(?!(\.))exports\.(\w+)\s*=/g) || []).map((module) =>
-        helper.cleanStr(module, 'exports.', '='),
+        helper.cleanStr(module, 'exports.', '=')
     );
 
     // Storages
@@ -52,8 +52,8 @@ function getExports(filePath) {
             'default',
             'function',
             'class',
-            /\bas\b/,
-        ),
+            /\bas\b/
+        )
     );
     const aliasExports = [];
     let namedExports = [];
@@ -90,7 +90,7 @@ function getExports(filePath) {
                         aliasExports.push(chunk);
                     }
                 });
-        },
+        }
     );
 
     // Merge all named exports and filter
@@ -203,14 +203,6 @@ function getCommonJsContent(allExports) {
         fs.writeFileSync(destination, indexContent);
         console.log(' Generated In:--->', destination);
         console.log('index generated');
-        if (commandExistsSync('npx prettier')) {
-            const exeCommand = `npx prettier --config .prettierrc.json --write "${destination}"`;
-            runCommand(exeCommand);
-        } else {
-            console.log(
-                'NPX or Prettier is not installed. Skipping formatting. If you want to format the files, please install prettier globally or locally.',
-            );
-        }
     };
     processFiles();
 })();
