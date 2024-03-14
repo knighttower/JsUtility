@@ -1,12 +1,15 @@
 {
   "name": "@knighttower/js-utility-functions",
-  "version": "4.2.10",
+  "version": "4.2.11",
   "type": "module",
   "main": "index.cjs",
   "module": "index.js",
   "jsdelivr": "dist/browser/Utility.js",
   "browser": "dist/browser/Utility.js",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "description": "UtilityJs is a utility library that provides a collection of utility functions for various tasks. The library is designed to be easy to use and covers the most common use cases. ",
   "homepage": "https://github.com/knighttower/JsUtility",
   "author": "knighttower (https://github.com/knighttower)",

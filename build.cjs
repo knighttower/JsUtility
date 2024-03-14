@@ -9,9 +9,8 @@ const bumpVersion = `${workingDir}/packages/utility/nodeUtils/BumpVersion.cjs`;
 const pretty = `${workingDir}/.prettierrc.json`;
 const eslint = `${workingDir}/.eslintrc.js`;
 
-// runCommand(`cd ./packages/type-check && npm run build`);
+runCommand('ncu -u && npm i');
 
-// runCommand('ncu -u && npm i');
 // Event Bus
 runCommand(
     `\
@@ -52,3 +51,6 @@ runCommand(
     && node "${bumpVersion}" --exe
     `
 );
+
+// Bump the MonoRepo version
+runCommand(`node "${bumpVersion}" --exe`);

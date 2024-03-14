@@ -1,6 +1,6 @@
 {
   "name": "@knighttower/js-event-bus",
-  "version": "3.3.1",
+  "version": "3.3.2",
   "description": "Event bus for your Javascript applications",
   "homepage": "https://github.com/knighttower/js-event-bus",
   "main": "src/eventBus.ts",
@@ -12,6 +12,9 @@
     "dist",
     "src"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "exports": {
     ".": {
       "import": "./dist/esm/eventBus.mjs",
