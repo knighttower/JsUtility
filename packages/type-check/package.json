@@ -1,0 +1,57 @@
+{
+  "name": "@knighttower/type-check-js",
+  "version": "4.1.16",
+  "type": "module",
+  "description": "TypeCheck JS",
+  "main": "index.cjs",
+  "module": "index.js",
+  "unpkg": "dist/browser/TypeCheck.js",
+  "jsdelivr": "dist/browser/TypeCheck.js",
+  "browser": "dist/browser/TypeCheck.js",
+  "license": "MIT",
+  "files": [
+    "dist",
+    "index.js",
+    "index.cjs"
+  ],
+  "exports": {
+    ".": {
+      "import": "./index.js",
+      "require": "./index.cjs"
+    },
+    "./dist/*": "./dist/*"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "Utility",
+    "Vue",
+    "react",
+    "library",
+    "plugin",
+    "URL",
+    "Vue 2",
+    "Vue 3",
+    "javascript",
+    "DOM",
+    "functions",
+    "helper",
+    "knighttower",
+    "typeCheck",
+    "type checking"
+  ],
+  "scripts": {
+    "dev": "webpack --mode development",
+    "watch": "webpack --mode development --watch",
+    "test": "npm run format && npm run eslint && vitest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/knighttower/JsUtility.git",
+    "directory": "packages/type-check"
+  },
+  "dependencies": {
+    "@knighttower/js-utility-functions": "*"
+  }
+}

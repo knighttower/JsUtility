@@ -1,0 +1,57 @@
+{
+  "name": "@knighttower/js-event-bus",
+  "version": "3.3.2",
+  "description": "Event bus for your Javascript applications",
+  "homepage": "https://github.com/knighttower/js-event-bus",
+  "main": "src/eventBus.ts",
+  "module": "dist/esm/eventBus.mjs",
+  "jsdeliver": "dist/browser/eventBus.js",
+  "browser": "dist/browser/eventBus.min.js",
+  "license": "MIT",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/esm/eventBus.mjs",
+      "require": "./dist/cjs/eventBus.cjs"
+    },
+    "./dist/*": "./dist/*",
+    "./src/*": "./src/*"
+  },
+  "keywords": [
+    "event",
+    "bus",
+    "node",
+    "nodejs",
+    "browser",
+    "javascript",
+    "typescript",
+    "DOM",
+    "functions",
+    "helper",
+    "knighttower",
+    "event-bus",
+    "eventbus",
+    "eventBus"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/knighttower/js-event-bus.git",
+    "directory": "packages/event-bus"
+  },
+  "scripts": {
+    "ts": "tsc",
+    "dev": "webpack --mode development",
+    "watch": "webpack --mode development --watch",
+    "build": "node ./.build/build.cjs",
+    "test": "npm run format && npm run eslint && vitest",
+    "format": "prettier --config .prettierrc.json --write ./src",
+    "format-check": "prettier --config .prettierrc.json --check ./src",
+    "eslint": "eslint -c eslintrc.json --fix ./src --ext .js,.cjs,.mjs,.ts"
+  }
+}

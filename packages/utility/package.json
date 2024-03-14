@@ -1,0 +1,71 @@
+{
+  "name": "@knighttower/js-utility-functions",
+  "version": "4.2.11",
+  "type": "module",
+  "main": "index.cjs",
+  "module": "index.js",
+  "jsdelivr": "dist/browser/Utility.js",
+  "browser": "dist/browser/Utility.js",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "UtilityJs is a utility library that provides a collection of utility functions for various tasks. The library is designed to be easy to use and covers the most common use cases. ",
+  "homepage": "https://github.com/knighttower/JsUtility",
+  "author": "knighttower (https://github.com/knighttower)",
+  "files": [
+    "dist",
+    "nodeUtils",
+    "index.js",
+    "index.cjs"
+  ],
+  "exports": {
+    ".": {
+      "import": "./index.js",
+      "require": "./index.cjs"
+    },
+    "./dist/*": "./dist/*",
+    "./node/*": "./nodeUtils/*",
+    "./nodeUtils/*": "./nodeUtils/*",
+    "./nodeUtils": "./nodeUtils/index.cjs"
+  },
+  "bin": {
+    "buildExports": "./nodeUtils/BuildExports.js",
+    "bumpVersion": "./nodeUtils/BumpVersion.js"
+  },
+  "keywords": [
+    "Utility",
+    "Vue",
+    "react",
+    "library",
+    "plugin",
+    "URL",
+    "Vue 2",
+    "Vue 3",
+    "javascript",
+    "DOM",
+    "functions",
+    "helper",
+    "knighttower",
+    "js-utility-functions",
+    "js-utility",
+    "URL parser",
+    "URL query",
+    "Observer",
+    "Proxy",
+    "Element",
+    "utilities",
+    "node",
+    "classes"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/knighttower/JsUtility.git",
+    "directory": "packages/utility"
+  },
+  "scripts": {
+    "dev": "webpack --mode development",
+    "watch": "webpack --mode development --watch",
+    "test": "npm run format && npm run eslint && vitest"
+  }
+}
