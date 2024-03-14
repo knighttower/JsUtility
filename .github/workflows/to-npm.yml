@@ -19,3 +19,26 @@ jobs:
       - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package: ["@knighttower/js-event-bus", "@knighttower/type-check-js", "@knighttower/js-utility-functions"]
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Build and publish ${matrix.package}
+        run: |
+          cd packages/${matrix.package}         
+          echo "Publishing ${matrix.package}..."
+          npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
