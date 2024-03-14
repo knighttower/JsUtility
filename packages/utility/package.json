@@ -1,6 +1,6 @@
 {
   "name": "@knighttower/js-utility-functions",
-  "version": "4.2.9",
+  "version": "4.2.10",
   "type": "module",
   "main": "index.cjs",
   "module": "index.js",
@@ -12,7 +12,6 @@
   "author": "knighttower (https://github.com/knighttower)",
   "files": [
     "dist",
-    "src",
     "nodeUtils",
     "index.js",
     "index.cjs"
@@ -58,7 +57,8 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/knighttower/JsUtility.git"
+    "url": "git://github.com/knighttower/JsUtility.git",
+    "directory": "packages/utility"
   },
   "scripts": {
     "dev": "webpack --mode development",

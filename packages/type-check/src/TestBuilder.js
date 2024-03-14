@@ -139,7 +139,7 @@ const objectTypes = (strExp) => {
                 } else {
                     this.testUnit.set(
                         'testFew',
-                        keys.filter((key) => key !== 'any'),
+                        keys.filter((key) => key !== 'any')
                     );
                 }
             }

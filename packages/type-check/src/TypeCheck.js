@@ -34,7 +34,7 @@ class HandleObjects {
         // Extract all properties at once
         const { testOnly, testFew, testAllAny, optionalKeys, tests } = [...unitTest.entries()].reduce(
             (acc, [key, value]) => ({ ...acc, [key]: value }),
-            {},
+            {}
         );
         // Use destructured variables
         this.testUnitKeys = [...tests.keys()];
@@ -74,7 +74,7 @@ class HandleObjects {
                     if (!this.testCollection.has(k)) {
                         pushToErrorLogs(
                             this.inputObject,
-                            `Key: "${k}" not found in the test collection, or use the "any" (any:[type]) key test or "..." after the last key in the test collection {key1: type, key2: type, ...} to only test a few keys.`,
+                            `Key: "${k}" not found in the test collection, or use the "any" (any:[type]) key test or "..." after the last key in the test collection {key1: type, key2: type, ...} to only test a few keys.`
                         );
                         return false;
                     }
@@ -93,7 +93,7 @@ class HandleObjects {
 
     filterOutFew() {
         this.inputObject = Object.fromEntries(
-            Object.entries(this.inputObject).filter(([key]) => !this.testFew.includes(key)),
+            Object.entries(this.inputObject).filter(([key]) => !this.testFew.includes(key))
         );
     }
 
@@ -219,7 +219,7 @@ function typeError(inputVal) {
     //clean the array of error logs
     typeErrorLogs.length = 0;
     throw new Error(
-        `\n\n---------------------\nTypeCheck Error --->\n\n The value must not be of type (Type found) = "${errorLog.found}". \n\n The Type used is invalid for value: "${errorLog.value}". \n\n see logged error for details\n---------------------\n\n`,
+        `\n\n---------------------\nTypeCheck Error --->\n\n The value must not be of type (Type found) = "${errorLog.found}". \n\n The Type used is invalid for value: "${errorLog.value}". \n\n see logged error for details\n---------------------\n\n`
     );
 }
 

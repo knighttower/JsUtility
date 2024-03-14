@@ -13,16 +13,18 @@ const eslint = `${workingDir}/.eslintrc.js`;
 
 // runCommand('ncu -u && npm i');
 // Event Bus
-// runCommand(
-//     `\
-//     cd ./packages/event-bus \
-//     && npx tsc -p "${workingDir}/packages/event-bus/tsconfig.json" \
-//     && npx rollup -c "${rollupConfig}" \
-//     && npx webpack --config "${webpackConfig}" \
-//     && node "${minify}"
-//     `
-// );
+runCommand(
+    `\
+    cd ./packages/event-bus \
+    && npx tsc -p "${workingDir}/packages/event-bus/tsconfig.json" \
+    && npx rollup -c "${rollupConfig}" \
+    && npx webpack --config "${webpackConfig}" \
+    && node "${minify}" \
+    && node "${bumpVersion}" --exe
+    `
+);
 
+// Utility
 runCommand(
     `cd ./packages/utility \
     && eslint -c "${eslint}" --fix ./src --ext .js,.cjs,.mjs \
@@ -31,28 +33,22 @@ runCommand(
     && node "${buildExports}" --dir ./dist/cjs --type=cjs \
     && node "${buildExports}" --dir ./dist/esm --type=esm \
     && prettier --config "${pretty}" --write ./index.js \
-    && prettier --config "${pretty}" --write ./index.cjs
+    && prettier --config "${pretty}" --write ./index.cjs \
+    && node "${bumpVersion}" --exe
     `
 );
 
 // build TypeCheck
-// const typeCheckBuild = runCommand(
-//     `\
-//     cd ./packages/type-check \
-//     && npx webpack --mode production --config "${webpackConfig}" \
-//     && npx rollup -c "${rollupConfig}" \
-//     `
-// );
-
-// runCommand(`npx tsc -p "${workingDir}/tsconfig.json"`);
-// runCommand(`npx rollup -c "${workingDir}/.build/rollup.config.cjs"`);
-// runCommand(`npx webpack --config "${workingDir}/.build/webpack.config.cjs"`);
-// runCommand(`node "${workingDir}/.build/minify.cjs"`);
-// bumpVersion.exe();
-
-// && node "${buildExports}" --file ./dist/cjs/TypeCheck.cjs --type=cjs \
-// && node "${buildExports}" --file ./dist/esm/TypeCheck.js --type=esm \
-// && node "${bumpVersion}" --exe \
-// && eslint -c "${eslint}" --fix ./src --ext .js,.cjs,.mjs \
-// && prettier --config "${pretty}" --write ./index.js \
-// && prettier --config "${pretty}" --write ./index.cjs\
+runCommand(
+    `\
+    cd ./packages/type-check \
+    && eslint -c "${eslint}" --fix ./src --ext .js,.cjs,.mjs \
+    && npx webpack --mode production --config "${webpackConfig}" \
+    && npx rollup -c "${rollupConfig}" \
+    && node "${buildExports}" --file ./dist/cjs/TypeCheck.cjs --type=cjs \
+    && node "${buildExports}" --file ./dist/esm/TypeCheck.mjs --type=esm \
+    && prettier --config "${pretty}" --write ./index.js \
+    && prettier --config "${pretty}" --write ./index.cjs \
+    && node "${bumpVersion}" --exe
+    `
+);
