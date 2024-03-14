@@ -26,7 +26,8 @@ const eslint = `${workingDir}/.eslintrc.json`;
 runCommand(
     `cd ./packages/utility \
     && npx webpack --mode production --config "${webpackConfig}" \
-    && npx rollup -c "${rollupConfig}"
+    && npx rollup -c "${rollupConfig}" \
+    && node "${buildExports}" --dir ./dist/cjs --type=cjs
     `
 );
 
