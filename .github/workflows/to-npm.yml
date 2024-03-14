@@ -8,19 +8,24 @@ on:
     types: [created]
 
 jobs:
-  build:
+  publish-npm:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        package: ["@knighttower/js-event-bus", "@knighttower/type-check-js", "@knighttower/js-utility-functions"]
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '20'
-      - name: Build and publish ${matrix.package}
-        run: cd packages/${matrix.package} && npm publish --access public
+          node-version: 20
+          registry-url: https://registry.npmjs.org/
+      - name: jsUtils    
+        run: cd packages/utility && npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - name: eventBus    
+        run: cd packages/event-bus && npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - name: typeCheck    
+        run: cd packages/type-check && npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}    
+

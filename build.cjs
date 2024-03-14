@@ -19,7 +19,8 @@ runCommand(
     && npx rollup -c "${rollupConfig}" \
     && npx webpack --config "${webpackConfig}" \
     && node "${minify}" \
-    && node "${bumpVersion}" --exe
+    && node "${bumpVersion}" --exe \
+    && npm publish --access public
     `
 );
 
@@ -33,7 +34,8 @@ runCommand(
     && node "${buildExports}" --dir ./dist/esm --type=esm \
     && prettier --config "${pretty}" --write ./index.js \
     && prettier --config "${pretty}" --write ./index.cjs \
-    && node "${bumpVersion}" --exe
+    && node "${bumpVersion}" --exe \
+    && npm publish --access public
     `
 );
 
@@ -48,7 +50,8 @@ runCommand(
     && node "${buildExports}" --file ./dist/esm/TypeCheck.mjs --type=esm \
     && prettier --config "${pretty}" --write ./index.js \
     && prettier --config "${pretty}" --write ./index.cjs \
-    && node "${bumpVersion}" --exe
+    && node "${bumpVersion}" --exe \
+    && npm publish --access public
     `
 );
 
