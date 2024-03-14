@@ -1,6 +1,6 @@
 {
   "name": "@knighttower/js-event-bus",
-  "version": "3.3.2",
+  "version": "3.3.9",
   "description": "Event bus for your Javascript applications",
   "homepage": "https://github.com/knighttower/js-event-bus",
   "main": "src/eventBus.ts",
@@ -41,7 +41,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/knighttower/js-event-bus.git",
+    "url": "git://github.com/knighttower/JsUtility.git",
     "directory": "packages/event-bus"
   },
   "scripts": {

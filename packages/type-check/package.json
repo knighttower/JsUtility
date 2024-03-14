@@ -1,6 +1,6 @@
 {
   "name": "@knighttower/type-check-js",
-  "version": "4.1.16",
+  "version": "4.1.17",
   "type": "module",
   "description": "TypeCheck JS",
   "main": "index.cjs",

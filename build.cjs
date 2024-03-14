@@ -1,5 +1,7 @@
-const { runCommand } = require('./packages/utility/nodeUtils');
-
+const fs = require('fs');
+const path = require('path');
+const { input, select, rawlist } = require('@inquirer/prompts');
+const { runCommand, readJson, writeJson } = require('./packages/utility/nodeUtils');
 const workingDir = process.cwd();
 const webpackConfig = `${workingDir}/packages/utility/nodeUtils/webpack.config.cjs`;
 const rollupConfig = `${workingDir}/packages/utility/nodeUtils/rollup.config.cjs`;
@@ -9,11 +11,17 @@ const bumpVersion = `${workingDir}/packages/utility/nodeUtils/BumpVersion.cjs`;
 const pretty = `${workingDir}/.prettierrc.json`;
 const eslint = `${workingDir}/.eslintrc.js`;
 
-runCommand('ncu -u && npm i');
+function getSubfolders(dirPath) {
+    return fs
+        .readdirSync(dirPath, { withFileTypes: true })
+        .filter((dirent) => dirent.isDirectory())
+        .map((dirent) => dirent.name);
+}
 
 // Event Bus
-runCommand(
-    `\
+const eventBus = () => {
+    runCommand(
+        `\
     cd ./packages/event-bus \
     && npx tsc -p "${workingDir}/packages/event-bus/tsconfig.json" \
     && npx rollup -c "${rollupConfig}" \
@@ -22,11 +30,13 @@ runCommand(
     && node "${bumpVersion}" --exe \
     && npm publish --access public
     `
-);
+    );
+};
 
 // Utility
-runCommand(
-    `cd ./packages/utility \
+const utility = () => {
+    runCommand(
+        `cd ./packages/utility \
     && eslint -c "${eslint}" --fix ./src --ext .js,.cjs,.mjs \
     && npx webpack --mode production --config "${webpackConfig}" \
     && npx rollup -c "${rollupConfig}" \
@@ -37,11 +47,13 @@ runCommand(
     && node "${bumpVersion}" --exe \
     && npm publish --access public
     `
-);
+    );
+};
 
 // build TypeCheck
-runCommand(
-    `\
+const typeCheck = () => {
+    runCommand(
+        `\
     cd ./packages/type-check \
     && eslint -c "${eslint}" --fix ./src --ext .js,.cjs,.mjs \
     && npx webpack --mode production --config "${webpackConfig}" \
@@ -53,7 +65,42 @@ runCommand(
     && node "${bumpVersion}" --exe \
     && npm publish --access public
     `
-);
+    );
+};
 
-// Bump the MonoRepo version
-runCommand(`node "${bumpVersion}" --exe`);
+runCommand('ncu -u && npm i');
+let workspaces = getSubfolders(`${workingDir}/packages`);
+
+const answer = select({
+    message: 'what to build',
+    choices: [
+        ...workspaces.map((pkg) => {
+            return {
+                name: pkg,
+                value: pkg,
+            };
+        }),
+        ...[
+            {
+                name: 'all',
+                value: 'all',
+            },
+        ],
+    ],
+});
+
+answer.then((answer) => {
+    if (answer === 'event-bus') {
+        eventBus();
+    } else if (answer === 'utility') {
+        utility();
+    } else if (answer === 'type-check') {
+        typeCheck();
+    } else if (answer === 'all') {
+        eventBus();
+        utility();
+        typeCheck();
+    }
+    // Bump the MonoRepo version
+    runCommand(`node "${bumpVersion}" --exe`);
+});

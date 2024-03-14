@@ -10,8 +10,8 @@ const { getFlagValue } = require('./NodeHelpers.cjs');
  *
  * @returns {Object} - Parsed JSON content of package.json.
  */
-exports.readPackageJson = (workingDir) => {
-    const filePath = path.join(workingDir, 'package.json');
+exports.readJson = (workingDir, file = 'package.json') => {
+    const filePath = path.join(workingDir, file);
     const rawContent = fs.readFileSync(filePath, 'utf8');
     return JSON.parse(rawContent);
 };
@@ -21,8 +21,8 @@ exports.readPackageJson = (workingDir) => {
  *
  * @param {Object} content - The updated package.json content.
  */
-exports.writePackageJson = (content, workingDir) => {
-    const filePath = path.join(workingDir, 'package.json');
+exports.writeJson = (content, workingDir, file = 'package.json') => {
+    const filePath = path.join(workingDir, file);
     const updatedContent = JSON.stringify(content, null, 2);
     fs.writeFileSync(filePath, updatedContent);
 };
@@ -53,7 +53,7 @@ exports.exe = () => {
     const flag = getFlagValue('major') || getFlagValue('minor') || getFlagValue('patch');
 
     // Read package.json and get current version
-    const packageJson = exports.readPackageJson(workingDir);
+    const packageJson = exports.readJson(workingDir);
     const { version: currentVersion } = packageJson;
 
     // Bump the version
@@ -61,7 +61,7 @@ exports.exe = () => {
 
     // Update package.json with the new version
     packageJson.version = newVersion;
-    exports.writePackageJson(packageJson, workingDir);
+    exports.writeJson(packageJson, workingDir);
 
     // Log output
     console.log(`Version bumped from ${currentVersion} to ${newVersion}`);

@@ -9,14 +9,14 @@ const {
     commandExistsSync,
     checkNpmScript,
 } = require('./NodeHelpers.cjs');
-const { readPackageJson, writePackageJson, bumpVersion } = require('./BumpVersion.cjs');
+const { readJson, writeJson, bumpVersion } = require('./BumpVersion.cjs');
 exports.getFlagValue = getFlagValue;
 exports.getAllFilesByExtension = getAllFilesByExtension;
 exports.getAllFilesByName = getAllFilesByName;
 exports.getFileByName = getFileByName;
 exports.runCommand = runCommand;
-exports.readPackageJson = readPackageJson;
-exports.writePackageJson = writePackageJson;
+exports.readJson = readJson;
+exports.writeJson = writeJson;
 exports.bumpVersion = bumpVersion;
 exports.commandExistsSync = commandExistsSync;
 exports.checkNpmScript = checkNpmScript;
