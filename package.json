@@ -1,9 +1,9 @@
 {
   "name": "knighttower",
-  "version": "5.0.29",
+  "version": "5.0.30",
   "type": "commonjs",
   "engines": {
-    "node": ">=20.11.1"
+    "node": ">=20.10.0"
   },
   "workspaces": [
     "packages/*"
