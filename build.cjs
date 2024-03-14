@@ -126,6 +126,4 @@ answer.then((answer) => {
         typeCheck();
     }
     mono();
-    // // Bump the MonoRepo version
-    // runCommand(`node "${bumpVersion}" --exe`);
 });

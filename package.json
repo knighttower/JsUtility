@@ -120,8 +120,5 @@
     "vitest": "*",
     "webpack": "^5.90.3",
     "webpack-cli": "^5.1.4"
-  },
-  "dependencies": {
-    "knighttower": "^5.0.19"
   }
 }
