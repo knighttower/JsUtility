@@ -1,3 +1,6 @@
+// https://eslint.style/rules?filter=disallow
+// https://github.com/antfu/eslint-config
+// https://prettier.io/docs/en/options
 module.exports = {
     plugins: ['@stylistic','prettier'],
     'root': true,

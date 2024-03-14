@@ -61,21 +61,8 @@
     "url": "git://github.com/knighttower/JsUtility.git"
   },
   "scripts": {
-    "production": "npm run build",
-    "build": "npm run webpack && npm run rollup && npm run buildExports && npm run bumpVersion",
-    "bumpVersion": "node ./nodeUtils/BumpVersion.cjs --exe",
-    "buildExports": "node ./nodeUtils/BuildExports.js --dir ./src && node ./nodeUtils/BuildExports.js --dir ./dist/cjs --type cjs",
-    "rollup": "rollup -c ./nodeUtils/rollup.config.cjs",
-    "webpack": "webpack --mode production --config ./nodeUtils/webpack.config.cjs",
     "dev": "webpack --mode development",
     "watch": "webpack --mode development --watch",
-    "test": "npm run format && npm run eslint && vitest",
-    "format": "prettier --config .prettierrc.json --write ./src",
-    "format-check": "prettier --config .prettierrc.json --check ./src",
-    "eslint": "eslint -c .eslintrc.json --fix ./src --ext .js,.cjs,.mjs",
-    "minify": "node ./nodeUtils/Minify.js"
-  },
-  "dependencies": {
-    "@knighttower/js-event-bus": "*"
+    "test": "npm run format && npm run eslint && vitest"
   }
 }
