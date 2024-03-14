@@ -24,9 +24,9 @@ const eslint = `${workingDir}/.eslintrc.json`;
 // );
 
 runCommand(
-    `\
-    cd ./packages/utility \
-    && npx webpack --mode production --config "${webpackConfig}"
+    `cd ./packages/utility \
+    && npx webpack --mode production --config "${webpackConfig}" \
+    && npx rollup -c "${rollupConfig}"
     `
 );
 

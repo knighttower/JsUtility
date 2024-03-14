@@ -431,7 +431,7 @@ System.register('PromiseQueue', [], (function (exports) {
              *   return true; // or return a promise
              * }
              */
-            const doPoll = exports('doPoll', (fn, options = {}) => {
+            const doPoll = exports("doPoll", (fn, options = {}) => {
                 if (typeof fn !== 'function') {
                     throw new Error('doPoll: The first argument must be a function.');
                 }

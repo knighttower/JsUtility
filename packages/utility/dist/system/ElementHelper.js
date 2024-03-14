@@ -223,7 +223,7 @@ System.register('ElementHelper', [], (function (exports) {
             // =========================================
             // --> Utilities
             // --------------------------
-            const selectElement = exports('selectElement', (selector, scope = document) => new ElementHelper(selector, scope));
+            const selectElement = exports("selectElement", (selector, scope = document) => new ElementHelper(selector, scope));
 
         })
     };

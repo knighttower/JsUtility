@@ -3,7 +3,7 @@ System.register('EventBus', [], (function (exports) {
     return {
         execute: (function () {
 
-            exports('_eventBus', _eventBus);
+            exports("_eventBus", _eventBus);
 
             class EventBus {
                 constructor() {

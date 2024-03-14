@@ -228,7 +228,7 @@ System.register('Utility', [], (function (exports) {
              * @return array
              * @example makeArray('test') // ['test']
              */
-            const makeArray = exports('makeArray', (item) => (Array.isArray(item) ? item : [item]));
+            const makeArray = exports("makeArray", (item) => (Array.isArray(item) ? item : [item]));
 
             /**
              * Generate unique ids
@@ -247,10 +247,10 @@ System.register('Utility', [], (function (exports) {
              * @return string
              * @example getRandomId() // kn__000000__000
              */
-            const getRandomId = exports('getRandomId', getDynamicId);
-            const randomId = exports('randomId', getDynamicId);
+            const getRandomId = exports("getRandomId", getDynamicId);
+            const randomId = exports("randomId", getDynamicId);
 
-            const uuid = exports('uuid', (max = 20) => {
+            const uuid = exports("uuid", (max = 20) => {
                 const rnd = () => Math.random().toString(36).substring(2, 15);
                 max = max || 40;
                 var str = '';
@@ -259,7 +259,7 @@ System.register('Utility', [], (function (exports) {
                 }
                 return str.substring(0, max);
             });
-            const uniqueId = exports('uniqueId', uuid);
+            const uniqueId = exports("uniqueId", uuid);
 
             /**
              * Form a valid Google search address
