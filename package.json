@@ -1,7 +1,7 @@
 {
   "name": "@knighttower/js-utility",
   "private": true,
-  "version": "1.0.1",
+  "version": "5.0.0",
   "type": "commonjs",
   "engines": {
     "node": ">=20.11.1"
