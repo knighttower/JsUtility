@@ -1,6 +1,6 @@
 {
   "name": "knighttower",
-  "version": "5.0.24",
+  "version": "5.0.26",
   "type": "commonjs",
   "engines": {
     "node": ">=20.11.1"
@@ -13,23 +13,10 @@
     "url": "git://github.com/knighttower/JsUtility.git"
   },
   "files": [
-    "./packages/utility/dist",
-    "./packages/utility/nodeUtils",
-    "./packages/utility/index.js",
-    "./packages/utility/index.cjs",
-    "./packages/utility/package.json",
-    "./packages/utility/nodeUtils/package.json",
-    "./packages/type-check/dist",
-    "./packages/type-check/index.js",
-    "./packages/type-check/index.cjs",
-    "./packages/type-check/package.json",
-    "./packages/event-bus/dist",
-    "./packages/event-bus/src",
-    "./packages/event-bus/package.json",
-    "./packages/bootstrap-mini-css/dist",
-    "./packages/bootstrap-mini-css/src",
-    "./packages/bootstrap-mini-css/index.js",
-    "./packages/bootstrap-mini-css/package.json"
+    "./packages/utility/*",
+    "./packages/type-check/*",
+    "./packages/event-bus/*",
+    "./packages/bootstrap-mini-css/*"
   ],
   "sass": "./packages/bootstrap-mini-css/src/bootstrapmini.scss",
   "style": "./packages/bootstrap-mini-css/dist/bootstrapmini.css",
@@ -47,6 +34,7 @@
       "require": "./packages/utility/index.cjs"
     },
     "./utility/dist/*": "./packages/utility/dist/*",
+    "./utility/src/*": "./packages/utility/src/*",
     "./utility/node/*": "./packages/utility/nodeUtils/*",
     "./utility/nodeUtils/*": "./packages/utility/nodeUtils/*",
     "./utility/nodeUtils": {
@@ -54,6 +42,7 @@
       "require": "./packages/utility/nodeUtils/index.cjs"
     },
     "./packages/utility/dist/*": "./packages/utility/dist/*",
+    "./packages/utility/src/*": "./packages/utility/src/*",
     "./packages/utility/node/*": "./packages/utility/nodeUtils/*",
     "./packages/utility/nodeUtils/*": "./packages/utility/nodeUtils/*",
     "./packages/utility/nodeUtils": {
@@ -69,7 +58,9 @@
       "require": "./packages/type-check/index.cjs"
     },
     "./type-check/dist/*": "./packages/type-check/dist/*",
+    "./type-check/src/*": "./packages/type-check/src/*",
     "./packages/type-check/dist/*": "./packages/type-check/dist/*",
+    "./packages/type-check/src/*": "./packages/type-check/src/*",
     "./event-bus": {
       "import": "./packages/event-bus/dist/esm/eventBus.mjs",
       "require": "./packages/event-bus/dist/cjs/eventBus.cjs"
@@ -89,7 +80,11 @@
     "./packages/bootstrap-mini-css": {
       "import": "./packages/bootstrap-mini-css/index.js",
       "require": "./packages/bootstrap-mini-css/dist/bootstrapmini.css"
-    }
+    },
+    "./bootstrap-mini-css/dist/*": "./packages/bootstrap-mini-css/dist/*",
+    "./bootstrap-mini-css/src/*": "./packages/bootstrap-mini-css/src/*",
+    "./packages/bootstrap-mini-css/dist/*": "./packages/bootstrap-mini-css/dist/*",
+    "./packages/bootstrap-mini-css/src/*": "./packages/bootstrap-mini-css/src/*"
   },
   "scripts": {
     "build": "node ./build.cjs"

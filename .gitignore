@@ -13,6 +13,7 @@ auth.json
 !.eslintrc.json
 !.prettierrc
 !/prettierignore
+!.eslintrc
 
 # Build artifacts
 vendor
