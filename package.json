@@ -1,6 +1,6 @@
 {
   "name": "knighttower",
-  "version": "5.0.23",
+  "version": "5.0.24",
   "type": "commonjs",
   "engines": {
     "node": ">=20.11.1"
@@ -18,6 +18,7 @@
     "./packages/utility/index.js",
     "./packages/utility/index.cjs",
     "./packages/utility/package.json",
+    "./packages/utility/nodeUtils/package.json",
     "./packages/type-check/dist",
     "./packages/type-check/index.js",
     "./packages/type-check/index.cjs",
@@ -48,11 +49,17 @@
     "./utility/dist/*": "./packages/utility/dist/*",
     "./utility/node/*": "./packages/utility/nodeUtils/*",
     "./utility/nodeUtils/*": "./packages/utility/nodeUtils/*",
-    "./utility/nodeUtils": "./packages/utility/nodeUtils/index.cjs",
+    "./utility/nodeUtils": {
+      "import": "./packages/utility/nodeUtils/index.mjs",
+      "require": "./packages/utility/nodeUtils/index.cjs"
+    },
     "./packages/utility/dist/*": "./packages/utility/dist/*",
     "./packages/utility/node/*": "./packages/utility/nodeUtils/*",
     "./packages/utility/nodeUtils/*": "./packages/utility/nodeUtils/*",
-    "./packages/utility/nodeUtils": "./packages/utility/nodeUtils/index.cjs",
+    "./packages/utility/nodeUtils": {
+      "import": "./packages/utility/nodeUtils/index.mjs",
+      "require": "./packages/utility/nodeUtils/index.cjs"
+    },
     "./type-check": {
       "import": "./packages/type-check/index.js",
       "require": "./packages/type-check/index.cjs"
