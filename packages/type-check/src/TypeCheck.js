@@ -1,4 +1,4 @@
-import { typeOf, isEmpty } from '@knighttower/js-utility-functions';
+import { typeOf, isEmpty } from '@knighttower/utility';
 import { typesMap, testBuilder, addTypeTest } from './TestBuilder.js';
 
 // Error collectot

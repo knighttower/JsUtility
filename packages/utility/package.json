@@ -1,6 +1,6 @@
 {
-  "name": "@knighttower/js-utility-functions",
-  "version": "4.2.12",
+  "name": "@knighttower/utility",
+  "version": "4.2.14",
   "type": "module",
   "main": "index.cjs",
   "module": "index.js",
@@ -66,6 +66,6 @@
   "scripts": {
     "dev": "webpack --mode development",
     "watch": "webpack --mode development --watch",
-    "test": "npm run format && npm run eslint && vitest"
+    "test": "vitest"
   }
 }

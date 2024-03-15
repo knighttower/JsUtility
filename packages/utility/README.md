@@ -70,11 +70,11 @@ You can see the src with github and explore the functions by using the "symbols 
 The library is standalone (via browser script tag, loads the whole library) or modular, either the entire object or only a few functions since it is completely modular.
 
 ```javascript
-npm i @knighttower/js-utility-functions
+npm i @knighttower/utility
 ```
 
 ```javascript
-yarn add @knighttower/js-utility-functions
+yarn add @knighttower/utility
 ```
 
 ## In the browser
@@ -82,13 +82,13 @@ yarn add @knighttower/js-utility-functions
 It loads as a 'window' object --> window.Utility
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@knighttower/js-utility-functions@latest/dist/browser/Utility.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@knighttower/utility@latest/dist/browser/Utility.min.js"></script>
 // in addition, you can also load other libraries
-<script src="https://cdn.jsdelivr.net/npm/@knighttower/js-utility-functions@latest/dist/browser/PowerHelpers.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@knighttower/js-utility-functions@latest/dist/browser/DomObserver.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@knighttower/js-utility-functions@latest/dist/browser/UrlHelper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@knighttower/utility@latest/dist/browser/PowerHelpers.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@knighttower/utility@latest/dist/browser/DomObserver.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@knighttower/utility@latest/dist/browser/UrlHelper.min.js"></script>
 //or ESM
-<script src="https://esm.run/@knighttower/js-utility-functions@latest/index.mjs"></script>
+<script src="https://esm.run/@knighttower/utility@latest/index.mjs"></script>
 ```
 
 <br/>
@@ -151,14 +151,14 @@ All Functions have also been Unit Tested and tests are in the source code if you
 ```javascript
 // note: in some cases, you may need to use the full path to the file "/index" in order to import it
 // All other modules can also be imported individually from the same path
-import Utility from '@knighttower/js-utility-functions';
+import Utility from '@knighttower/utility';
 //and or
-import PowerHelpers from '@knighttower/js-utility-functions';
+import PowerHelpers from '@knighttower/utility';
 // or
-import { functionThatYouWantToUse, otherFunction } from '@knighttower/js-utility-functions';
+import { functionThatYouWantToUse, otherFunction } from '@knighttower/utility';
 // or
-import { Utility as yourCustomName } from '@knighttower/js-utility-functions';
-import { functionThatYouWantToUse } from 'https://cdn.jsdelivr.net/npm/@knighttower/js-utility-functions@latest/index.mjs';
+import { Utility as yourCustomName } from '@knighttower/utility';
+import { functionThatYouWantToUse } from 'https://cdn.jsdelivr.net/npm/@knighttower/utility@latest/index.mjs';
 ```
 
 Or even better, use it along with Vite and [Autoimport](https://github.com/unplugin/unplugin-auto-import) like:
@@ -168,7 +168,7 @@ Or even better, use it along with Vite and [Autoimport](https://github.com/unplu
 import AutoImport from 'unplugin-auto-import/vite';
 
 ... plugins: [
-        AutoImport({ imports: [ { '@knighttower/js-utility-functions': ['Utility'] }] }),
+        AutoImport({ imports: [ { '@knighttower/utility': ['Utility'] }] }),
     ]
 
 // and then in your code...
@@ -191,7 +191,7 @@ Some of these docs are outdated. Please look via the built in Github Symbol expl
 [UrlHelper](https://github.com/knighttower/JsUtility/blob/development/src/UrlHelper.js)
 [ProxyHelper](https://github.com/knighttower/JsUtility/blob/development/src/ProxyHelper.js)
 [ElementHelper](https://github.com/knighttower/JsUtility/blob/development/src/ElementHelper.js)
-// NodeHelpers are not yet documented nor included with the above pkg cause it is node only files, but it can be imported from @knighttower/js-utility-functions/node/index.mjs (NodeHelpers)
+// NodeHelpers are not yet documented nor included with the above pkg cause it is node only files, but it can be imported from @knighttower/utility/node/index.mjs (NodeHelpers)
 [NodeHelpers](https://github.com/knighttower/JsUtility/blob/development/node/NodeHelpers.js)
 
 <br/>

@@ -11,6 +11,8 @@ auth.json
 !.gitignore
 !.gitattributes
 !.eslintrc.json
+!.eslintignore
+!.eslintrc.js
 !.prettierrc
 !/prettierignore
 !.eslintrc

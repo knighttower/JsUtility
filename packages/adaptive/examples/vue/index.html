@@ -1,0 +1,180 @@
+<html>
+    <head> </head>
+    <body>
+        <section id="app">
+            <h1>Vue examples</h1>
+            <h2>Resize this window in different resolutions</h2>
+            This demo is working with Vue in Hybrid mode, so you can use both data-adaptive and data-teleport attributes
+            with Vue elements or static elements (outside of Vue).
+            It offers a Vue component called "TeleportTo" that will teleport any element to any other element when visible.
+            <br />
+            <h4>Look at all the examples in the "test/index.html" and "example/app.js" and "example/hello.vue", and/or
+                use the code inspector to see the DOM changes</h4>
+            <br />
+            <!-- Example adding classes -->
+            <div
+                id="hello"
+                style="background-color: yellow; padding: 10px; margin-bottom: 10px; border: 1px dashed; display: block"
+                class="static-hello"
+                data-adaptive="{'addClass':{'tablet':'hello','desktop':'this-is-a-class-for-desktop'}}"
+            >
+                Static ID "hello" Element using json compliant object to add classes at "desktop" and "tablet" sizes
+            </div>
+            <br />
+            <div
+                style="
+                    background-color: rgb(236, 236, 206);
+                    padding: 10px;
+                    margin-bottom: 10px;
+                    border: 1px dashed;
+                    display: block;
+                "
+                data-adaptive="{addClass:{tablet:'hello',desktop:'this-is-a-class-for-desktop'}}"
+            >
+                static element using non compliant json object to add classes at "desktop" and "tablet" sizes
+            </div>
+            <br />
+            <br />
+            <div
+                id="world"
+                style="background-color: rgb(236, 236, 206); padding: 15px; margin: 20px"
+                data-adaptive="{addClass:{tablet:'hello',desktop:'this-is-a-class-for-desktop'}}"
+            >
+                static element (Id= world)
+            </div>
+            <!-- Example of only adding styles per breakdown -->
+            <div
+                style="padding: 10px; margin-bottom: 10px; border: 1px dashed; display: block"
+                class="inline-styling"
+                data-adaptive="{'addStyle':{'tablet':'color: blue;','desktop':'color: green;'}}"
+            >
+                Adding Inline styling per device at "desktop" and "tablet" sizes
+            </div>
+            <br />
+
+            <!-- Example Vue compoenent -->
+            <hello style="padding: 10px; margin-bottom: 10px; border: 1px dashed; display: block"></hello>
+            <br />
+
+            <!-- Example of using String like directives -->
+            <div
+                style="padding: 10px; margin-bottom: 10px; border: 1px dashed; display: block"
+                data-adaptive="addClass.tablet(laura, miau) &&
+            addClass.mobile|fullscreen(red, green) && 
+            addClass.desktop(uno, dos)"
+            >
+                String like directives
+            </div>
+
+            <br />
+            <!-- Teleporting -->
+            <div data-teleport="{after: '#world'}">
+                <span style="background: #067e74; color: white; padding: 15px; display: block; margin-bottom: 10px"
+                    >Direct teleport <b><u>after</u></b> "world" on load. Unline using "data-adaptive" this will only
+                    teleport once, not responsive</span
+                >
+            </div>
+            <br />
+            <div data-teleport="['before','#world']">
+                <span style="background: #083d39; color: white; padding: 15px; display: block"
+                    >Direct teleport <b><u>before</u></b> "world" OnLoad. <br />
+                    Unlike using "data-adaptive", this will only teleport once, <br />
+                    not responsive (see the source of this page)
+                </span>
+            </div>
+            <!-- Example of using custom queries -->
+            <div
+                style="padding: 10px; margin-bottom: 10px; border: 1px dashed; display: block"
+                id="customQueries"
+                data-adaptive="addClass[(min-width: 900px) and (max-width: 1599px)](custom-class-at-custom-breakdown)"
+            >
+                Custom CSS query Expressions via string like Directive
+            </div>
+
+            <br />
+            <div
+                style="padding: 10px; margin-bottom: 10px; border: 1px dashed; display: block"
+                data-adaptive="{'teleport':{
+                'tablet': {
+                    'to':'.lazy'
+                }
+            }}"
+            >
+                <span style="color: blue; padding: 10px; margin-bottom: 10px; border: 1px dashed; display: block"
+                    >Static element that will teleport at "tablet" size to a Vue driven element when visible or existing
+                    in the DOM</span
+                >
+            </div>
+
+            <br />
+            <!-- Teleporting only at mobile and desktop, all others will be set back to original position -->
+            <!-- Example of using custom queries -->
+            <div
+                style="padding: 10px; margin-bottom: 10px; border: 1px dashed; display: block"
+                id="customQueries"
+                data-adaptive="addClass[(min-width: 900px) and (max-width: 1599px)](custom-class-at-custom-breakdown)"
+            >
+                Custom CSS query Expressions via string like Directive. This will add a class at a custom breakpoint.
+                This element has an ID of <b>"customQueries"</b>
+            </div>
+
+            <br />
+            <div
+                style="padding: 10px; margin-bottom: 10px; border: 1px dashed; display: block"
+                data-adaptive="{'teleport':{
+                'tablet': {
+                    'to':'.lazy'
+                }
+            }}"
+            >
+                <span style="color: blue"
+                    >Static element that will teleport at "tablet" size to a Vue driven element when visible</span
+                >
+            </div>
+
+            <br />
+            <!-- Teleporting only at mobile and desktop, all others will be set back to original position -->
+            <div
+                data-adaptive="teleport.desktop|mobile({before:'#hello'})"
+                style="padding: 10px; margin-bottom: 10px; border: 1px dashed; display: block"
+            >
+                <span style="background: #1f2252; color: white"
+                    >Static element that will teleport at "desktop or mobile" right above "static hello"</span
+                >
+            </div>
+
+            <br />
+            <div
+                data-teleport="{'after':'#customQueries'}"
+                style="padding: 10px; margin-bottom: 10px; border: 1px dashed; display: block"
+            >
+                <span style="background: #067e74; color: white"
+                    >Static element that will teleport right "after" <b>"customQueries"</b> with data attribute in
+                    hybrid mode</span
+                >
+            </div>
+            <br />
+            <div
+                data-teleport="[after,'#hello']"
+                style="padding: 10px; margin-bottom: 10px; border: 1px dashed; display: block"
+            >
+                <span style="background: #083d39; color: white"></span>
+                    Static element that will teleport "hello" with data attribute using an array like string</span
+                >
+            </div>
+
+            <comp-api-sample
+                style="padding: 10px; margin-bottom: 10px; border: 1px dashed; display: block"
+            ></comp-api-sample>
+        </section>
+
+        <!-- JS -->
+        <script src="//cdn.jsdelivr.net/npm/vue@3.3.4/dist/vue.global.min.js"></script>
+        <script src="./app.min.js"></script>
+        <style>
+            .laura {
+                color: blueviolet;
+            }
+        </style>
+    </body>
+</html>

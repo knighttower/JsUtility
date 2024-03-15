@@ -1,0 +1,72 @@
+{
+  "name": "@knighttower/adaptive",
+  "version": "3.0.1",
+  "type": "module",
+  "main": "index.cjs",
+  "module": "index.js",
+  "jsdeliver": "dist/browser/Adaptive.js",
+  "unpkg": "dist/browser/Adaptive.js",
+  "browser": "dist/browser/Adaptive.js",
+  "license": "MIT",
+  "description": "Stand-alone or with Vue Hybrid mode Js helper library to help with adaptive layouts",
+  "homepage": "https://github.com/knighttower/JsUtility",
+  "author": "knighttower (https://github.com/knighttower)",
+  "files": [
+    "dist",
+    "src",
+    "examples",
+    "index.js",
+    "index.cjs"
+  ],
+  "exports": {
+    ".": {
+      "import": "./index.js",
+      "require": "./index.cjs"
+    },
+    "./dist/*": "./dist/*"
+  },
+  "keywords": [
+    "media query",
+    "media queries",
+    "matchMedia",
+    "adaptive",
+    "responsive",
+    "teleport",
+    "DOM observer",
+    "DOM selector",
+    "Utility",
+    "Element Helper",
+    "Get Settings",
+    "Vue",
+    "library",
+    "plugin",
+    "adapt",
+    "adaptive.js",
+    "proxy",
+    "css",
+    "javascript",
+    "js",
+    "helper",
+    "helper functions",
+    "helper library",
+    "helper library for adaptive layouts",
+    "helper library for adaptive layouts with Vue",
+    "helper library for adaptive layouts with Vue and Teleport"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/knighttower/JsUtility.git",
+    "directory": "packages/adaptive"
+  },
+  "scripts": {
+    "dev": "mix watch",
+    "test": "npm run format && npm run eslint && vitest"
+  },
+  "dependencies": {
+    "@knighttower/utility": "^4.2.12",
+    "@knighttower/type-check": "^4.1.17"
+  },
+  "bugs": {
+    "url": "https://github.com/knighttower/JsUtility/issues"
+  }
+}

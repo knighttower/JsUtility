@@ -1,0 +1,136 @@
+<html>
+    <head> </head>
+    <body>
+        <section id="app">
+            <h1>React examples</h1>
+            <h2>Start by Resizing this window in different resolutions</h2>
+            This demo is working with React in Hybrid mode, so you can use both data-adaptive and data-teleport
+            attributes with React elements or static elements (outside of React). It offers a React component called
+            "TeleportTo" that will teleport any element to any other element when visible.
+            <br />
+            <h5>
+                Look at all the examples in the "test/index.html" and "example/app.js" and "example/hello.vue", and/or
+                use the code inspector to see the DOM changes
+            </h5>
+            <br />
+            <!-- Example adding classes -->
+            <div
+                id="hello"
+                style="background-color: yellow; padding: 10px; margin-bottom: 10px; border: 1px dashed; display: block"
+                class="static-hello"
+                data-adaptive="{'addClass':{'tablet':'hello','desktop':'this-is-a-class-for-desktop'}}"
+            >
+                Static ID "hello" Element using json compliant object to add classes at "desktop" and "tablet" sizes
+            </div>
+            <br />
+            <div
+                style="
+                    background-color: rgb(236, 236, 206);
+                    padding: 10px;
+                    margin-bottom: 10px;
+                    border: 1px dashed;
+                    display: block;
+                "
+                data-adaptive="{addClass:{tablet:'hello',desktop:'this-is-a-class-for-desktop'}}"
+            >
+                static element using non compliant json object to add classes at "desktop" and "tablet" sizes
+            </div>
+            <br />
+            <!-- Example of only adding styles per breakdown -->
+            <div
+                style="padding: 10px; margin-bottom: 10px; border: 1px dashed; display: block"
+                class="inline-styling"
+                data-adaptive="{'addStyle':{'tablet':'color: blue;','desktop':'color: green;'}}"
+            >
+                Adding Inline styling per device at "desktop" and "tablet" sizes
+            </div>
+
+            <!-- Example React compoenent -->
+
+            <div id="reactHello" style="padding: 10px; margin-bottom: 10px; border: 1px dashed; display: block"></div>
+            <div id="reactButton" style="padding: 10px; margin-bottom: 10px; border: 1px dashed; display: block"></div>
+            <teleport-to
+                target="#hello"
+                position="before"
+                style="padding: 10px; margin-bottom: 10px; border: 1px dashed; display: block"
+            >
+                <div>Teleporting before "hello"</div>
+            </teleport-to>
+
+            <!-- Example of using String like directives -->
+            <div
+                style="padding: 10px; margin-bottom: 10px; border: 1px dashed; display: block"
+                data-adaptive="addClass.tablet(laura, miau) &&
+            addClass.mobile|fullscreen(red, green) && 
+            addClass.desktop(uno, dos)"
+            >
+                String like directives
+            </div>
+
+            <!-- Example of using custom queries -->
+            <div
+                style="padding: 10px; margin-bottom: 10px; border: 1px dashed; display: block"
+                id="customQueries"
+                data-adaptive="addClass[(min-width: 900px) and (max-width: 1599px)](custom-class-at-custom-breakdown)"
+            >
+                Custom CSS query Expressions via string like Directive. This will add a class at a custom breakpoint.
+                This element has an ID of <b>"customQueries"</b>
+            </div>
+
+            <br />
+            <div
+                style="padding: 10px; margin-bottom: 10px; border: 1px dashed; display: block"
+                data-adaptive="{'teleport':{
+                'tablet': {
+                    'to':'.lazy'
+                }
+            }}"
+            >
+                <span style="color: blue"
+                    >Static element that will teleport at "tablet" size to a Vue driven element when visible</span
+                >
+            </div>
+
+            <br />
+            <!-- Teleporting only at mobile and desktop, all others will be set back to original position -->
+            <div
+                data-adaptive="teleport.desktop|mobile({before:'#hello'})"
+                style="padding: 10px; margin-bottom: 10px; border: 1px dashed; display: block"
+            >
+                <span style="background: #1f2252; color: white"
+                    >Static element that will teleport at "desktop or mobile" right above "static hello"</span
+                >
+            </div>
+
+            <br />
+            <div
+                data-teleport="{'after':'#customQueries'}"
+                style="padding: 10px; margin-bottom: 10px; border: 1px dashed; display: block"
+            >
+                <span style="background: #067e74; color: white"
+                    >Static element that will teleport right "after" <b>"customQueries"</b> with data attribute in
+                    hybrid mode</span
+                >
+            </div>
+            <br />
+            <div
+                data-teleport="[after,'#hello']"
+                style="padding: 10px; margin-bottom: 10px; border: 1px dashed; display: block"
+            >
+                <span style="background: #083d39; color: white"
+                    >2 Static element that will teleport "hello" with data attribute using an array like string</span
+                >
+            </div>
+        </section>
+
+        <!-- JS -->
+        <script src="//unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+        <script src="//unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+        <script src="./app.min.js"></script>
+        <style>
+            .laura {
+                color: blueviolet;
+            }
+        </style>
+    </body>
+</html>

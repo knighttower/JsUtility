@@ -1,6 +1,6 @@
 {
-  "name": "@knighttower/type-check-js",
-  "version": "4.1.17",
+  "name": "@knighttower/type-check",
+  "version": "4.1.19",
   "type": "module",
   "description": "TypeCheck JS",
   "main": "index.cjs",
@@ -44,7 +44,7 @@
   "scripts": {
     "dev": "webpack --mode development",
     "watch": "webpack --mode development --watch",
-    "test": "npm run format && npm run eslint && vitest"
+    "test": "vitest"
   },
   "repository": {
     "type": "git",
@@ -52,6 +52,6 @@
     "directory": "packages/type-check"
   },
   "dependencies": {
-    "@knighttower/js-utility-functions": "*"
+    "@knighttower/utility": "*"
   }
 }

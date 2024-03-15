@@ -19,11 +19,11 @@ TypeCheck JS is a JavaScript library designed for fast and efficient type checki
 #### Via npm
 
 ```javascript
-npm i @knighttower/type-check-js
+npm i @knighttower/type-check
 ```
 
 ```javascript
-yarn add @knighttower/type-check-js
+yarn add @knighttower/type-check
 ```
 
 #### In the Browser
@@ -32,10 +32,10 @@ Include the following script tag in your HTML:
 Note: by default the library is ESM, but other builds are available in the dist folder (cjs, umd and iife)
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@knighttower/type-check-js@latest/dist/browser/TypeCheck.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@knighttower/type-check@latest/dist/browser/TypeCheck.min.js"></script>
 // or as ESM
 <script type="module">
-    import { typeCheck } from 'https://esm.run/@knighttower/type-check-js@latest/index.js';
+    import { typeCheck } from 'https://esm.run/@knighttower/type-check@latest/index.js';
 </script>
 ```
 
@@ -92,7 +92,7 @@ TypeCheck JS aims to solve the following problems:
 ```javascript
 // note: in some cases, you may need to use the full path to the file "/index" in order to import it
 // All other modules can also be imported individually from the same path
-import { typeCheck } from '@knighttower/type-check-js';
+import { typeCheck } from '@knighttower/type-check';
 ```
 
 ### 👉 IMPORTANT

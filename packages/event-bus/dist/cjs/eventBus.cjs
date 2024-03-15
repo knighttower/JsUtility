@@ -69,7 +69,7 @@ class EventBus {
         }
         return false; // Event was not found
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     /**
      * emits an event with the given name and arguments
      * @param {string} eventName - The name of the event
@@ -88,8 +88,7 @@ class EventBus {
         // name exact match
         if (this.hasListener(eventName)) {
             queueListeners = this.listeners[eventName];
-        }
-        else {
+        } else {
             // -----------------------------------------
             // Wildcard support
             if (eventName.includes('*')) {
@@ -101,8 +100,7 @@ class EventBus {
                         queueListeners = queueListeners.concat(this.listeners[match]);
                     });
                 }
-            }
-            else {
+            } else {
                 // case 2, if the incoming string matches a registered pattern
                 // which will support on("name*") | on("name**") | on("name.*name**")
                 for (const key in this.listeners) {

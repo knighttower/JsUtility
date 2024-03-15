@@ -1,0 +1,154 @@
+<html>
+    <head> </head>
+    <body>
+        <section id="app">
+            <h2>Resize this window in different resolutions</h2>
+
+            <h3>
+                Look at all the examples in the "test/index.html" and "example/app.js" and "example/hello.vue", and/or
+                use the code inspector to see the DOM changes
+            </h3>
+            <br />
+            <!-- Example adding classes -->
+            <div
+                id="hello"
+                style="background-color: yellow; padding: 15px; display: block; margin-bottom: 10px"
+                class="static-hello"
+                data-adaptive="{'addClass':{'tablet':'hello','desktop':'this-is-a-class-for-desktop'}}"
+            >
+                Static element ID "hello" that will add classes at "tablet" and "desktop" size. Uses compliant json.
+            </div>
+            <br />
+            <div
+                id="world"
+                style="background-color: rgb(236, 236, 206); padding: 15px; margin: 20px"
+                data-adaptive="{addClass:{tablet:'hello',desktop:'this-is-a-class-for-desktop'}}"
+            >
+                static element (Id= world)
+            </div>
+            <div
+                style="background-color: rgb(236, 236, 206); padding: 15px; display: block; margin-bottom: 10px"
+                data-adaptive="{addClass:{tablet:'any-class-here',desktop:'this-is-a-class-for-desktop'}}"
+            >
+                Static element using non compliant json object. Will add classes at "tablet" and "desktop" size.
+            </div>
+            <br />
+            <!-- Example of only adding styles per breakdown -->
+            <div
+                style="padding: 15px; display: block; margin-bottom: 10px"
+                class="inline-styling"
+                data-adaptive="{'addStyle':{'tablet':'color: blue;','desktop':'color: green;'}}"
+            >
+                Inline styling per device breakdown. Uses compliant json.
+            </div>
+            <br />
+
+            <!-- Example of using String like directives -->
+            <div
+                style="padding: 15px; display: block; margin-bottom: 10px; border: 1px dashed"
+                data-adaptive="addClass.tablet(laura, miau) &&
+            addClass.mobile|fullscreen(red, green) && 
+            addClass.desktop(uno, dos)"
+            >
+                String like directives. Adds classes at "tablet" and "desktop" size.
+            </div>
+            <!-- Example of only adding styles per breakdown -->
+            <div
+                class="inline-styling"
+                style="padding: 15px"
+                data-adaptive="{'addStyle':{'tablet':'color: blue;','desktop':'color: green;'}}"
+            >
+                Inline styling per device, the style will be added to the element and the color will change
+            </div>
+            <br />
+
+            <!-- Example of using String like directives -->
+            <div
+                style="padding: 15px"
+                data-adaptive="addClass.tablet(blueviolet, other-class) &&
+            addClass.mobile|fullscreen(red, green) && 
+            addClass.desktop(uno, dos)"
+            >
+                String like directives, add a class to the element and removes a class from the element
+            </div>
+
+            <br />
+            <!-- Example of using custom queries -->
+            <div
+                style="padding: 15px"
+                id="customQueries1"
+                data-adaptive="addClass[(min-width: 900px) and (max-width: 1599px)](custom-class-at-custom-breakdown)"
+            >
+                Custom Expressions via string like Directive between 900px and 1599px
+            </div>
+
+            <!-- Example of using custom queries -->
+            <div
+                style="padding: 15px; display: block; margin-bottom: 10px; border: 1px dashed"
+                id="customQueries2"
+                data-adaptive="addClass[(min-width: 900px) and (max-width: 1599px)](custom-class-at-custom-breakdown)"
+            >
+                Custom query Expressions via string like Directive. Adds classes at min-width: 900px and max-width:
+                1599px. This element has an ID of <b>"customQueries2"</b>.
+            </div>
+
+            <!-- Teleporting only at mobile and desktop, all others will be set back to original position -->
+            <div data-adaptive="teleport.desktop|mobile(#hello)">
+                <span
+                    style="
+                        background: #1f2252;
+                        color: white;
+                        padding: 15px;
+                        display: block;
+                        margin-bottom: 10px;
+                        border: 1px dashed;
+                    "
+                    >Static element that will teleport at "desktop or mobile" TO "static hello"</span
+                >
+            </div>
+
+            <!-- Teleporting -->
+            <div data-teleport="{'before':'#customQueries2'}">
+                <span
+                    style="
+                        background: #067e74;
+                        color: white;
+                        padding: 15px;
+                        display: block;
+                        margin-bottom: 10px;
+                        border: 1px dashed;
+                    "
+                    >Static element that will teleport this to "before" ID "customQueries2". Will trigger only
+                    once</span
+                >
+            </div>
+            <br />
+            <!-- Teleporting -->
+            <div data-teleport="{after: '#world'}">
+                <span style="background: #067e74; color: white; padding: 15px; display: block; margin-bottom: 10px"
+                    >Direct teleport <b><u>after</u></b> "world" on load. Unline using "data-adaptive" this will only
+                    teleport once, not responsive</span
+                >
+            </div>
+            <br />
+            <div data-teleport="['before','#world']">
+                <span style="background: #083d39; color: white; padding: 15px; display: block"
+                    >Direct teleport <b><u>before</u></b> "world" OnLoad. <br />
+                    Unlike using "data-adaptive", this will only teleport once, <br />
+                    not responsive (see the source of this page)
+                </span>
+            </div>
+        </section>
+
+        <!-- JS -->
+        <script src="../../dist/browser/Adaptive.js"></script>
+        <script>
+            $adaptive.init();
+        </script>
+        <style>
+            .laura {
+                color: blueviolet;
+            }
+        </style>
+    </body>
+</html>

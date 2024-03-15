@@ -1,9 +1,10 @@
 {
-  "name": "@knighttower/js-event-bus",
-  "version": "3.3.9",
+  "name": "@knighttower/event-bus",
+  "version": "3.3.10",
+  "type": "module",
   "description": "Event bus for your Javascript applications",
   "homepage": "https://github.com/knighttower/js-event-bus",
-  "main": "src/eventBus.ts",
+  "main": "src/eventBus.js",
   "module": "dist/esm/eventBus.mjs",
   "jsdeliver": "dist/browser/eventBus.js",
   "browser": "dist/browser/eventBus.min.js",
@@ -30,7 +31,6 @@
     "nodejs",
     "browser",
     "javascript",
-    "typescript",
     "DOM",
     "functions",
     "helper",
@@ -45,13 +45,8 @@
     "directory": "packages/event-bus"
   },
   "scripts": {
-    "ts": "tsc",
     "dev": "webpack --mode development",
     "watch": "webpack --mode development --watch",
-    "build": "node ./.build/build.cjs",
-    "test": "npm run format && npm run eslint && vitest",
-    "format": "prettier --config .prettierrc.json --write ./src",
-    "format-check": "prettier --config .prettierrc.json --check ./src",
-    "eslint": "eslint -c eslintrc.json --fix ./src --ext .js,.cjs,.mjs,.ts"
+    "test": "vitest"
   }
 }

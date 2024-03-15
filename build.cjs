@@ -11,22 +11,15 @@ const bumpVersion = `${workingDir}/packages/utility/nodeUtils/BumpVersion.cjs`;
 const pretty = `${workingDir}/.prettierrc.json`;
 const eslint = `${workingDir}/.eslintrc.js`;
 
-function getSubfolders(dirPath) {
-    return fs
-        .readdirSync(dirPath, { withFileTypes: true })
-        .filter((dirent) => dirent.isDirectory())
-        .map((dirent) => dirent.name);
-}
-
 // Event Bus
 const eventBus = () => {
     runCommand(
         `\
     cd ./packages/event-bus \
-    && npx tsc -p "${workingDir}/packages/event-bus/tsconfig.json" \
     && npx rollup -c "${rollupConfig}" \
     && npx webpack --config "${webpackConfig}" \
     && node "${minify}" \
+    && npm run test \
     && node "${bumpVersion}" --exe \
     && npm publish --access public
     `
@@ -44,6 +37,7 @@ const utility = () => {
     && node "${buildExports}" --dir ./dist/esm --type=esm \
     && prettier --config "${pretty}" --write ./index.js \
     && prettier --config "${pretty}" --write ./index.cjs \
+    && npm run test \
     && node "${bumpVersion}" --exe \
     && npm publish --access public
     `
@@ -62,6 +56,7 @@ const typeCheck = () => {
     && node "${buildExports}" --file ./dist/esm/TypeCheck.mjs --type=esm \
     && prettier --config "${pretty}" --write ./index.js \
     && prettier --config "${pretty}" --write ./index.cjs \
+    && npm run test \
     && node "${bumpVersion}" --exe \
     && npm publish --access public
     `
@@ -71,8 +66,23 @@ const typeCheck = () => {
 const bootstrapMini = () => {
     runCommand(
         `\
-    cd ./packages/bootstrap-mini-css \
+    cd ./packages/bootstrap-mini \
     && npx mix --production \
+    && node "${bumpVersion}" --exe \
+    && npm publish --access public
+    `
+    );
+};
+
+const adaptive = () => {
+    runCommand(
+        `\
+    cd ./packages/adaptive \
+    && eslint -c "${eslint}" --fix ./src --ext .js,.cjs,.mjs \
+    && npx webpack --mode production --config "${webpackConfig}" \
+    && npx rollup -c "${rollupConfig}" \
+    && prettier --config "${pretty}" --write ./index.js \
+    && prettier --config "${pretty}" --write ./index.cjs \
     && node "${bumpVersion}" --exe \
     && npm publish --access public
     `
@@ -89,41 +99,37 @@ const mono = () => {
 };
 
 runCommand('ncu -u && npm i');
-let workspaces = ['bootstrap-mini-css', 'event-bus', 'type-check', 'utility'];
 
-const answer = select({
+const workspaces = {
+    'bootstrap-mini': bootstrapMini,
+    'event-bus': eventBus,
+    'type-check': typeCheck,
+    utility,
+    adaptive,
+    mono,
+    all: () => {
+        bootstrapMini();
+        eventBus();
+        typeCheck();
+        utility();
+        adaptive();
+        mono();
+    },
+};
+
+const choice = select({
     message: 'what to build',
-    choices: [
-        ...workspaces.map((pkg) => {
-            return {
-                name: pkg,
-                value: pkg,
-            };
-        }),
-        ...[
-            {
-                name: 'all',
-                value: 'all',
-            },
-            {
-                name: 'mono',
-                value: 'mono',
-            },
-        ],
-    ],
+    choices: Object.keys(workspaces).map((pkg) => {
+        return {
+            name: pkg,
+            value: pkg,
+        };
+    }),
 });
 
-answer.then((answer) => {
-    if (answer === 'event-bus') {
-        eventBus();
-    } else if (answer === 'utility') {
-        utility();
-    } else if (answer === 'type-check') {
-        typeCheck();
-    } else if (answer === 'all') {
-        eventBus();
-        utility();
-        typeCheck();
+choice.then((choice) => {
+    workspaces[choice]();
+    if (choice !== 'mono') {
+        workspaces['mono']();
     }
-    mono();
 });

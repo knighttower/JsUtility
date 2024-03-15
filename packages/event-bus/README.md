@@ -7,7 +7,7 @@
 ---- 2024 ----
 -   Distribution files are now in the root of the project
 -   Distribution builds to support node / browser / module and other environments
--   Available via NPM (@knighttower/js-event-bus) && JsDelivr (https://cdn.jsdelivr.net/npm/@knighttower/js-event-bus@latest/dist/browser/eventBus.min.js)
+-   Available via NPM (@knighttower/event-bus) && JsDelivr (https://cdn.jsdelivr.net/npm/@knighttower/event-bus@latest/dist/browser/eventBus.min.js)
 
 ---- 2023 ----
 -   Remove some unnecessary methods to make it SOLID
@@ -36,13 +36,13 @@
 ### Using npm
 
 ```
-npm i @knighttower/js-event-bus
+npm i @knighttower/event-bus
 ```
 
 ### Using yarn
 
 ```
-yarn add @knighttower/js-event-bus
+yarn add @knighttower/event-bus
 ```
 
 ## Usage
@@ -54,7 +54,7 @@ This library was built so you can use it in any JS application like Node.js apps
 If you want to use it in your Node.js apps you can import the library like this:
 
 ```js
-import EventBus from '@knighttower/js-event-bus';
+import EventBus from '@knighttower/event-bus';
 ```
 
 ### Importing in browser application
@@ -65,7 +65,7 @@ If you want to use it in your Browser apps you can import the library like this:
 <body>
     <div>Put your content here</div>
 
-    <script src=" https://cdn.jsdelivr.net/npm/@knighttower/js-event-bus@latest/dist/browser/eventBus.min.js "></script>
+    <script src=" https://cdn.jsdelivr.net/npm/@knighttower/event-bus@latest/dist/browser/eventBus.min.js "></script>
     <script>
         _eventBus(); // global instance
         // or if you want to use it with scope as 
