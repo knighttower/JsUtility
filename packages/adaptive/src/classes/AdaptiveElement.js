@@ -66,7 +66,7 @@ export default class AdaptiveElement {
                 // eslint-disable-next-line no-return-assign
                 return (this.props.domElement.style.cssText = this.props.originalStyle);
             },
-            this.Adaptive,
+            this.Adaptive
         );
     }
 
@@ -82,7 +82,7 @@ export default class AdaptiveElement {
                 $element.back();
                 return $element.cancel();
             },
-            this.Adaptive,
+            this.Adaptive
         );
     }
 
@@ -106,7 +106,7 @@ export default class AdaptiveElement {
                     return $callback(attrs);
                 }
             },
-            this.Adaptive,
+            this.Adaptive
         );
     }
 }

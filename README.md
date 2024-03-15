@@ -6,6 +6,7 @@ It holds the following packages:
 - [**Node Utils**](https://github.com/knighttower/JsUtility/tree/development/packages/utility/nodeUtils): Collection of libraries with classes and functions for node.js
 - [**js-event-bus**](https://github.com/knighttower/JsUtility/tree/development/packages/event-bus): Simple Event Bus library built for any JavaScript application.
 - [**BootsTrap Mini**](https://github.com/knighttower/JsUtility/tree/development/packages/bootstrap-mini): Built on top of Bootstrap but modified to have only the basic utilities classes and the grid system.
+- [**Adaptive Js**](https://github.com/knighttower/JsUtility/tree/development/packages/adaptive): daptive.js: Enhancing Layout Adaptability Beyond CSS, Navigating the Complexities of Modern Web Development
 
 ### All pacckages are ESM and CJS compatible.
 
@@ -24,6 +25,8 @@ available packages are:
 - EventBus
 - Utility
 - BootstrapMiniCss
+- NodeUtils
+- AdaptiveJs
 
 Paths (aliases):
 - TypeCheck: `knighttower/type-check`
@@ -31,12 +34,15 @@ Paths (aliases):
 - Utility: `knighttower/utility`
 - NodeUtils: `knighttower/utility/nodeUtils`
 - BootstrapMiniCss: `knighttower/bootstrap-mini`
+- AdaptiveJs: `knighttower/adaptive`
 
 Access src or dist files:
 - TypeCheck: `knighttower/type-check/dist/*`
 - EventBus: `knighttower/event-bus/dist/*`
 - Utility: `knighttower/utility/dist/*`
 - NodeUtils: `knighttower/utility/nodeUtils/*`
+- BootstrapMiniCss: `knighttower/bootstrap-mini/dist/*`
+- AdaptiveJs: `knighttower/adaptive/dist/*`
 
 Import what you need from the package. like this:
 ```javascript
@@ -44,6 +50,8 @@ import { TypeCheck } from 'knighttower/type-check';
 import { EventBus } from 'knighttower/event-bus';
 import { Utility } from 'knighttower/utility';
 import 'knighttower/bootstrap-mini';
+import { NodeUtils } from 'knighttower/utility/nodeUtils';
+import { AdaptiveJs } from 'knighttower/adaptive';
 ```
 
 ## Notes:
@@ -53,5 +61,6 @@ Some IDE wont show the src code when import in the file (peaking). You can use t
 - Utility: `knighttower/packages/utility`
 - NodeUtils: `knighttower/packages/utility/nodeUtils`
 - BootstrapMiniCss: `knighttower/packages/bootstrap-mini`
+- AdaptiveJs: `knighttower/packages/adaptive`
 
 

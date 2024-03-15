@@ -7,11 +7,4 @@ import { TeleportGlobal, teleport } from './dist/esm/Teleport.mjs';
 // Default Module from: Teleport
 import Teleport from './dist/esm/Teleport.mjs';
 
- export { 
- Adaptive,
-adaptive,
-_adaptive,
-TeleportGlobal,
-teleport,
-Teleport 
- };
+export { Adaptive, adaptive, _adaptive, TeleportGlobal, teleport, Teleport };
