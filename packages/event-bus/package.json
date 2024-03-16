@@ -1,9 +1,9 @@
 {
   "name": "@knighttower/event-bus",
-  "version": "3.3.11",
+  "version": "3.3.13",
   "type": "module",
   "description": "Event bus for your Javascript applications",
-  "homepage": "https://github.com/knighttower/js-event-bus",
+  "homepage": "https://github.com/knighttower/JsUtility",
   "main": "src/eventBus.js",
   "module": "dist/esm/eventBus.mjs",
   "jsdeliver": "dist/browser/eventBus.js",

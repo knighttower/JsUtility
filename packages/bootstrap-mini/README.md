@@ -11,14 +11,10 @@ Brotli: 5 KiB
 <br>
 
 <br>
-Usage:  <br>
+Usage (stand-alone): 
 
 ```
 npm install @knighttower/bootstrap-mini -D
-```
-
-```
-yarn add @knighttower/bootstrap-mini -D
 ```
 
 ```scss
@@ -26,9 +22,17 @@ yarn add @knighttower/bootstrap-mini -D
 ```
 
 <br>
-or as a drop-in css file into vite or webpack
-<br>  
+Usage (monorepo): 
 
+```
+npm install knighttower
+```
+
+```scss
+@import '~knighttower/bootstrap-mini/src/bootstrap-mini.scss';
+```
+<br> 
+or as a drop-in css file into vite or webpack
 ```  
 import "@knighttower/bootstrap-mini/dist/bootstrap-mini.css"  
 ```  
@@ -92,6 +96,8 @@ $miniEnableMargins: false;
 -   Utilities
 -   Mixins
 
+Note: standard bootstrap variables for the modules included are also possible to be used.
+Ex: $container (for the container module), $grid-gutter-width (for the grid module), etc...
 <br>
 
 ## It does not include
@@ -121,7 +127,7 @@ $miniEnableMargins: false;
 <br>
 <br> 
 
-## Features  
+## Features  and Utilities included
 
 -   Cool set of mixins (in addition to the bootstrap default ones)  
 
@@ -138,6 +144,10 @@ $miniEnableMargins: false;
 * @include breakpoint(000px,'max-width:800px'){rules...}; or
 * @include breakpoint(<breakdown name>,landscape){rules...}; or
 * @include breakpoint(<breakdown name>,'max-width:800px'){rules...};, etc...
+* @example
+* @include breakpoint(mobile){rules...}; or
+* @include breakpoint(000px,'max-width:800px'){rules...}; or
+* @include breakpoint(mobile,landscape){rules...}; 
 */
 .ex-class {
     @include breakpoint(lg) {
@@ -148,9 +158,89 @@ $miniEnableMargins: false;
         // rules
     }
 }
-````
+
+// /**
+// * Merge maps
+// * @param {Array} $maps Array or list of Arrays of maps to merge
+// * @return {Array}
+// * @example
+// * $button-group: ($base-hiearchy, $base-states, $shared-states);
+// * $buttons: mapMerge($button-group);
+// */
+@function mapMerge($maps...) {
+    $m: ();
+
+    // Check if single list of lists
+    @if type-of(nth($maps, 1)) == "list" and length($maps) == 1 {
+        @each $map in nth($maps, 1) {
+            $m: map-merge($m, $map);
+        }
+    }
+    // Multiple parameters
+    @else {
+        @each $map in $maps {
+            $m: map-merge($m, $map);
+        }
+    }
+
+    @return $m;
+}
+
+// /**
+// * @mixin disabled
+// * Add "disabled" state to an element
+// * @return {String}
+// * @example
+// * // .class{ @include disabled();}
+// */
+@mixin disabled() {
+    &,
+    &:hover {
+        background: var(--bs-disabled);
+        color: var(--bs-disabled);
+        border-color: var(--bs-disabled);
+        position: relative;
+    }
+
+    &:before {
+        position: absolute;
+        height: 1px;
+        width: 100%;
+        top: 50%;
+        left: 0;
+
+        display: block;
+        border-bottom: 1px solid var(--bs-gray-300);
+        content: " ";
+        transform: rotate(15deg);
+    }
+
+    &:hover {
+        cursor: not-allowed;
+    }
+}
+
+// /**
+// * add transition effect to an element
+// * @mixin transitionProp
+// * @param {String} $property Property name
+// * @param {Number} $duration 0.5s
+// * @param {String} $method ease
+// * @param {Number} $delay 0s
+// * @return {String}
+// * @example
+// * // .class{ @include transitionProp(all, 0.5s, ease, 0s);}
+// */
+@mixin transitionProp($property, $duration: 0.5s, $method: ease, $delay: 0s) {
+    transition: $property $duration $method $delay;
+    -moz-transition: $property $duration $method $delay;
+    -webkit-transition: $property $duration $method $delay;
+    -o-transition: $property $duration $method $delay;
+}
+```` 
 
 <br>
+## Specific classes
 
 -   A set of utility classes that can be used to build websites and web applications. Only the most used classes are included. The rest can be added by the user.  
 

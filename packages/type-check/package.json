@@ -1,6 +1,6 @@
 {
   "name": "@knighttower/type-check",
-  "version": "4.1.20",
+  "version": "4.1.22",
   "type": "module",
   "description": "TypeCheck JS",
   "main": "index.cjs",
@@ -46,6 +46,7 @@
     "watch": "webpack --mode development --watch",
     "test": "vitest"
   },
+  "homepage": "https://github.com/knighttower/JsUtility",
   "repository": {
     "type": "git",
     "url": "git://github.com/knighttower/JsUtility.git",

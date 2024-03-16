@@ -1,4 +1,4 @@
-# js-event-bus
+# EVENT BUS
 
 ### Simple Event Bus library built for any JavaScript application.
 

@@ -1,6 +1,6 @@
 {
   "name": "knighttower",
-  "version": "6.0.4",
+  "version": "6.0.8",
   "type": "commonjs",
   "engines": {
     "node": ">=20.10.0"
@@ -132,7 +132,7 @@
     "jshint": "^2.13.6",
     "laravel-mix": "^6.0.49",
     "laravel-mix-compress": "^3.0.0",
-    "npm-check-updates": "^16.14.16",
+    "npm-check-updates": "^16.14.17",
     "postcss": "^8.4.35",
     "postcss-import": "^16.0.1",
     "prettier": "^3.2.5",
