@@ -1,6 +1,6 @@
 (This docs still under construction, see "example" and "test" folders for extensive examples of usage)
 
-# Adaptive.js: Enhancing Layout Adaptability Beyond CSS, Navigating the Complexities of Modern Web Development
+# Adaptive.js: Enhancing Layout Adaptability Beyond CSS
 
 It Uses/Offers:
 
@@ -31,19 +31,17 @@ It Uses/Offers:
 
 ## Installation: <a name="installation"></a>
 
-npm
+npm stand-alone
 
 ```javascript
 npm i @knighttower/adaptive
 ```
-
-yarn
-
-```
-yarn add adaptive.js
+Or as part of the monorepo
+```javascript
+npm i knighttower
 ```
 
-Dropin from CDN (no build step)
+Drop-in from CDN (no build step)
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/@knighttower/adaptive@latest/dist/browser/Adaptive.min.js"></script>
@@ -54,6 +52,7 @@ Dropin from CDN (no build step)
 // UMD
 <script src="https://cdn.jsdelivr.net/npm/@knighttower/adaptive@latest/dist/umd/Adaptive.min.js"></script>
 ```
+
 
 ---
 
@@ -71,9 +70,9 @@ By default the "import" or "require", will load the indexes automatically. But, 
 
 <br/>
 
-## Usage <a name="usage"></a>
+# Usage <a name="usage"></a>
 
-**see the "example" folder for all 'usage' implementation examples, including Browser, Vue and React.** --> [here](https://github.com/knighttower/adaptive.js/tree/development/examples)
+**🙋‍♂️ see** the "example" folder for all 'usage' implementation examples, including Browser, Vue and React. --> [here](https://github.com/knighttower/adaptive.js/tree/development/examples)
 
 ### As a module for Vue
 
@@ -111,164 +110,15 @@ Adaptive.init();
 
 ---
 
-<br/> <br/>
-
-## API <a name="api"></a>
-
-### `getMinMaxQueries()`
-
-**Returns**: `Object`  
-**Description**: Returns all available min-max queries.
-
-#### Example
-
-```javascript
-const minMaxQueries = Adaptive.getMinMaxQueries();
-```
-
----
-
-### `getExpQueries()`
-
-**Returns**: `Object`  
-**Description**: Returns all available expression queries.
-
-#### Example
-
-```javascript
-const expQueries = Adaptive.getExpQueries();
-```
-
----
-
-### `registerElement(elementOrSelector: String | Object, data: Object)`
-
-**Parameters**:
-
--   `elementOrSelector` (String | Object): Element or selector string.
--   `data` (Object): Optional, used mostly for Vue.
-
-**Returns**: `Void`  
-**Description**: Registers an element for adaptive behavior.
-
-#### Example
-
-```javascript
-Adaptive.registerElement('#myElement', { directive: 'someValue' });
-```
-
----
-
-### `addQueryMinMax(id: String, min: Number, max: Number)`
-
-**Parameters**:
-
--   `id` (String): Identifier for the query.
--   `min` (Number): Minimum value.
--   `max` (Number): Maximum value.
-
-**Returns**: `Void`  
-**Description**: Registers a custom min-max query.
-
-#### Example
-
-```javascript
-Adaptive.addQueryMinMax('custom', 200, 400);
-```
-
----
-
-### `addQueryExpression(id: String, query: String)`
-
-**Parameters**:
-
--   `id` (String): Identifier for the query.
--   `query` (String): Media query string.
-
-**Returns**: `Void`  
-**Description**: Registers a custom expression query.
-
-#### Example
-
-```javascript
-Adaptive.addQueryExpression('custom', 'screen and (max-width: 500em)');
-```
-
----
-
-### `if(breakdownId: String, callback: Function | Array): Object`
-
-**Parameters**:
-
--   `breakdownId` (String): Identifier like "tablet" or "mobile", etc.
--   `callback` (Function | Array): Function/Method or Array with object and property to set.
-
-**Returns**: `Object`: Proxy  
-**Description**: Executes callback based on the media query match.
-
-#### Example
-
-```javascript
-Adaptive.if('mobile', [object, 'propertyId']) || Adaptive.if('mobile', () => {});
-```
-
----
-
-### `init()`
-
-**Returns**: `Void`  
-**Description**: Initializes or re-initializes after the DOM has loaded.
-
-#### Example
-
-```javascript
-Adaptive.init();
-```
-
----
-
-### `useVue(Vue: Object, hybrid: Boolean)`
-
-**Parameters**:
-
--   `Vue` (Object): Vue instance.
--   `hybrid` (Boolean): Allow support for both static and dynamic elements.
-
-**Returns**: `Vue`  
-**Description**: Configures the library for use with Vue.
-
-#### Example
-
-```javascript
-Adaptive.useVue(VueInstance, true);
-```
-
----
-
-### `useReact(React: Object, hybrid: Boolean)`
-
-**Parameters**:
-
--   `React` (Object): React instance.
--   `hybrid` (Boolean): Allow support for both static and dynamic elements.
-
-**Returns**: `Void`  
-**Description**: Configures the library for use with React.
-
-#### Example
-
-```javascript
-Adaptive.useReact(ReactInstance, true);
-```
-
 <br/><br/>
 
 # Implementation examples <a name="implementation"></a>
 
--   **Simple String** - It just teleports, does not specify breakpoints and location
-    `data-teleport="#hello"`
-    `data-teleport-before="#hello"`  
-    `data-teleport-after="#hello"`
+-   **Simple String** - It just teleports, does not specify breakpoints and location  
+
+    `data-teleport="#hello"`  
+    `data-teleport-before="#hello"`    
+    `data-teleport-after="#hello"`  
 
 ```html
 <div data-teleport="#hello">
@@ -277,8 +127,10 @@ Adaptive.useReact(ReactInstance, true);
     >
 </div>
 ```
+---  
+<br/>  
 
--   **Dot notation** - Allows to specify multiple breakpoints and locations
+-   **Dot notation** - Allows to specify multiple breakpoints and locations  
     `data-adaptive=[command].[breakpoint].[to|from|after](target_id_or_class)`  
     the "|" is "OR": [breakpoint]|[breakpoint]
 
@@ -290,8 +142,10 @@ Adaptive.useReact(ReactInstance, true);
     >
 </div>
 ```
+---  
+<br/>
 
--   **Object like**
+-   **Object like**  
     `data-adaptive={'command':{breakpoint:{[to|before|after]:target_id_or_class}}}`
 
 ```html
@@ -305,8 +159,10 @@ Adaptive.useReact(ReactInstance, true);
     <span>Static element that will teleport at "tablet" size to a Vue driven element when visible</span>
 </div>
 ```
+---  
+<br/> 
 
--   **Array like**
+-   **Array like**  
     `data-teleport=[[after|before], target_id_or_class]`
 
 ```html
@@ -316,16 +172,22 @@ Adaptive.useReact(ReactInstance, true);
     >
 </div>
 ```
+---  
+<br/> 
 
--   **Inside Vue** - Array, object or dot notation works inside Vue, just use "v-adaptive=..." or " v-teleport-to..."
--
+-   **Inside Vue**   
+Use it to trigger functions or methods at specific breakpoints.  
+     
+- Array, object or dot notation works inside Vue, just use "v-adaptive=..." or " v-teleport-to..."
 
-```
+
+```html
 <div v-teleport-to="'#hello'">Getting teleported (teleport) from the component to "static Hello"</div>
 
 // Or in code
 <script>
-.... mounted() {
+    //some code ...
+ mounted() {
 	this.Adaptive.if('tablet', function() {
             // code
 	});
@@ -375,7 +237,7 @@ Adaptive.useReact(ReactInstance, true);
 
 ```html
 <script>
-    // Target specific elements
+    // Target or register specific elements
     $adaptive.registerElement('#hello', {
         addClass: {
             mobile: 'a-class-added-only-for-mobiles',
@@ -436,7 +298,7 @@ For frameworks like React, Adaptive would work with them in a slightly different
 
 <br/>
 
-### Example as hybrid mode:
+### Example as hybrid mode and advance modes:
 
 ```js
 // In App.js
@@ -476,6 +338,169 @@ App.mount('#app');
 }
 </script>
 ```
+
+
+<br/> <br/>
+
+# API <a name="api"></a>
+
+### `getMinMaxQueries()`
+
+**Returns**: `Object`  
+**Description**: Returns all available min-max queries.
+
+#### Example
+
+```javascript
+const minMaxQueries = Adaptive.getMinMaxQueries();
+```
+
+---
+<br/>
+
+### `getExpQueries()`
+
+**Returns**: `Object`  
+**Description**: Returns all available expression queries.
+
+#### Example
+
+```javascript
+const expQueries = Adaptive.getExpQueries();
+```
+
+---
+<br/>
+
+### `registerElement(elementOrSelector: String | Object, data: Object)`
+
+**Parameters**:
+
+-   `elementOrSelector` (String | Object): Element or selector string.
+-   `data` (Object): Optional, used mostly for Vue.
+
+**Returns**: `Void`  
+**Description**: Registers an element for adaptive behavior.
+
+#### Example
+
+```javascript
+Adaptive.registerElement('#myElement', { directive: 'someValue' });
+```
+
+---
+<br/>
+
+### `addQueryMinMax(id: String, min: Number, max: Number)`
+
+**Parameters**:
+
+-   `id` (String): Identifier for the query.
+-   `min` (Number): Minimum value.
+-   `max` (Number): Maximum value.
+
+**Returns**: `Void`  
+**Description**: Registers a custom min-max query.
+
+#### Example
+
+```javascript
+Adaptive.addQueryMinMax('custom', 200, 400);
+```
+
+---
+<br/>
+
+
+### `addQueryExpression(id: String, query: String)`
+
+**Parameters**:
+
+-   `id` (String): Identifier for the query.
+-   `query` (String): Media query string.
+
+**Returns**: `Void`  
+**Description**: Registers a custom expression query.
+
+#### Example
+
+```javascript
+Adaptive.addQueryExpression('custom', 'screen and (max-width: 500em)');
+```
+
+---  
+<br/>
+
+
+### `if(breakdownId: String, callback: Function | Array): Object`
+
+**Parameters**:
+
+-   `breakdownId` (String): Identifier like "tablet" or "mobile", etc.
+-   `callback` (Function | Array): Function/Method or Array with object and property to set.
+
+**Returns**: `Object`: Proxy  
+**Description**: Executes callback based on the media query match.
+
+#### Example
+
+```javascript
+Adaptive.if('mobile', [object, 'propertyId']) || Adaptive.if('mobile', () => {});
+```
+
+---  
+<br/>
+
+
+### `init()`
+
+**Returns**: `Void`  
+**Description**: Initializes or re-initializes after the DOM has loaded.
+
+#### Example
+
+```javascript
+Adaptive.init();
+```
+
+---  
+<br/>
+
+### `useVue(Vue: Object, hybrid: Boolean)`
+
+**Parameters**:
+
+-   `Vue` (Object): Vue instance.
+-   `hybrid` (Boolean): Allow support for both static and dynamic elements.
+
+**Returns**: `Vue`  
+**Description**: Configures the library for use with Vue.
+
+#### Example
+
+```javascript
+Adaptive.useVue(VueInstance, true);
+```
+
+---  
+<br/>
+
+### `useReact(React: Object, hybrid: Boolean)`
+
+**Parameters**:
+
+-   `React` (Object): React instance.
+-   `hybrid` (Boolean): Allow support for both static and dynamic elements.
+
+**Returns**: `Void`  
+**Description**: Configures the library for use with React.
+
+#### Example
+
+```javascript
+Adaptive.useReact(ReactInstance, true);
+```
+
 
 <br/>
 <br/>
