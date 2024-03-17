@@ -126,7 +126,12 @@
     -webkit-transition: $property $duration $method $delay;
     -o-transition: $property $duration $method $delay;
 }
-
+:root {
+    --bs-disabled-bg: #e9ecef;
+    --bs-disabled-text: #6c757d;
+    --bs-disabled-border: #c8cbcf;
+    --bs-disabled-line: #6c757d;
+}
 // /**
 // * @mixin disabled
 // * Add "disabled" state to an element
@@ -137,9 +142,9 @@
 @mixin disabled() {
     &,
     &:hover {
-        background: var(--bs-disabled);
-        color: var(--bs-disabled);
-        border-color: var(--bs-disabled);
+        background: var(--bs-disabled-bg);
+        color: var(--bs-disabled-text);
+        border-color: var(--bs-disabled-border);
         position: relative;
     }
 
@@ -151,7 +156,7 @@
         left: 0;
 
         display: block;
-        border-bottom: 1px solid var(--bs-gray-300);
+        border-bottom: 1px solid var(--bs-disabled-line);
         content: " ";
         transform: rotate(15deg);
     }

@@ -186,6 +186,12 @@ Ex: $container (for the container module), $grid-gutter-width (for the grid modu
     @return $m;
 }
 
+:root {
+    --bs-disabled-bg: #e9ecef;
+    --bs-disabled-text: #6c757d;
+    --bs-disabled-border: #c8cbcf;
+    --bs-disabled-line: #6c757d;
+}
 // /**
 // * @mixin disabled
 // * Add "disabled" state to an element
@@ -196,9 +202,9 @@ Ex: $container (for the container module), $grid-gutter-width (for the grid modu
 @mixin disabled() {
     &,
     &:hover {
-        background: var(--bs-disabled);
-        color: var(--bs-disabled);
-        border-color: var(--bs-disabled);
+        background: var(--bs-disabled-bg);
+        color: var(--bs-disabled-text);
+        border-color: var(--bs-disabled-border);
         position: relative;
     }
 
@@ -210,7 +216,7 @@ Ex: $container (for the container module), $grid-gutter-width (for the grid modu
         left: 0;
 
         display: block;
-        border-bottom: 1px solid var(--bs-gray-300);
+        border-bottom: 1px solid var(--bs-disabled-line);
         content: " ";
         transform: rotate(15deg);
     }
@@ -267,7 +273,21 @@ Ex: $container (for the container module), $grid-gutter-width (for the grid modu
     -- xl: 1200 (targets from here up (bootstrap default behavior))  
     -- xxl: 1400 (targets from here up (bootstrap default behavior))  
     <br>
-    
+    <br>
+    - `.--nounderline`: Removes text underline.
+    - `.--underline`: Adds text underline.
+    - `.--titlecase`: Capitalizes the first letter of each word.
+    - `.--uppercase`: Converts text to uppercase.
+    - `.--italic`: Applies italic style to text.
+    - `.--normal`: Resets text transform to none.
+    - `.--nowrap`: Prevents text wrapping.
+    - `.--no-wrap`: Prevents text wrapping (duplicate of .--nowrap).
+    - `.--wrap`: Allows text wrapping.
+    - `.--bold`: Applies bold weight to text.
+    - `.--text-left`: Aligns text to the left.
+    - `.--text-right`: Aligns text to the right.
+    - `.--text-center`: Centers text.
+    - `.--text-justify`: Justifies text.
 
 <br>  
 
