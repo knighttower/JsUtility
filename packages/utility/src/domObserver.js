@@ -40,6 +40,10 @@ const addOnNodeChange = (id, callback) => {
 const removeOnNodeChange = (id) => {
     if (id) {
         delete executeOnNodeChanged[id];
+        if (Object.keys(executeOnNodeChanged).length === 0 && observer) {
+            observer.disconnect();
+            observer = null;
+        }
     }
 };
 /**
@@ -48,6 +52,10 @@ const removeOnNodeChange = (id) => {
  */
 const cleanup = () => {
     Object.keys(executeOnNodeChanged).forEach((key) => delete executeOnNodeChanged[key]);
+    if (observer) {
+        observer.disconnect();
+        observer = null;
+    }
 };
 /**
  * Observer
@@ -65,20 +73,19 @@ const start = () => {
                 }
             }
         };
-        const config = {
-            childList: true,
-            subtree: true,
-        };
-
         observer = new MutationObserver(callback);
-        if (document.body) {
-            return observer.observe(document.body, config);
+        const config = { childList: true, subtree: true };
+
+        if (document.readyState !== 'loading') {
+            observer.observe(document.body, config);
+        } else {
+            document.addEventListener('DOMContentLoaded', () => {
+                observer.observe(document.body, config);
+            });
         }
-        document.addEventListener('DOMContentLoaded', (event) => {
-            return observer.observe(document.body, config);
-        });
     }
 };
+
 /**
  * @exports domObserver
  * @type {Object}

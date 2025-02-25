@@ -2,7 +2,7 @@
 import { typeOf } from '@knighttower/utility';
 
 export const typesMap = new Map([
-    ['array', (_var_) => typeOf(_var_, 'array')],
+    ['array', (_var_) => Array.isArray(_var_)],
     ['bigInt', (_var_) => typeof _var_ === 'bigint'],
     ['boolean', (_var_) => typeof _var_ === 'boolean'],
     ['date', (_var_) => _var_ instanceof Date],
@@ -12,7 +12,7 @@ export const typesMap = new Map([
     ['map', (_var_) => _var_ instanceof Map],
     ['null', (_var_) => _var_ === null],
     ['number', (_var_) => typeof _var_ === 'number'],
-    ['object', (_var_) => typeOf(_var_, 'object')],
+    ['object', (_var_) => typeof _var_ === 'object' && !Array.isArray(_var_) && _var_ !== null],
     ['promise', (_var_) => _var_ instanceof Promise],
     ['regExp', (_var_) => _var_ instanceof RegExp],
     ['set', (_var_) => _var_ instanceof Set],

@@ -363,8 +363,11 @@ export function getDirectivesFromString(stringDirective) {
             // uncomment to debug
             // console.log('___ parse error ___', error);
         }
-
-        return results(type, getArrObjFromString(strQ));
+        try {
+            return results(type, JSON.parse(fixQuotes(strQ)));
+        } catch (error) {
+            return results(type, getArrObjFromString(fixQuotes(strQ)));
+        }
     }
 
     if (type === 'dotObject') {

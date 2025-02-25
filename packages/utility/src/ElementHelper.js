@@ -85,33 +85,26 @@ class ElementHelper {
      * @return {String}
      */
     getXpathTo() {
+        if (!this.domElement) return '';
         let element = this.domElement;
+        if (element.id) return `//*[@id='${element.id}']`;
+        if (element === document.body) return '//' + element.tagName.toLowerCase();
 
-        if (element.id) {
-            return `//*[@id='${element.id}']`;
-        }
-        if (element === document.body) {
-            return '//' + element.tagName;
-        }
-
-        let ix = 0;
-        let siblings = element.parentNode.childNodes;
+        let ix = 0,
+            siblings = element.parentNode?.childNodes || [];
         for (let i = 0; i < siblings.length; i++) {
             let sibling = siblings[i];
             if (sibling === element) {
                 return (
                     new ElementHelper(element.parentNode).getXpathTo() +
                     '/' +
-                    element.tagName +
-                    '[' +
-                    (ix + 1) +
-                    ']'
+                    element.tagName.toLowerCase() +
+                    `[${ix + 1}]`
                 );
             }
-            if (sibling.nodeType === 1 && sibling.tagName === element.tagName) {
-                ix++;
-            }
+            if (sibling.nodeType === 1 && sibling.tagName === element.tagName) ix++;
         }
+        return '';
     }
 
     /**
@@ -120,7 +113,7 @@ class ElementHelper {
      * @return {String|Array|Object|Null}
      */
     getAttribute(attr) {
-        return this.domElement.getAttribute(attr) || null;
+        return this?.domElement?.getAttribute(attr) || null;
     }
 
     /**
