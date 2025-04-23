@@ -40,7 +40,7 @@ const domTracking = (($win) => {
      * });
      */
     $this.afterLoad = (callback) => {
-        return domTracking.isReady(() => {
+        return $this.isReady(() => {
             let triggered = false;
             let observer;
             let fallbackTimer, retryTimer;
@@ -56,6 +56,18 @@ const domTracking = (($win) => {
                 clearTimeout(retryTimer);
             };
 
+            // Fallback using requestAnimationFrame
+            try {
+                retryTimer = setTimeout(() => {
+                    requestAnimationFrame(triggerCallback);
+                }, 5000);
+            } catch (err) {
+                console.error('requestAnimationFrame error:', err);
+            }
+            // Fallback using setTimeout
+            fallbackTimer = setTimeout(triggerCallback, 10000);
+
+            // Use PerformanceObserver if available
             try {
                 observer = new PerformanceObserver((entryList) => {
                     const entries = entryList.getEntries();
@@ -73,12 +85,6 @@ const domTracking = (($win) => {
             } catch (err) {
                 console.error('PerformanceObserver error:', err);
             }
-
-            // Fallback using requestAnimationFrame
-            retryTimer = setTimeout(() => {
-                requestAnimationFrame(triggerCallback);
-            }, 750);
-            fallbackTimer = setTimeout(triggerCallback, 5000);
         });
     };
 

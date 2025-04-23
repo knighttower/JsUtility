@@ -1,6 +1,9 @@
 /.*
 /.gitconfig
 /.console
+/.*
+/.gitconfig
+/.console
 # Sensitive files
 .*
 !.babelrc
