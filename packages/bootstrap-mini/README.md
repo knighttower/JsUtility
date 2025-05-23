@@ -297,7 +297,7 @@ Ex: $container (for the container module), $grid-gutter-width (for the grid modu
     - `.list--unstyled`:  list style unstyled.
     - `.hr`: horizontal ruler.
     - `.img`: responsive images.
-    - `..max-div-width`: max width for a div. min 320px, max 1200px.
+    - `.max-div-width`: max width for a div. min 320px, max 1200px.
     - `--show-on-{screenSize}`: show Only on that screen size. (ex: --show-on-mob)
     - `--hide-on-{screenSize}`: hide Only on that screen size. (ex: --hide-on-mob)
     - `.spacer`: with flag to add a spacer. (ex: .spacer --10 (10px height))

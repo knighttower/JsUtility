@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const glob = require('glob');
 const helper = require('../dist/cjs/powerHelper.cjs');
-const utils = require('../dist/cjs/utility.cjs');
+const utils = require('../dist/cjs/Utility.cjs');
 const { getFlagValue } = require('./NodeHelpers.cjs');
 
 const workingDir = process.cwd();

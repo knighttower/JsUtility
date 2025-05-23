@@ -1,4 +1,4 @@
-// Single Modules and Aliases from: utility
+// Single Modules and Aliases from: Utility
 const {
     convertToBool,
     convertToNumber,
@@ -27,11 +27,11 @@ const {
     uuid,
     validateEmail,
     validatePhone,
-} = require('./dist/cjs/utility.cjs');
-// Single Modules and Aliases from: urlHelper
-const { urlHelper } = require('./dist/cjs/urlHelper.cjs');
-// Single Modules and Aliases from: proxyObject
-const { proxyClass, proxyObject } = require('./dist/cjs/proxyObject.cjs');
+} = require('./dist/cjs/Utility.cjs');
+// Single Modules and Aliases from: UrlHelper
+const { urlHelper } = require('./dist/cjs/UrlHelper.cjs');
+// Single Modules and Aliases from: ProxyObject
+const { proxyClass, proxyObject } = require('./dist/cjs/ProxyObject.cjs');
 // Single Modules and Aliases from: promises
 const {
     doAsync,
