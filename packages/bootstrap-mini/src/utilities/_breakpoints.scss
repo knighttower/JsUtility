@@ -1,3 +1,5 @@
+// @use "../settings/variables" as *;
+
 $visibleStates: (hide, show);
 
 @each $state in $visibleStates {

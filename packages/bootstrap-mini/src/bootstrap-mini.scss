@@ -1,26 +1,11 @@
 // Includes functions, mixins, maps, utilities, and variables.
 
+@import "bootstrap-mod/functions";
 @import "settings/variables";
+@import "bootstrap-mod/maps";
+@import "bootstrap-mod/mixins";
+@import "bootstrap-mod/utilities";
 
-@import "~bootstrap/scss/functions";
-@import "~bootstrap/scss/variables";
-// @import "~bootstrap/scss/variables-dark";
-@import "~bootstrap/scss/maps";
-@import "~bootstrap/scss/mixins";
-
-@import "~bootstrap/scss/utilities";
-// @import "~bootstrap/scss/helpers/ratio";
-// @import "~bootstrap/scss/helpers/position";
-// @import "~bootstrap/scss/containers";
-// @import "~bootstrap/scss/grid";
-// @import "~bootstrap/scss/root";
-// @import "~bootstrap/scss/reboot";
-// // If you need to use any of the following, the above need to load first
-// @import "~bootstrap/scss/tables";
-// @import "~bootstrap/scss/forms";
-// @import "~bootstrap/scss/buttons";
-// @import "~bootstrap/scss/button-group";
-// @import "~bootstrap/scss/list-group";
 @import "utilities/common";
 @import "utilities/utility";
 @import "utilities/breakpoints";
