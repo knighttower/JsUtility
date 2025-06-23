@@ -7,6 +7,7 @@
 @use "sass:string";
 @use "sass:meta";
 @use "sass:math";
+@use "../settings/breakpoints" as *;
 
 // /**
 // * __comment__
@@ -180,6 +181,7 @@
     -webkit-transition: $property $duration $method $delay;
     -o-transition: $property $duration $method $delay;
 }
+
 :root {
     --bs-disabled-bg: #e9ecef;
     --bs-disabled-text: #6c757d;

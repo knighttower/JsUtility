@@ -1,4 +1,6 @@
 @use "sass:list";
+@use "../settings/breakpoints" as *;
+// @use "../settings/variables" as *;
 // Import the grid only after this override
 // Override the default grid settings and remove gutters.
 @mixin row-cols($count) {
