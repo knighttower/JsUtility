@@ -193,7 +193,6 @@ function testBuilder(strExp) {
             testUnit.set('tests', arrayTypes(strExp));
             break;
         case 'object':
-             
             const objTypes = objectTypes(strExp);
             testUnit = new Map([...testUnit, ...objTypes]);
             break;

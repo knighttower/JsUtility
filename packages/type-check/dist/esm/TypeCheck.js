@@ -729,7 +729,6 @@ function testBuilder(strExp) {
             testUnit.set('tests', arrayTypes(strExp));
             break;
         case 'object':
-             
             const objTypes = objectTypes(strExp);
             testUnit = new Map([...testUnit, ...objTypes]);
             break;
@@ -757,7 +756,7 @@ const addTypeTest = (name, testUnit) => {
     return `"${name}" already exists!`;
 };
 
-// Error collectot
+// Error collector
 const typeErrorLogs = [];
 // Setting cache
 const cachedSettings = new Map();
@@ -785,9 +784,10 @@ const runArrayTest = (inputVal, tests) => {
     });
 };
 
-class HandleObjects {
+class ObjectTestHandler {
     constructor(inputVal, unitTest) {
         // Extract all properties at once
+        /* prettier-ignore */
         const { testOnly, testFew, testAllAny, optionalKeys, tests } = [...unitTest.entries()].reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
         // Use destructured variables
         this.testUnitKeys = [...tests.keys()];
@@ -808,7 +808,7 @@ class HandleObjects {
             case !isEmpty(this.testFew):
                 // '{key1: type, any: type}'; // specific key, and all other "any"
                 // test the testFew fist so that we can remove them from the inputObject
-                 
+
                 const testFewResults = this.testObjFew();
                 // remove the testFew from the inputObject
                 this.filterOutFew();
@@ -816,7 +816,7 @@ class HandleObjects {
             case !isEmpty(this.optionalKeys):
                 // '{key1?: type, key2?: type}'; // optional keys
                 // test the optionalKeys fist so that we can remove them from the inputObject
-                 
+
                 const optionalKeysResults = this.testObjOptionalKeys();
                 // remove the optionalKeys from the inputObject
                 this.filterOutOptionalKeys();
@@ -890,9 +890,15 @@ const runObjectTest = (inputVal, unitTest) => {
     if (!typeOf(inputVal, 'object')) {
         return false;
     }
-    return new HandleObjects(inputVal, unitTest).handleUnitTest();
+    return new ObjectTestHandler(inputVal, unitTest).handleUnitTest();
 };
 
+/**
+ * Run the appropriate test based on the test method defined in the unitTest.
+ * @param {any} inputVal - The value to test.
+ * @param {Map} unitTest - The unit test containing the test method and tests.
+ * @return {mixed} - The result of the test.
+ */
 function runRouteTest(inputVal, unitTest) {
     const testMethod = unitTest.get('testMethod');
     const tests = unitTest.get('tests');
@@ -943,6 +949,8 @@ function getSettings(input) {
                     case 'validOutput':
                         _val = { validOutput: input };
                         break;
+                    default:
+                        _val = { error: input };
                 }
                 break;
         }
@@ -968,7 +976,7 @@ function typeError(inputVal) {
     console.log('\n::::::::::::: Type error or not valid ::::::::::::::');
     console.log('Input Value used: ', inputVal);
     console.log('---> Value Found:', errorLog.found);
-    console.log('---> Test Permormed:', errorLog.tests);
+    console.log('---> Test Performed:', errorLog.tests);
     //clean the array of error logs
     typeErrorLogs.length = 0;
     throw new Error(

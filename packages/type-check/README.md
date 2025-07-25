@@ -1,47 +1,41 @@
+````markdown
 # typeCheck JS
 
 ## A simple type checker for JavaScript
 
-typeCheck JS is a JavaScript library designed for fast and efficient type checking. Inspired by [gkz/type-check](https://github.com/gkz/type-check), this library aims to overcome the limitations and complexities associated with TypeScript. It offers a lightweight, memory-efficient, and easy-to-use solution for both basic and complex type-checking requirements.  
+typeCheck JS is a JavaScript library designed for fast and efficient type checking. Inspired by [gkz/type-check](https://github.com/gkz/type-check), this library aims to overcome the limitations and complexities associated with TypeScript. It offers a lightweight, memory-efficient, and easy-to-use solution for both basic and complex type-checking requirements.
+
 [![release version](https://github.com/knighttower/typeCheckJs/actions/workflows/pre-release.yml/badge.svg)](https://github.com/knighttower/typeCheckJs/actions/workflows/pre-release.yml)
 [![NPM published](https://github.com/knighttower/typeCheckJs/actions/workflows/to-npm.yml/badge.svg)](https://github.com/knighttower/typeCheckJs/actions/workflows/to-npm.yml)
 
-#### Updates:
------ 2024 -----
-- fixed _tc and _tcx to return the value of the function
-- added _tc and _tcx to the documentation
-- fixed isValidType to better validate and return bool
-- added custom error message to options
-- custom types
+---
 
-### Installation
+### 🔧 Installation
 
 #### Via npm
 
-```javascript
+```bash
 npm i @knighttower/type-check
-```
-
-```javascript
+# or
 yarn add @knighttower/type-check
-```
+````
 
 #### In the Browser
 
-Include the following script tag in your HTML:
-Note: by default the library is ESM, but other builds are available in the dist folder (cjs, umd and iife)
-
 ```html
 <script src="https://cdn.jsdelivr.net/npm/@knighttower/type-check@latest/dist/browser/typeCheck.min.js"></script>
-// or as ESM
+
+<!-- OR as ESM -->
 <script type="module">
-    import { typeCheck } from 'https://esm.run/@knighttower/type-check@latest/index.js';
+  import { typeCheck } from 'https://esm.run/@knighttower/type-check@latest/index.js';
 </script>
 ```
 
-<br/>
+> Note: by default the library is ESM, but other builds are available in the dist folder (CJS, UMD, IIFE, etc.)
 
-## Files
+---
+
+### 📦 Files
 
 | File             | Size  |
 | ---------------- | ----- |
@@ -49,242 +43,83 @@ Note: by default the library is ESM, but other builds are available in the dist 
 | /typeCheck.js.br | 3 KiB |
 | /typeCheck.js.gz | 3 KiB |
 
-By default the "import" or "require", will load the indexes automatically. But, in case of wanting to use individual files or other specific formats, all Files are available in the dist folder as ESM, CJS, AMD, IIFE, Browser, UMD and System formats. For ESM + JS 'next', use the files in the src folder or import directly from the index.js (index.cjs.js for commonJS) file.
+You can also import from the `/src` folder for ESM + JS `next`, or from `/index.js` and `/index.cjs.js` as needed.
 
-<br/>
+---
 
-## Why typeCheck JS?
+## 💡 Why typeCheck JS?
 
-1. **Lightweight**: Adds minimal overhead to your project (only 6k GZip).
-2. **Fast Performance**: Micro Optimized for quick type-checking operations.
-3. **Ease of Use**: Simple API and intuitive pattern syntax.
-4. **Quick implementation**: Can be implemented in any existing projects with minimal effort.
-5. **No Compile Step**: Works directly in vanilla JavaScript projects without the need for a compilation step.
-6. **Complementary**: Can be used alongside TypeScript to check front-end and back-end data types.
-7. **Functionality**: Supports callbacks, log and fail functions.
-8. **Flexibility**: Supports piped comparisons, optional arguments and keys.
-9. **Extensibility**: Supports custom type definitions.
-10. **Tested**: All code used has been fully tested with Vitest Unit tests
-11. **Well Commented**: JSDocs comments for all methods and functions.
+1. **Lightweight**: Adds minimal overhead to your project (\~6k GZip).
+2. **Fast Performance**: Micro Optimized for runtime operations.
+3. **Ease of Use**: Simple API and pattern syntax.
+4. **No Compile Step**: Works directly in vanilla JS.
+5. **Complementary**: Works alongside TypeScript for runtime enforcement.
+6. **Supports**: callbacks, custom messages, logs, and error throwing.
+7. **Flexible**: Supports piped types, optional keys, wildcard matching.
+8. **Extensible**: You can register custom test types.
+9. **Fully Tested**: Using Vitest for all cases.
+10. **Documented**: Full JSDoc for all major methods and patterns.
 
-## What aims to solve?
+---
 
-typeCheck JS aims to solve the following problems:
+## ❓ What does it solve?
 
--   Drop-in solution for existing projects. Most projects are already in production and it is not always possible to add a build step to compile TypeScript.
--   Overkill. Typescript can be too much for just small projects or quick projects.
--   All TypeScript type definitions are lost at runtime. Once a library is in production, it is impossible to check the types of the data being passed around.
--   Does not require Build Step. Most TypeScript solution requires a build step to compile the code into JavaScript. This is not always possible in some projects or it adds complexity to the project.
--   Most library authors know what types should work with their code, but is hard to enforce once it goes to distribution. typeCheck JS allows library authors to enforce the types when others use their libraries at runtime.
--   Be able to be used directly in browser or with Js that does not support TypeScript.
--   Complexity. TypeScript is a complex language and it is not always easy to understand the type definitions. typeCheck JS aims to be simple and easy to understand.
--   Syntax. Projects are becaming too complex and heavily using 'defensive programming' to avoid errors. typeCheck JS aims to be simple and easy to understand by all developers regardless of their experience while helping to focus on what really matters.
+* Enforces runtime type checking in production builds.
+* Helps validate user inputs, API data, and 3rd-party sources.
+* Avoids unnecessary adoption of TypeScript for small apps.
+* Solves the issue of type loss in runtime JS after TS transpilation.
+* Works directly in browsers or legacy JS environments.
+* Helps library authors enforce expected types at runtime.
 
-## What does no solve?
+---
 
--   Bad programming.
--   Replacing TypeScript at build time.
+## 🚫 What it doesn’t solve
 
-<br/>
+* It doesn’t stop bad programming decisions.
+* It doesn’t replace TypeScript’s static typing in dev environments.
+
+---
 
 ## 🚀 Usage
 
 ```javascript
-// note: in some cases, you may need to use the full path to the file "/index" in order to import it
-// All other modules can also be imported individually from the same path
 import { typeCheck } from '@knighttower/type-check';
+
+typeCheck(123, 'number'); // ✅
+typeCheck('hello', 'number'); // ❌ throws
 ```
+
+---
 
 ### 👉 IMPORTANT
 
-the API for the direct typeCheck function has changed to favor familiarity with Typed Methods where "Value:Type" order is used. That means that the old "typeCheck(Type, Value)" is now deprecated and from now on will be "typeCheck(Value, Type)".
+The API for the direct `typeCheck()` function uses the familiar `value, type` order:
 
-## ⚡ quick start:
-
-### typeCheck(valueToTest, testExpression);
-
--   Does not take any options
--   Strict validation, throws exception if the test fails;
--   Less options, but faster to implement. (for more options, use "\_typeCheck" instead. see \_typeCheck section)
-
-```javascript
-/**
- * @param {any} valueToTest
- * @param {string} testExpression (see below for patterns)
- * @see testUnit for more examples and test cases
- */
-typeCheck(valueToTest, testExpression);
-```
-<br/>
-
-## 👉 see possible patterns [here](#patterns)
-It can take a string representation of the type to test against or an actual object to test against.
-
-<br/>
-
-## ℹ Good to know:
-- conditional props in objects like "key?: type" or "key: type?" are optional and will not be tested if not present.
-- the "any" key in objects like "{any: type}" will test all keys that are not explicitly defined.
-- the "..." key in objects like "{key1: type, ...}" will test the key and ignore all other keys.
-- the "any" key in arrays like "[{any: type}]" will test all keys that are not explicitly defined.
-see possible patterns [here](#patterns)
-
-
-<br/><br/>
-
-# ⚡ Utility functions and advance usage:
-
-<br/>
-
-### validType(valueToTest, testExpression, options);
-
-Alias function for \_typeCheck(valueToTest, testExpression, options);
-It does not do strict validation, but returns a boolean instead of throwing an exception.
-
-```javascript
-function yourExistingFunction(valueToTest) {
-    validType(valueToTest, 'string');
-    // your code here
-}
+```js
+typeCheck(valueToTest, typeExpression);
 ```
 
-<br/>
+---
 
-### \_tc(testExpression, \_\_function, options);
-
--   Wrapper for "typeCheck" (\_tc) to implement functions with type checking.
--   Does not validate the "return value" of the function. (use "\_tcx" instead).
--   lightweight, fast and easy to implement.
--   Does take options.
--   Does return the 'return value' of the function for each instance.
--   Note: all test expressions are passed as 'array' like because args are 1 or more.
+## ⚡ Quick Start
 
 ```javascript
-const yourCoolFunction = _tc(['number', 'string'], function (myVar, theOtherVar) {
-    // .. your code here
-});
-
-yourCoolFunction(44.5, 'hello'); // validates that both are numbers
-
-// Options
-{
-    log: false, // default false. Same as method log()
-    fail: false, // default true. Same as method fail()
-    error: string, // custom error message
-}
+typeCheck('hello', 'string'); // ✅
+typeCheck([1, 2], '[number]'); // ✅
+typeCheck({ x: 1 }, '{x: number}'); // ✅
 ```
 
-<br/>
+---
 
-### \_tcx(testExpression, \_\_function, options);
-
--   Wrapper for "typeCheck" with 'return X' (\_tcx) to implement functions with type checking
--   Validates the "return value" of the function.
--   Offers more options.
--   Has built in features for all its instances.
--   Does take options.
--   slighty slower than "\_tc", but more robust for full type checking.
--   Does not return the 'return value' as '\_tc', instead it has to be explicitly called with '.return()'.
--   Note: all test expressions are passed as 'array' like because args are 1 or more.
+## 🧪 Examples
 
 ```javascript
-const yourCoolFunction = _tcx(['number', 'string'], function (myVar, theOtherVar) {
-    // .. your code here
-    return 'hello';
-}, {validOutput: 'string'});
-
-yourCoolFunction(44.5, 'hello'); // validates that arg1 is 'number' and arg2 is 'string' and that the return value is a string
-
-// Options
-{
-    validOutput: 'testExpression', // default null. Same as method log()
-    log: false, // default false. Same as method log()
-    fail: false, // default true. Same as method fail()
-    error: string, // custom error message
-}
-
-// Built in features
-yourCoolFunction(...).log(); // logs the results, helpful for debugging individual functions
-yourCoolFunction(...).fail(); // throws exception if the test fails. Strict validation enforcement
-yourCoolFunction(...).return(); // returns the 'return value' (non chainable with 'test' method)
-yourCoolFunction(...).test(); // returns true or false, helpful for if statements or other logic
-yourCoolFunction(...).fail().return(); // if the test fails, it will throw exception and if passes returns the 'return value'
-```
-
-<br />
-
-
-
-### -- addTypeTest(name, testUnitFunction);
-
--   Add custom type test to the library.
--   Can be used with 'typeCheck' or '\_tc' and '\_tcx' functions.
-
-```javascript
-/**
- * Add a new type test
- * @param {string} name The name of the test to add
- * @param {function} testUnit The test function
- * @return {boolean} true if the test was added
- * @throws {Error} if the test already exists
- */
-addTypeTest('customTypeTest', function (x) {
-    return typeof x === 'number';
-});
-if (typeCheck([1], '[customTypeTest]').test()) {
-    console.log(999); // logs 999 when validates to true
-}
-```
-
-<br /><br />
-
-### \_typeCheck(valueToTest, testExpression, options);
-Note: notice the "\_" (underscore). This gives you more control for different cases.
-
-```javascript
-/**
- * @param {any} valueToTest
- * @param {string} testExpression (see below for patterns)
- * @param {function} callback optional
- * @return {object} typeCheck Object with chainable methods
- * @see testUnit for more examples and test cases
- */
-_typeCheck(valueToTest, testExpression, options);
-
-// Methods:
-_typeCheck(..).test(); // returns true or false, helpful for if statements or other logic
-_typeCheck(..).bool; // same as 'test()', returns true or false, but more direct in the intent
-_typeCheck(..).log(); // logs the results, helpful for debugging
-_typeCheck(..).fail(); // throws exception if the test fails. Strict validation enforcement
-_typeCheck(..).return(); // returns the valueToTest (non chainable with 'test' method)
-
-//Chain methods
-_typeCheck(..).log().test(); // logs the results and returns true or false
-_typeCheck(..).fail().test(); // throws exception if the test fails and returns true or false
-_typeCheck(..).log().fail().return(); // returns the valueToTest and logs the results and throws exception if the test fails
-
-
-// Options
-{
-    log: true, // default false. Same as method log()
-    fail: true, // default false. Same as method fail()
-    callback: function, // default null. Only available in 'options'
-    error: string, // custom error message
-}
-```
-
-<br/><br/><br/>
-
-## Examples
-
-You can perform type checks like this:
-
-```javascript
-
 // With optional arguments
 typeCheck(null, 'string?'); // true
 typeCheck(undefined, 'string?'); // true
 typeCheck('str', 'string?'); // true
+typeCheck(null, 'string?', options); 
+typeCheck(null, 'string?', 'error message'); // throws error with custom message
 
 // Piped
 typeCheck(1, 'string | number'); // true
@@ -329,10 +164,190 @@ _typeCheck('1', 'number').fail().test(); // false and throw exception
 _typeCheck('str', 'string').log().test(); // true and logs the test results
 ```
 
-<br/>
-<a name="patterns"></a>
+---
 
-## Possible patterns
+## 🧰 Advanced API
+
+### `_typeCheck(valueToTest, testExpression, options?)`
+
+```javascript
+/**
+ * @param {any} valueToTest
+ * @param {string} testExpression (see below for patterns)
+ * @param {function} callback optional
+ * @return {object} typeCheck Object with chainable methods
+ * @see testUnit for more examples and test cases
+ */
+_typeCheck(valueToTest, testExpression, options);
+
+// Methods:
+_typeCheck(..).test(); // returns true or false, helpful for if statements or other logic
+_typeCheck(..).bool; // same as 'test()', returns true or false, but more direct in the intent
+_typeCheck(..).log(); // logs the results, helpful for debugging
+_typeCheck(..).fail(); // throws exception if the test fails. Strict validation enforcement
+_typeCheck(..).return(); // returns the valueToTest (non chainable with 'test' method)
+
+//Chain methods
+_typeCheck(..).log().test();
+_typeCheck(..).fail().test();
+_typeCheck(..).log().fail().return();
+
+// Options
+{
+    log: true,
+    fail: true,
+    callback: function,
+    error: string
+}
+```
+
+<br/>
+
+### validType(valueToTest, testExpression, options);
+
+Alias function for \_typeCheck(valueToTest, testExpression, options);
+It does not do strict validation, but returns a boolean instead of throwing an exception.
+
+```javascript
+function yourExistingFunction(valueToTest) {
+    validType(valueToTest, 'string');
+    // your code here
+}
+```
+
+<br/>
+
+---
+
+<br/>
+
+### \_tc(testExpression, \_\_function, options);
+
+-   Wrapper for "typeCheck" (\_tc) to implement functions with type checking.
+-   Does not validate the "return value" of the function. (use "\_tcx" instead).
+-   lightweight, fast and easy to implement.
+-   Does take options.
+-   Does return the 'return value' of the function for each instance.
+-   Note: all test expressions are passed as 'array' like because args are 1 or more.
+
+
+```js
+const greet = _tc(['string'], function (name) {
+  return `Hello, ${name}`;
+});
+
+greet('Alice'); // ✅
+greet(123);     // ❌ throws
+```
+
+```js
+const logData = _tc(['number', 'boolean'], (id, active) => {
+  return `${id}:${active}`;
+});
+
+logData(5, true); // ✅
+logData('5', true); // ❌ throws
+```
+```javascript
+const yourCoolFunction = _tc(['number', 'string'], function (myVar, theOtherVar) {
+    // .. your code here
+});
+
+yourCoolFunction(44.5, 'hello'); // validates that both are numbers
+
+// Options
+{
+    log: false, // default false. Same as method log()
+    fail: false, // default true. Same as method fail()
+    error: string, // custom error message
+}
+```
+
+<br/>
+
+---
+
+### \_tcx(testExpression, \_\_function, options);
+
+-   Wrapper for "typeCheck" with 'return X' (\_tcx) to implement functions with type checking
+-   Validates the "return value" of the function.
+-   Offers more options.
+-   Has built in features for all its instances.
+-   Does take options.
+-   slighty slower than "\_tc", but more robust for full type checking.
+-   Does not return the 'return value' as '\_tc', instead it has to be explicitly called with '.return()'.
+-   Note: all test expressions are passed as 'array' like because args are 1 or more.
+
+```javascript
+const yourCoolFunction = _tcx(['number', 'string'], function (myVar, theOtherVar) {
+    // .. your code here
+    return 'hello';
+}, {validOutput: 'string'});
+
+yourCoolFunction(44.5, 'hello'); // validates that arg1 is 'number' and arg2 is 'string' and that the return value is a string
+
+// Options
+{
+    validOutput: 'testExpression', // default null. Same as method log()
+    log: false, // default false. Same as method log()
+    fail: false, // default true. Same as method fail()
+    error: string, // custom error message
+}
+
+// Built in features
+yourCoolFunction(...).log(); // logs the results, helpful for debugging individual functions
+yourCoolFunction(...).fail(); // throws exception if the test fails. Strict validation enforcement
+yourCoolFunction(...).return(); // returns the 'return value' (non chainable with 'test' method)
+yourCoolFunction(...).test(); // returns true or false, helpful for if statements or other logic
+yourCoolFunction(...).fail().return(); // if the test fails, it will throw exception and if passes returns the 'return value'
+```
+
+```js
+const getLength = _tcx(['string'], (str) => str.length, {
+  validOutput: 'number',
+});
+
+getLength('hello').log().return(); // ✅ 5
+```
+
+```js
+const sum = _tcx(['number', 'number'], (a, b) => a + b, {
+  validOutput: 'number',
+});
+
+sum(10, 5).log().fail().return(); // ✅ 15
+```
+
+<br />
+
+---
+
+### `addTypeTest(name, fn)`
+
+Registers a custom type function globally.
+
+```js
+addTypeTest('even', (x) => typeof x === 'number' && x % 2 === 0);
+
+typeCheck(2, 'even'); // ✅
+typeCheck(3, 'even'); // ❌ throws
+
+typeCheck([2, 4, 6], '[even]'); // ✅
+typeCheck({ count: 8 }, '{count: even}'); // ✅
+```
+
+```js
+addTypeTest('nonEmptyString', (val) =>
+  typeof val === 'string' && val.trim().length > 0
+);
+
+typeCheck('hello', 'nonEmptyString'); // ✅
+typeCheck('', 'nonEmptyString');      // ❌
+```
+
+---
+
+## 🔤 Possible Patterns
 
 ```
 Possible type patterns:
@@ -370,23 +385,24 @@ Possible type patterns:
 '[{key1: type, key2: type}, {key1: type, key2: type}]'
 '[{key1: type | type, key2: type | type}, {key1: type | type, key2: type | type}]'
 '[{key1: type, any: type}]'
-
 ```
-
-<br />
-
-### ---> For more examples and usage patterns, further information and advanced use-cases, please refer to the `patterns` [here](/type-patterns.txt/) and `test` [here](/test/typeCheck.test.js) files.
 
 ---
 
+## 🧪 Tests
+
+See `test/typeCheck.test.js` for full coverage and usage examples.
+More examples are available in `type-patterns.txt`.
+
+---
 <br /><br />
 
 Check out other cool stuff at https://knighttower.io and help support open source projects.
 
 <br />
 
----
+## 🙌 Sponsored By
 
-Sponsored By:
+[![Squarefox](https://github.com/knighttower/typeCheckJs/assets/649334/024f2e7d-d3d0-4558-8893-2e6bbea29a6f)](https://squarefox.us/)
 
-[![image](https://github.com/knighttower/typeCheckJs/assets/649334/024f2e7d-d3d0-4558-8893-2e6bbea29a6f)](https://squarefox.us/)
+
