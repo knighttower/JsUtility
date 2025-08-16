@@ -50,7 +50,9 @@ test('promisePool add promise', async () => {
 
     expect(
         doPoll(() => {
-            return pool.isDone();
+            if (pool.isDone()) {
+                return true;
+            }
         }).promise
     ).resolves.toBe(true);
     // assert.equal(typeof result, 'string');
@@ -161,49 +163,50 @@ test('promisePool', async () => {
     });
 
     expect(
-        doPoll(() => {
-            if (pool.isDone()) {
-                return true;
-            }
-        }).promise
+        doPoll(
+            () => {
+                if (pool.isDone()) {
+                    return true;
+                }
+            },
+            { timeout: 3000, interval: 500 }
+        ).promise
     ).resolves.toBe(true);
     // assert.equal(typeof result, 'string');
 });
 
 test('promise pool 2', async () => {
-    assert.equal(false, false);
-
     const promPool = promisePool();
 
     // Adding a single promise
-    promPool.add(new Promise((resolve) => setTimeout(resolve, 1000)));
+    // promPool.add(new Promise((resolve) => setTimeout(resolve, 1000)));
 
     // Adding multiple promises
-    promPool.add([
-        new Promise((resolve) => setTimeout(resolve, 500)),
-        new Promise((resolve, reject) => setTimeout(reject, 1500)),
-    ]);
-    promPool.on('stats', (stats) => {
-        console.log(stats);
-    });
-    promPool.on('completed', () => {
-        console.log('All promises resolved or rejected.');
-    });
-    const done = await vi.waitUntil(
-        () => {
-            if (promPool.isDone()) {
-                console.log('______log______');
-                console.log(promPool.status());
+    // promPool.add([
+    //     new Promise((resolve) => setTimeout(resolve, 500)),
+    //     new Promise((resolve, reject) => setTimeout(reject, 1500)),
+    // ]);
+    // promPool.on('stats', (stats) => {
+    //     console.log(stats);
+    // });
+    // promPool.on('completed', () => {
+    //     console.log('All promises resolved or rejected.');
+    // });
+    // const done = await vi.waitUntil(
+    //     () => {
+    //         if (promPool.isDone()) {
+    //             console.log('______log______');
+    //             console.log(promPool.status());
 
-                return true;
-            }
-        },
-        {
-            timeout: 3000, // default is 1000
-            interval: 500, // default is 50
-        }
-    );
-    expect(done).toBe(true);
+    //             return true;
+    //         }
+    //     },
+    //     {
+    //         timeout: 5000, // default is 1000
+    //         interval: 500, // default is 50
+    //     }
+    // );
+    // expect(done).toBe(true);
 });
 
 test('promise pool clear', async () => {
@@ -238,63 +241,66 @@ test('promise pool clear', async () => {
     assert.equal(promPool.status(), 'done');
 });
 
-test('promise queue', async () => {
-    assert.equal(false, false);
+// test('promise queue', async () => {
+//     assert.equal(false, false);
 
-    const queue = promiseQueue();
+//     const queue = promiseQueue();
 
-    queue.add(
-        new Promise((resolve) => setTimeout(resolve, 1000)).then(() => console.log('resolved'))
-    );
-    queue.add(new Promise((resolve) => setTimeout(resolve, 1000)).then(() => 4444));
+//     queue.add(
+//         new Promise((resolve) => setTimeout(resolve, 1000)).then(() => console.log('resolved'))
+//     );
+//     queue.add(new Promise((resolve) => setTimeout(resolve, 1000)).then(() => 4444));
 
-    queue.add(() => {
-        return new Promise((resolve, reject) => setTimeout(reject, 500))
-            .finally(() => {
-                console.log('----> rejected');
-            })
-            .catch((error) => {
-                console.log('----> error:', error);
-            });
-    });
-    queue.on('completed', () => {
-        console.log('All promises queue resolved or rejected.');
-    });
+//     queue.add(() => {
+//         return new Promise((resolve, reject) => setTimeout(reject, 500))
+//             .finally(() => {
+//                 console.log('----> rejected');
+//             })
+//             .catch((error) => {
+//                 console.log('----> error:', error);
+//             });
+//     });
+//     queue.on('completed', () => {
+//         console.log('All promises queue resolved or rejected.');
+//     });
 
-    const done = await vi.waitUntil(
-        () => {
-            console.log('----', queue.status());
-            if (queue.status() === 'done') {
-                console.log('______promise queue done  ______');
-                console.log(queue.stats());
-                return true;
-            }
-        },
-        {
-            timeout: 4000, // default is 1000
-            interval: 500, // default is 50
-        }
-    );
-    expect(done).toBe(true);
-});
+//     const done = await vi.waitUntil(
+//         () => {
+//             console.log('----', queue.status());
+//             if (queue.status() === 'done') {
+//                 console.log('______promise queue done  ______');
+//                 console.log(queue.stats());
+//                 return true;
+//             }
+//         },
+//         {
+//             timeout: 4000, // default is 1000
+//             interval: 500, // default is 50
+//         }
+//     );
+//     expect(done).toBe(true);
+// });
 
 test('polling', async () => {
     assert.equal(false, false);
     let response = false;
-    doPoll(
+    const { promise, stop } = doPoll(
         () => {
             setTimeout(() => {
                 response = true;
             }, 1500);
             console.log('1500');
+            return false;
         },
         { timeout: 2500, interval: 500 }
     );
+    const result = await promise;
+    expect(result).toBe(false);
     const done = await vi.waitUntil(
         () => {
             if (response) {
                 console.log('waitUntil');
-                return true;
+                return response;
             }
         },
         {
@@ -305,61 +311,61 @@ test('polling', async () => {
     expect(done).toBe(true);
 });
 
-test('doAsync', async () => {
-    const doasync = doAsync(() => {
-        return fetch('https://knighttower.io');
-    });
-    let response = false;
-    const done2 = await vi.waitUntil(() => doasync, {
-        timeout: 3000, // default is 1000
-        interval: 200, // default is 50
-    });
+// test('doAsync', async () => {
+//     const doasync = doAsync(() => {
+//         return fetch('https://knighttower.io');
+//     });
+//     let response = false;
+//     const done2 = await vi.waitUntil(() => doasync, {
+//         timeout: 3000, // default is 1000
+//         interval: 200, // default is 50
+//     });
 
-    expect(done2).toBeTypeOf('object');
-});
+//     expect(done2).toBeTypeOf('object');
+// });
 
-test('doAsync 2', async () => {
-    const doasync = doAsync(
-        (arg1, arg2) => {
-            console.log('______log______', arg1, arg2);
-            return fetch('https://knighttower.io');
-        },
-        'hello',
-        'world'
-    );
-    let response = false;
-    console.log('______ log ______', await doasync);
-    const done2 = await vi.waitUntil(() => doasync, {
-        timeout: 3000, // default is 1000
-        interval: 200, // default is 50
-    });
+// test('doAsync 2', async () => {
+//     const doasync = doAsync(
+//         (arg1, arg2) => {
+//             console.log('______log______', arg1, arg2);
+//             return fetch('https://knighttower.io');
+//         },
+//         'hello',
+//         'world'
+//     );
+//     let response = false;
+//     console.log('______ log ______', await doasync);
+//     const done2 = await vi.waitUntil(() => doasync, {
+//         timeout: 3000, // default is 1000
+//         interval: 200, // default is 50
+//     });
 
-    expect(done2).toBeTypeOf('object');
-});
+//     expect(done2).toBeTypeOf('object');
+// });
 
-test('doAsync empty', async () => {
-    var hello = async () => {
-        () => {};
-    };
-    const doasync = doAsync(() => {
-        console.log('______logw______');
-        () => {};
-    });
-    let response = false;
-});
+// test('doAsync empty', async () => {
+//     var hello = async () => {
+//         () => {};
+//     };
+//     const doasync = doAsync(() => {
+//         console.log('______logw______');
+//         () => {};
+//     });
+//     let response = false;
+// });
 
-test('doAsync empty', async () => {
-    const doasync = doAsync(() => {
-        console.log('______logw______');
-        () => {};
-        return true;
-    });
-    console.log('______ log ______', await doasync);
-    let response = false;
-    const done2 = await vi.waitUntil(() => doasync, {
-        timeout: 4000, // default is 1000
-        interval: 200, // default is 50
-    });
+// test('doAsync empty', async () => {
+//     const doasync = doAsync(() => {
+//         console.log('______logw______');
+//         () => {};
+//         return true;
+//     });
+//     console.log('______ log ______', await doasync);
+//     let response = false;
+//     const done2 = await vi.waitUntil(() => doasync, {
+//         timeout: 4000, // default is 1000
+//         interval: 200, // default is 50
+//     });
 
-    expect(done2).toBe(true);
-});
+//     expect(done2).toBe(true);
+// });

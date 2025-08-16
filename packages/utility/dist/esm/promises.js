@@ -488,80 +488,102 @@ const promiseQueue = () => {
  * }
  */
 const doPoll = (fn, options = {}) => {
-    if (typeof fn !== 'function') {
-        if (typeof fn !== 'object') {
-            throw new Error('doPoll: The first argument must be a function or Promise.');
-        }
+    const isThenable = (v) =>
+        v != null &&
+        (typeof v === 'object' || typeof v === 'function') &&
+        typeof v.then === 'function';
+
+    if (!(typeof fn === 'function' || isThenable(fn))) {
+        throw new Error('doPoll: The first argument must be a function or Promise.');
     }
-    const isPromise = (promise) => promise instanceof Promise;
-    const { msg, interval = 200, timeout = 1000, timeoutMsg = msg ?? null } = options;
+
+    const { msg, interval = 200, timeout = 1000, timeoutMsg = msg ?? null, signal } = options;
+    const tickMs = Number.isFinite(interval) && interval > 0 ? interval : 200;
+    const maxMs = Number.isFinite(timeout) && timeout > 0 ? timeout : 1000;
+    const fnIsThenable = isThenable(fn);
+
     let timeoutId, intervalId;
     let resolvePromise, rejectPromise;
     let stopped = false;
-    let promiseRunning = false;
+    let running = false;
+    let settled = false;
 
-    const stop = () => {
-        clearTimers();
-        if (typeOf(timeoutMsg, 'string')) {
-            console.info(timeoutMsg);
-            rejectPromise(timeoutMsg);
-            return;
-        }
-
-        rejectPromise();
-    };
-
-    const done = (result) => {
-        clearTimers();
-        resolvePromise(result);
-    };
-
-    function clearTimers() {
+    const clearTimers = () => {
         stopped = true;
-        clearTimeout(timeoutId);
-        clearInterval(intervalId);
-    }
+        if (timeoutId) clearTimeout(timeoutId);
+        if (intervalId) clearInterval(intervalId);
+        if (signal) signal.removeEventListener?.('abort', onAbort);
+    };
+
+    const done = (val) => {
+        if (settled) return;
+        settled = true;
+        clearTimers();
+        resolvePromise(val);
+    };
+
+    const settleReject = (reason) => {
+        if (settled) return;
+        settled = true;
+        clearTimers();
+        rejectPromise(reason);
+    };
+
+    const stop = (reason) => {
+        if (reason === '__TIMEOUT__' && typeOf(timeoutMsg, 'string')) {
+            console.info(timeoutMsg);
+            return settleReject(timeoutMsg);
+        }
+        return settleReject(reason);
+    };
+
+    const handleValue = (val) => {
+        // resolve on any boolean (including false) or any truthy value
+        if (typeOf(val, 'boolean') || val) done(val);
+    };
+
+    const onAbort = () => stop(signal?.reason ?? 'aborted');
 
     const promise = new Promise((resolve, reject) => {
         resolvePromise = resolve;
         rejectPromise = reject;
 
         const poll = () => {
-            if (stopped || promiseRunning) {
-                return;
-            }
+            if (stopped || running || settled) return;
 
-            const pollThis = isPromise(fn) ? fn : fn();
-            // double test if the pollThis returns a promise
-            if (isPromise(pollThis)) {
-                promiseRunning = true;
-                pollThis
-                    .then((resolvedValue) => {
-                        promiseRunning = false;
-                        if (resolvedValue) {
-                            done(resolvedValue);
-                        }
-                    })
-                    .catch(rejectPromise);
-            } else {
-                if (Boolean(pollThis) || pollThis) {
-                    done(pollThis);
+            try {
+                const fx = fnIsThenable ? fn : fn(done, stop);
+
+                if (isThenable(fx)) {
+                    running = true;
+                    fx.then((val) => {
+                        running = false;
+                        handleValue(val);
+                    }).catch((err) => {
+                        running = false;
+                        if (!stopped) stop(err);
+                    });
+                } else {
+                    handleValue(fx);
                 }
+            } catch (err) {
+                if (!stopped) stop(err);
             }
         };
 
-        intervalId = setInterval(poll, interval);
-        poll(); // Initial call to handle any immediate resolution
+        if (fnIsThenable) {
+            poll(); // single-shot for passed thenable
+        } else {
+            intervalId = setInterval(poll, tickMs);
+            poll(); // initial tick
+        }
 
         timeoutId = setTimeout(() => {
-            if (!stopped) {
-                stop();
-            }
-        }, timeout);
-    });
+            if (!stopped) stop('__TIMEOUT__');
+        }, maxMs);
 
-    promise.catch(() => {
-        stop();
+        if (signal?.aborted) onAbort();
+        else if (signal) signal.addEventListener?.('abort', onAbort, { once: true });
     });
 
     return { promise, stop };
@@ -657,6 +679,7 @@ const promisePool = () => {
             }
             _status = 'in-progress';
             const promiseCollection = makeArray(_promises);
+
             promiseCollection.forEach((promise) => {
                 if (!(promise instanceof Promise)) {
                     if (typeof promise === 'function') {
