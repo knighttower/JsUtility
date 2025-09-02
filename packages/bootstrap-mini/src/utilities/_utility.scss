@@ -7,6 +7,7 @@
 @use "sass:string";
 @use "sass:meta";
 @use "sass:math";
+@use "sass:map";
 @use "../settings/breakpoints" as *;
 
 // /**
@@ -28,7 +29,7 @@
 // * @return {String} {value}px
 // */
 @function ensure-px($value) {
-    @if type-of($value) == "number" and unitless($value) {
+    @if meta.type-of($value) == "number" and math.is-unitless($value) {
         @return $value * 1px; // Convert number to px
     } @else if unit($value) == "px" {
         @return $value; // Return as is if already px
@@ -40,58 +41,44 @@
 // /**
 // * // @mixin breakpoint
 // * BreakPoint print utility
-// * @param {String} $screen <breakdown name>|size in px
-// * @param {Null|String} $param Keywords:landscape, portrait|<custom query>ex:max-width:800px
-// * @param {Null|Bool} $exclude null | true to negate the query use with caution.
-// * @return Media Query
-// * @example
-// * // @include breakpoint(<breakdown name>){rules...}; or
-// * // @include breakpoint(000px,'max-width:800px'){rules...}; or
-// * // @include breakpoint(<breakdown name>,landscape){rules...}; or
-// * // @include breakpoint(<breakdown name>,'max-width:800px'){rules...};, etc...
 // */
 @mixin breakpoint($screen, $param: null, $exclude: null) {
-    $isAlias: map-get($xBreakpointsAlias, $screen);
+    $isAlias: map.get($xBreakpointsAlias, $screen);
     @if $isAlias != null {
         $screen: $isAlias;
     }
-    $values: map-get($xBreakpoints, $screen);
+    $values: map.get($xBreakpoints, $screen);
     $min: 0;
     $max: null;
 
     @if $values != null {
-        $min: ensure-px(nth($values, 1));
+        $min: ensure-px(list.nth($values, 1));
 
-        @if type-of(nth($values, 2)) == "number" {
-            $maxTmp: nth($values, 2);
+        @if meta.type-of(list.nth($values, 2)) == "number" {
+            $maxTmp: list.nth($values, 2);
             @if $maxTmp != 0 {
                 $max: ensure-px($maxTmp);
             }
         }
     }
-    // -----------------------------------------
-    // when exclude is set to true
-    // this will negate the query
+
+    // exclude=true
     @if $exclude == true {
         @if $values != null {
             @if $max != null {
                 @media not ((min-width: $min) and (max-width: $max)) {
                     @content;
                 }
-            }
-            // when a only min-width is needed or set
-            @else {
+            } @else {
                 @media not (min-width: $min) {
                     @content;
                 }
             }
         }
     } @else {
-        // -----------------------------------------
-        // Matchet a predefined breakpoint
+        // predefined breakpoint
         @if $values != null {
             @if $param != null and $param == landscape {
-                // landscape queries only
                 @if $max != null {
                     @media (min-width: $min) and (max-width: ensure-px($max)) and (orientation: landscape) {
                         @content;
@@ -106,55 +93,44 @@
                     @media (min-width: $min) and (max-width: $max) {
                         @content;
                     }
-                }
-                // when a only min-width is needed or set
-                @else {
+                } @else {
                     @media (min-width: $min) {
                         @content;
                     }
                 }
             }
         }
-        // -----------------------------------------
-        // CUSTOM USER DEFINED BREAKPOINT
+        // custom user-defined
         @else if $screen != null and $param != null {
-            @if type-of($param) == "number" {
+            @if meta.type-of($param) == "number" {
                 @media (min-width: ensure-px($screen)) and (max-width: ensure-px($param)) {
                     @content;
                 }
             } @else {
-                // when there is a $param but no specific value
                 @media (min-width: ensure-px($screen)) and ($param) {
                     @content;
                 }
             }
         }
-
-        // when a single unit is passed ex: 300px
+        // single unit
         @else if $screen != null {
-            @if type-of($screen) == "number" {
+            @if meta.type-of($screen) == "number" {
                 @media (min-width: ensure-px($screen)) {
                     @content;
                 }
             } @else {
-                // when there is a $param but no specific value
                 @media ($screen) {
                     @content;
                 }
             }
-        } // when no value
-        @else {
+        } @else {
             @warn "no value could be found for `#{$screen}`. "
-			+ "Please make sure it is defined in `$xBreakpoints` map.";
+        + "Please make sure it is defined in `$xBreakpoints` map.";
         }
     }
 }
 
-// /**
-// * Experimental to batch, needs review
-// * @param {String} __param__
-// * @return {String}
-// */
+// headers mixin
 @mixin set-headers-value($prop, $value) {
     $headers: (h1, h2, h3, h4, h5, ".h1", ".h2", ".h3", ".h4", ".h5");
     @each $tag in $headers {
@@ -164,17 +140,7 @@
     }
 }
 
-// /**
-// * add transition effect to an element
-// * @mixin transitionProp
-// * @param {String} $property Property name
-// * @param {Number} $duration 0.5s
-// * @param {String} $method ease
-// * @param {Number} $delay 0s
-// * @return {String}
-// * @example
-// * // .class{ @include transitionProp(all, 0.5s, ease, 0s);}
-// */
+// transition mixin
 @mixin transitionProp($property, $duration: 0.5s, $method: ease, $delay: 0s) {
     transition: $property $duration $method $delay;
     -moz-transition: $property $duration $method $delay;
@@ -188,13 +154,8 @@
     --bs-disabled-border: #c8cbcf;
     --bs-disabled-line: #6c757d;
 }
-// /**
-// * @mixin disabled
-// * Add "disabled" state to an element
-// * @return {String}
-// * @example
-// * // .class{ @include disabled();}
-// */
+
+// disabled mixin
 @mixin disabled() {
     &,
     &:hover {
@@ -222,27 +183,20 @@
     }
 }
 
-// /**
-// * Merge maps
-// * @param {Array} $maps Array or list of Arrays of maps to merge
-// * @return {Array}
-// * @example
-// * $button-group: ($base-hiearchy, $base-states, $shared-states);
-// * $buttons: mapMerge($button-group);
-// */
+// mapMerge function
 @function mapMerge($maps...) {
     $m: ();
 
-    // Check if single list of lists
-    @if type-of(nth($maps, 1)) == "list" and length($maps) == 1 {
-        @each $map in nth($maps, 1) {
-            $m: map-merge($m, $map);
+    // single list of maps
+    @if meta.type-of(list.nth($maps, 1)) == "list" and list.length($maps) == 1 {
+        @each $map in list.nth($maps, 1) {
+            $m: map.merge($m, $map);
         }
     }
-    // Multiple parameters
+    // multiple maps
     @else {
         @each $map in $maps {
-            $m: map-merge($m, $map);
+            $m: map.merge($m, $map);
         }
     }
 
