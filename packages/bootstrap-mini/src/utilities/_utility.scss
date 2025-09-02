@@ -31,7 +31,7 @@
 @function ensure-px($value) {
     @if meta.type-of($value) == "number" and math.is-unitless($value) {
         @return $value * 1px; // Convert number to px
-    } @else if unit($value) == "px" {
+    } @else if math.unit($value) == "px" {
         @return $value; // Return as is if already px
     } @else {
         @return $value + px; // Add px if not present
