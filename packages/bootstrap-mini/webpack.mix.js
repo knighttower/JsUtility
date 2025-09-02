@@ -4,6 +4,7 @@ const path = require('path');
 const workingDir = process.cwd();
 
 mix.sass('src/bootstrap-mini.scss', 'dist')
+    .sass('src/utils-only.scss', 'dist')
     .sass('test/style.scss', 'test')
     .options({
         processCssUrls: false,

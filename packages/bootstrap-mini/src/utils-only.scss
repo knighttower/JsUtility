@@ -1,0 +1,318 @@
+@use "sass:list";
+@use "sass:meta";
+@use "sass:string";
+@use "sass:math";
+@use "settings/breakpoints" as *;
+@use "utilities/utility" as *;
+
+// -----------------------------------------
+// --> @TODO: This file is temporary
+// A deprecation of this library should be scheduled
+// and transitions into unocss and sass only utils
+
+// =========================================
+// --> Core settings
+// --------------------------
+[un-cloak] {
+    display: none;
+}
+
+html,
+body {
+    min-height: 100vh;
+    color: var(--x-body-color, #212529);
+    background: var(--x-body-bg, #fff);
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+img,
+picture,
+svg {
+    display: block;
+    margin: auto;
+    max-width: 100%;
+    height: auto;
+}
+
+img,
+picture {
+    width: auto;
+    object-fit: cover;
+}
+
+svg {
+    fill: currentColor;
+    width: 100%;
+    overflow: hidden;
+}
+
+// =========================================
+// --> Layout
+// --------------------------
+.x-container,
+.x-container-fluid,
+.x-container-full {
+    --x-gutter-x: 1.5rem;
+    --x-gutter-y: 0;
+    width: 100%;
+    padding-right: calc(var(--x-gutter-x) * 0.5);
+    padding-left: calc(var(--x-gutter-x) * 0.5);
+    margin-right: auto;
+    margin-left: auto;
+    max-width: clamp(320px, 100%, 1400px);
+}
+
+:root {
+    --x-max-width: 100%;
+    --x-max-width-lg: 1024px;
+    --x-max-width-xl: 1200px;
+    --x-max-width-xxl: 1400px;
+    --x-container-pad-xs: 15px;
+    --x-container-pad-sm: 20px;
+    --x-container-pad-md: 30px;
+    --x-container-pad-lg: 40px;
+    --x-container-pad-xl: 40px;
+    --x-container-pad-xxl: 40px;
+}
+
+.x-container-fluid,
+.x-container-full {
+    max-width: 100%;
+}
+
+@media (min-width: 0) {
+    :root {
+        --x-container-max-width: var(--x-max-width);
+        --x-container-pad: var(--x-container-pad-xs);
+    }
+}
+@media (min-width: 576px) {
+    :root {
+        --x-container-max-width: var(--x-max-width);
+        --x-container-pad: var(--x-container-pad-sm);
+    }
+}
+@media (min-width: 768px) {
+    :root {
+        --x-container-max-width: var(--x-max-width);
+        --x-container-pad: var(--x-container-pad-md);
+    }
+}
+@media (min-width: 992px) {
+    :root {
+        --x-container-max-width: var(--x-max-width-lg);
+        --x-container-pad: var(--x-container-pad-lg);
+    }
+}
+@media (min-width: 1200px) {
+    :root {
+        --x-container-max-width: var(--x-max-width-xl);
+        --x-container-pad: var(--x-container-pad-xl);
+    }
+}
+@media (min-width: 1400px) {
+    :root {
+        --x-container-max-width: var(--x-max-width-xxl);
+        --x-container-pad: var(--x-container-pad-xxl);
+    }
+}
+
+.x-container {
+    max-width: var(--x-container-max-width);
+    padding-left: var(--x-container-pad);
+    padding-right: var(--x-container-pad);
+}
+
+// -----------------------------------------
+// --> Visibility Utilities hide or show on
+// --------------------------
+$screenSizes: (desk, tab, mob, xs, sm, md, lg, xl, xxl) !default;
+$visibleStates: (hide, show);
+
+@each $state in $visibleStates {
+    @each $screen in $screenSizes {
+        @if $state == hide {
+            .--#{$state}-on-#{$screen} {
+                @include breakpoint($screen) {
+                    @include hideEl(important);
+                }
+            }
+        }
+        @if $state == show {
+            .--#{$state}-on-#{$screen} {
+                @include breakpoint($screen, null, true) {
+                    @include hideEl(important);
+                }
+            }
+        }
+    }
+}
+
+// =========================================
+// --> Font Sizes
+// --------------------------
+:root {
+    --x-base-font-size: 1;
+    --x-base-line-height: 1.5;
+    --x-font-size: 15px;
+    --x-base-div-width: 1040;
+    --x-input-height: 40px;
+}
+
+@include breakpoint(tablet) {
+    :root {
+        --x-base-font-size: 0.85;
+        --x-base-div-width: 740;
+    }
+}
+
+@include breakpoint(mobile) {
+    :root {
+        --x-base-font-size: 0.75;
+        --x-base-div-width: 360;
+    }
+}
+
+hr,
+.hr,
+.ruler,
+.divider {
+    margin: 0;
+    border-top: 1px dashed var(--x-hr-color, #333333);
+    display: block;
+    height: 1px;
+    width: 100%;
+    clear: both;
+    &.--semi {
+        width: 75%;
+    }
+    &.--mid,
+    &.--half {
+        width: 50%;
+    }
+    &.--small,
+    &.--third {
+        width: 30%;
+    }
+}
+
+hr,
+.hr {
+    border: 0;
+    background-color: var(--x-hr-color, #333333);
+    margin: 20px 0;
+}
+
+// =========================================
+// --> Spacers
+// --------------------------
+$modifiers: 100, 95, 90, 85, 80, 75, 70, 65, 60, 55, 50, 45, 40, 35, 30, 25, 20, 15, 10, 5;
+
+:root {
+    @each $modifier in $modifiers {
+        --dim-#{$modifier}: calc(#{$modifier}px * var(--x-base-font-size));
+    }
+}
+
+.spacer {
+    display: block;
+    width: 100%;
+    clear: both;
+
+    @each $modifier in $modifiers {
+        &.--#{$modifier} {
+            height: var(--dim-#{$modifier});
+        }
+    }
+}
+
+// =========================================
+// --> Typography
+// --------------------------
+.--nounderline {
+    text-decoration: none !important;
+}
+
+.--underline {
+    text-decoration: underline !important;
+}
+
+.--titlecase {
+    text-transform: capitalize !important;
+}
+
+.--uppercase {
+    text-transform: uppercase !important;
+}
+
+.--italic {
+    font-style: italic !important;
+}
+
+.--normal {
+    &,
+    & * {
+        text-transform: none !important;
+    }
+}
+
+.--nowrap,
+.--no-wrap {
+    white-space: nowrap !important;
+}
+
+.--wrap {
+    white-space: normal !important;
+}
+
+.--bold {
+    font-weight: bold !important;
+}
+
+.--text-left {
+    text-align: left !important;
+}
+
+.--text-right {
+    text-align: right !important;
+}
+
+.--text-center {
+    text-align: center !important;
+}
+
+.--text-justify {
+    text-align: justify !important;
+}
+
+//----------------------------------------
+// SPECIAL TEXT EFFECTS
+//----------------------------------------
+.list {
+    ul {
+        padding: var(--x-ul-padding, 7px 0 10px 20px);
+    }
+    &--inline,
+    &--unstyled {
+        padding-left: 0;
+        list-style: none;
+    }
+    &--inline {
+        li {
+            display: inline-block;
+            &:not(:last-child) {
+                margin-right: 10px;
+            }
+        }
+    }
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    font-weight: normal;
+}
