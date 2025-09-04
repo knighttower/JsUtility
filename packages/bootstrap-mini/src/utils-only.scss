@@ -182,32 +182,12 @@ $visibleStates: (hide, show);
     --x-error: #ff0000;
     --x-warning: #ffcc00;
     --x-info: #007bff;
+    --x-hr-color: #333333;
 }
 
 // =========================================
-// --> Font Sizes
+// --> Ruler
 // --------------------------
-:root {
-    --x-base-font-size: 1;
-    --x-base-line-height: 1.5;
-    --x-font-size: 15px;
-    --x-base-div-width: 1040;
-    --x-input-height: 40px;
-}
-
-@include breakpoint(tablet) {
-    :root {
-        --x-base-font-size: 0.85;
-        --x-base-div-width: 740;
-    }
-}
-
-@include breakpoint(mobile) {
-    :root {
-        --x-base-font-size: 0.75;
-        --x-base-div-width: 360;
-    }
-}
 
 hr,
 .hr,
@@ -292,14 +272,30 @@ i[class*=" icon-"] {
 // --------------------------
 
 :root {
-    // defined in _core.scss
-    //  --base-font-size: 1;
-    // -x-font-size: 16px;
+    --x-base-font-size: 1;
+    --x-base-line-height: 1.5;
+    --x-font-size: 15px;
+    --x-base-div-width: 1040;
+    --x-input-height: 40px;
     --x-h1: calc(30px * var(--x-base-font-size));
     --x-h2: calc(24px * var(--x-base-font-size));
     --x-h3: calc(22px * var(--x-base-font-size));
     --x-h4: calc(19px * var(--x-base-font-size));
     --x-h5: 16px;
+}
+
+@include breakpoint(tablet) {
+    :root {
+        --x-base-font-size: 0.85;
+        --x-base-div-width: 740;
+    }
+}
+
+@include breakpoint(mobile) {
+    :root {
+        --x-base-font-size: 0.75;
+        --x-base-div-width: 360;
+    }
 }
 
 html,
