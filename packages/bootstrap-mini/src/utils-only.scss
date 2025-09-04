@@ -51,18 +51,6 @@ svg {
 // =========================================
 // --> Layout
 // --------------------------
-.x-container,
-.x-container-fluid,
-.x-container-full {
-    --x-gutter-x: 1.5rem;
-    --x-gutter-y: 0;
-    width: 100%;
-    padding-right: calc(var(--x-gutter-x) * 0.5);
-    padding-left: calc(var(--x-gutter-x) * 0.5);
-    margin-right: auto;
-    margin-left: auto;
-    max-width: clamp(320px, 100%, 1400px);
-}
 
 :root {
     --x-max-width: 100%;
@@ -75,6 +63,19 @@ svg {
     --x-container-pad-lg: 40px;
     --x-container-pad-xl: 40px;
     --x-container-pad-xxl: 40px;
+}
+
+.x-container,
+.x-container-fluid,
+.x-container-full {
+    --x-gutter-x: 1.5rem;
+    --x-gutter-y: 0;
+    width: 100%;
+    padding-right: calc(var(--x-gutter-x) * 0.5);
+    padding-left: calc(var(--x-gutter-x) * 0.5);
+    margin-right: auto;
+    margin-left: auto;
+    max-width: clamp(320px, 100%, 1400px);
 }
 
 .x-container-fluid,
@@ -151,6 +152,39 @@ $visibleStates: (hide, show);
 }
 
 // =========================================
+// --> Colors
+// --------------------------
+
+:root {
+    // Color Palette
+    --x-blue: #0d6efd;
+    --x-indigo: #6610f2;
+    --x-purple: #6f42c1;
+    --x-pink: #d63384;
+    --x-red: #dc3545;
+    --x-orange: #fd7e14;
+    --x-yellow: #ffc107;
+    --x-green: #198754;
+    --x-teal: #20c997;
+    --x-cyan: #0dcaf0;
+    --x-light-gray: #8c949b;
+    --x-dark-gray: #2a2b2d;
+    --x-gray-100: #111111;
+    --x-gray-200: #222222;
+    --x-gray-300: #333333;
+    --x-gray-400: #444444;
+    --x-gray-500: #555555;
+    --x-gray-600: #666666;
+    --x-gray-700: #777777;
+    --x-gray-800: #888888;
+    --x-gray-900: #999999;
+    --x-success: #01843e;
+    --x-error: #ff0000;
+    --x-warning: #ffcc00;
+    --x-info: #007bff;
+}
+
+// =========================================
 // --> Font Sizes
 // --------------------------
 :root {
@@ -206,31 +240,121 @@ hr,
 }
 
 // =========================================
-// --> Spacers
-// --------------------------
-$modifiers: 100, 95, 90, 85, 80, 75, 70, 65, 60, 55, 50, 45, 40, 35, 30, 25, 20, 15, 10, 5;
-
+// ICONS
+// ---------------------
 :root {
-    @each $modifier in $modifiers {
-        --dim-#{$modifier}: calc(#{$modifier}px * var(--x-base-font-size));
+    --x-icon-size: 1rem;
+}
+
+// affecs all icons
+i,
+.icon,
+i[class^="icon-"],
+i[class*=" icon-"] {
+    font-style: normal;
+    font-weight: normal !important;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: var(--x-icon-size);
+    line-height: var(--x-icon-size);
+    position: relative;
+
+    &::before {
+        font-style: inherit;
+        font-weight: inherit;
+        font-variant: inherit;
+        text-transform: inherit;
+        line-height: inherit;
+        -webkit-font-smoothing: inherit;
+        -moz-osx-font-smoothing: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        position: inherit;
+        color: inherit;
     }
 }
 
-.spacer {
-    display: block;
-    width: 100%;
-    clear: both;
-
-    @each $modifier in $modifiers {
-        &.--#{$modifier} {
-            height: var(--dim-#{$modifier});
-        }
+// affects only icons with class starting with "icon-" or "icon"
+.icon,
+i[class^="icon-"],
+i[class*=" icon-"] {
+    top: 1px;
+    &::before {
+        top: inherit;
     }
 }
 
 // =========================================
 // --> Typography
 // --------------------------
+
+:root {
+    // defined in _core.scss
+    //  --base-font-size: 1;
+    // -x-font-size: 16px;
+    --x-h1: calc(30px * var(--x-base-font-size));
+    --x-h2: calc(24px * var(--x-base-font-size));
+    --x-h3: calc(22px * var(--x-base-font-size));
+    --x-h4: calc(19px * var(--x-base-font-size));
+    --x-h5: 16px;
+}
+
+html,
+body {
+    line-height: 1.6;
+    font-size: var(--x-font-size);
+}
+
+strong {
+    @extend .--bold;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5 {
+    margin: 0px;
+    padding: 0px;
+}
+
+h1,
+.h1 {
+    font-size: var(--x-h1);
+}
+
+h2,
+.h2 {
+    font-size: var(--x-h2);
+}
+
+h3,
+.h3 {
+    font-size: var(--x-h3);
+}
+
+h4,
+.h4 {
+    font-size: var(--x-h4);
+}
+
+h5,
+.h5 {
+    font-size: var(--x-h5);
+}
+p,
+.p {
+    font-size: var(--x-font-size);
+}
 .--nounderline {
     text-decoration: none !important;
 }
@@ -287,6 +411,29 @@ $modifiers: 100, 95, 90, 85, 80, 75, 70, 65, 60, 55, 50, 45, 40, 35, 30, 25, 20,
     text-align: justify !important;
 }
 
+// =========================================
+// --> Spacers
+// --------------------------
+$modifiers: 100, 95, 90, 85, 80, 75, 70, 65, 60, 55, 50, 45, 40, 35, 30, 25, 20, 15, 10, 5;
+
+:root {
+    @each $modifier in $modifiers {
+        --dim-#{$modifier}: calc(#{$modifier}px * var(--x-base-font-size));
+    }
+}
+
+.spacer {
+    display: block;
+    width: 100%;
+    clear: both;
+
+    @each $modifier in $modifiers {
+        &.--#{$modifier} {
+            height: var(--dim-#{$modifier});
+        }
+    }
+}
+
 //----------------------------------------
 // SPECIAL TEXT EFFECTS
 //----------------------------------------
@@ -294,19 +441,20 @@ $modifiers: 100, 95, 90, 85, 80, 75, 70, 65, 60, 55, 50, 45, 40, 35, 30, 25, 20,
     ul {
         padding: var(--x-ul-padding, 7px 0 10px 20px);
     }
-    &--inline,
-    &--unstyled {
-        padding-left: 0;
-        list-style: none;
-    }
-    &--inline {
-        li {
-            display: inline-block;
-            &:not(:last-child) {
-                margin-right: 10px;
-            }
-        }
-    }
+}
+
+.list--inline,
+.list--unstyled {
+    padding-left: 0;
+    list-style: none;
+}
+
+.list--inline li {
+    display: inline-block;
+}
+
+.list--inline li:not(:last-child) {
+    margin-right: 10px;
 }
 
 *,

@@ -355,3 +355,139 @@ PS: as of the writting of this, I have been implementing the minibootstrap (only
 <br> 
 
 Credits to the Bootstrap team for the great work they have done.
+
+
+---
+<br>
+<br/>
+
+# A simple utils is also available
+`@knighttower/bootstrap-mini/src/utilities` : brings Sass mixins and functions only, no classes.
+`@knighttower/bootstrap-mini/src/utils-only.scss` : brings utility classes only, no mixins or functions.
+
+for the utils-only.scss file, the following classes are included:
+
+# Utility Styles
+
+This stylesheet provides a set of base variables and utility classes for layout, typography, spacing, and visibility.  
+**Note:** All `:root` values listed below are **CSS variables**, not classes. They are intended to be overridden in themes or custom setups.
+
+---
+
+## 1. Root Variables (Base CSS Variables)
+
+### Layout
+- --x-max-width  
+- --x-max-width-lg  
+- --x-max-width-xl  
+- --x-max-width-xxl  
+- --x-container-pad-xs  
+- --x-container-pad-sm  
+- --x-container-pad-md  
+- --x-container-pad-lg  
+- --x-container-pad-xl  
+- --x-container-pad-xxl  
+
+### Colors
+- --x-blue, --x-indigo, --x-purple, --x-pink, --x-red  
+- --x-orange, --x-yellow, --x-green, --x-teal, --x-cyan  
+- --x-light-gray, --x-dark-gray  
+- --x-gray-100 … --x-gray-900  
+- --x-success, --x-error, --x-warning, --x-info  
+
+### Typography
+- --x-font-size  
+- --x-base-font-size  
+- --x-base-line-height  
+- --x-h1, --x-h2, --x-h3, --x-h4, --x-h5  
+
+### Icons
+- --x-icon-size  
+
+### Spacers
+- --dim-100, --dim-95, … down to --dim-5  
+
+---
+
+## 2. Utility Classes
+
+### Headings and Paragraphs
+- h1, .h1 → font-size: var(--x-h1)  
+- h2, .h2 → font-size: var(--x-h2)  
+- h3, .h3 → font-size: var(--x-h3)  
+- h4, .h4 → font-size: var(--x-h4)  
+- h5, .h5 → font-size: var(--x-h5)  
+- p, .p → font-size: var(--x-font-size)  
+
+### Typography Utilities
+- .--bold → bold text  
+- .--italic → italic text  
+- .--underline → underline  
+- .--nounderline → remove underline  
+- .--uppercase → uppercase text  
+- .--titlecase → capitalize each word  
+- .--normal → reset text transforms  
+- Alignment:  
+  - .--text-left  
+  - .--text-right  
+  - .--text-center  
+  - .--text-justify  
+
+### Spacing
+- .spacer → block-level spacer  
+  - Modifiers: .spacer.--100, .spacer.--75, .spacer.--50 … down to .spacer.--5  
+  - Height is controlled by the corresponding --dim-* root variable  
+
+### Visibility
+- .--hide-on-{breakpoint}  
+- .--show-on-{breakpoint}  
+  - Breakpoints supported: mob, tab, desk, xs, sm, md, lg, xl, xxl  
+
+### Containers
+- .x-container → responsive fixed-width container (respects max-width and padding root variables)  
+- .x-container-fluid → full-width container with side padding  
+- .x-container-full → full-width container without max constraint  
+
+### Lists
+- .list ul → padded unordered list  
+- .list--unstyled → no bullets, no padding  
+- .list--inline → horizontal inline items  
+
+### Dividers
+- hr, .hr, .ruler, .divider  
+  - Modifiers:  
+    - .--semi (75% width)  
+    - .--mid or .--half (50% width)  
+    - .--small or .--third (30% width)  
+
+### Icons
+- Global reset applied to `<i>`, `.icon`, `i[class^="icon-"]`  
+- Font size and line height use --x-icon-size  
+
+---
+
+## 3. Example Usage
+
+```html
+<div class="x-container">
+  <h1 class="h1 --text-center">Welcome</h1>
+  <p class="p --text-justify">
+    This is an example paragraph styled with utility classes.
+  </p>
+
+  <ul class="list list--inline">
+    <li>Fast</li>
+    <li>Responsive</li>
+    <li>Customizable</li>
+  </ul>
+
+  <hr class="--half" />
+
+  <p class="--italic --text-right">
+    Built with ❤️ and utility-first design
+  </p>
+
+  <div class="spacer --50"></div>
+</div>
+
+
