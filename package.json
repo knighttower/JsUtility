@@ -1,6 +1,6 @@
 {
   "name": "knighttower",
-  "version": "10.58.0",
+  "version": "10.59.0",
   "type": "module",
   "engines": {
     "node": ">=20.10.0"

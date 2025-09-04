@@ -226,11 +226,9 @@ hr,
     --x-icon-size: 1rem;
 }
 
-// affecs all icons
+// affects all icons
 i,
-.icon,
-i[class^="icon-"],
-i[class*=" icon-"] {
+.x-icon {
     font-style: normal;
     font-weight: normal !important;
     font-variant: normal;
@@ -240,9 +238,12 @@ i[class*=" icon-"] {
     -moz-osx-font-smoothing: grayscale;
     font-size: var(--x-icon-size);
     line-height: var(--x-icon-size);
+    width: var(--x-icon-size);
+    height: var(--x-icon-size);
     position: relative;
 
     &::before {
+        top: inherit;
         font-style: inherit;
         font-weight: inherit;
         font-variant: inherit;
@@ -255,15 +256,14 @@ i[class*=" icon-"] {
         position: inherit;
         color: inherit;
     }
-}
 
-// affects only icons with class starting with "icon-" or "icon"
-.icon,
-i[class^="icon-"],
-i[class*=" icon-"] {
-    top: 1px;
-    &::before {
-        top: inherit;
+    svg,
+    use,
+    symbol,
+    symbol > g {
+        width: inherit;
+        height: inherit;
+        fill: inherit;
     }
 }
 
