@@ -681,9 +681,16 @@ const promisePool = () => {
             const promiseCollection = makeArray(_promises);
 
             promiseCollection.forEach((promise) => {
+                let originalPromise = promise;
                 if (!(promise instanceof Promise)) {
                     if (typeof promise === 'function') {
-                        promise = doAsync(() => promise());
+                        promise = doAsync(() => {
+                            try {
+                                return promise();
+                            } catch (error) {
+                                return Promise.reject(error);
+                            }
+                        });
                     } else {
                         console.info('---> Invalid promise added to the pool.');
                         rejectedPromises.push(promise.toString());
@@ -695,6 +702,7 @@ const promisePool = () => {
 
                 promises[promiseId] = {
                     status: 'in-progress',
+                    promise: originalPromise,
                     response: null,
                     error: null,
                     resolver: null,
