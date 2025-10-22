@@ -48,26 +48,26 @@ test('promisePool add promise', async () => {
     const pool = promisePool();
     pool.add(fetch('https://jsonplaceholder.typicode.com/todos/1'));
 
-    expect(
-        doPoll(() => {
-            if (pool.isDone()) {
-                return true;
-            }
-        }).promise
-    ).resolves.toBe(true);
+    const result = await doPoll(() => {
+        if (pool.isDone()) {
+            return true;
+        }
+    }).promise;
+
+    expect(result).toBe(true);
     // assert.equal(typeof result, 'string');
 });
 
 test('promisePool empty', async () => {
     const pool = promisePool();
 
-    expect(
-        doPoll(() => {
-            if (pool.isEmpty()) {
-                return true;
-            }
-        }).promise
-    ).resolves.toBe(true);
+    const result = await doPoll(() => {
+        if (pool.isEmpty()) {
+            return true;
+        }
+    }).promise;
+
+    expect(result).toBe(true);
     // assert.equal(typeof result, 'string');
 });
 
@@ -106,16 +106,16 @@ test('promisePool add bad promise', async () => {
         result = true;
     });
 
-    expect(
-        doPoll(
-            () => {
-                if (result === true) {
-                    return true;
-                }
-            },
-            { timeout: 6000 }
-        ).promise
-    ).resolves.toBe(true);
+    const pollResult = await doPoll(
+        () => {
+            if (result === true) {
+                return true;
+            }
+        },
+        { timeout: 6000 }
+    ).promise;
+
+    expect(pollResult).toBe(true);
 });
 
 test('promisePool add function', async () => {
@@ -126,13 +126,13 @@ test('promisePool add function', async () => {
         for (let i = 0; i < 50000; i++) {}
     });
 
-    expect(
-        doPoll(() => {
-            if (pool.isDone()) {
-                return true;
-            }
-        }).promise
-    ).resolves.toBe(true);
+    const result = await doPoll(() => {
+        if (pool.isDone()) {
+            return true;
+        }
+    }).promise;
+
+    expect(result).toBe(true);
 });
 
 test('promisePool', async () => {
@@ -162,16 +162,16 @@ test('promisePool', async () => {
         console.log(stats);
     });
 
-    expect(
-        doPoll(
-            () => {
-                if (pool.isDone()) {
-                    return true;
-                }
-            },
-            { timeout: 3000, interval: 500 }
-        ).promise
-    ).resolves.toBe(true);
+    const result = await doPoll(
+        () => {
+            if (pool.isDone()) {
+                return true;
+            }
+        },
+        { timeout: 3000, interval: 500 }
+    ).promise;
+
+    expect(result).toBe(true);
     // assert.equal(typeof result, 'string');
 });
 
