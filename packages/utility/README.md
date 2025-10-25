@@ -454,6 +454,7 @@ see all available in the CDN here --> https://cdn.jsdelivr.net/npm/@knighttower/
 <br/> 
 
 - [promises](https://github.com/knighttower/JsUtility/blob/development/packages/utility/src/promises.js): A class for managing promises in a queue and polling
+ℹ  [docs](https://github.com/knighttower/JsUtility/blob/development/packages/utility/docs/promises.md)
 
   @imports 
   - doAsync,
@@ -465,6 +466,7 @@ see all available in the CDN here --> https://cdn.jsdelivr.net/npm/@knighttower/
 <br/>  
 
 - [powerHelper](https://github.com/knighttower/JsUtility/blob/development/packages/utility/src/powerHelper.js): A collection of powerful functions for regex and string manipulation    
+ℹ  [docs](https://github.com/knighttower/JsUtility/blob/development/packages/utility/docs/powerHelper.md)
 
   @imports 
   - all, or import individual functions from the powerHelper library;  
@@ -495,6 +497,7 @@ see all available in the CDN here --> https://cdn.jsdelivr.net/npm/@knighttower/
 <br/> 
 
 - [urlHelper](https://github.com/knighttower/JsUtility/blob/development/packages/utility/src/urlHelper.js): A class for working with URLs  
+- ℹ  [docs](https://github.com/knighttower/JsUtility/blob/development/packages/utility/docs/urlHelper.md)
   
   @imports 
   - urlHelper, urlHelper as default
