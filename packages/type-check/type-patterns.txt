@@ -6,12 +6,16 @@ Possible type patterns:
 'type | type' // returns to test one or more types
 'type?' // is type or null/undefined
 'type | type?' // the second type would be type or null/undefined
+'enum:val1,val2,val3' // enum type - validates if value matches any of the specified values
+'enum:val1,val2,val3?' // optional enum - also accepts null/undefined
+'string | enum:red,green,blue' // enum combined with other types
 
 
 // basic array 
 '[type]' // returns test to test all the keys
 '[type | type]' // returns test to test all key with one or more
 '[[type],[type]]'
+'[enum:red,green,blue]' // array where all elements must match one of the enum values
 
 // basic object
 '{key1: type}' 
@@ -24,6 +28,8 @@ Possible type patterns:
 '{any: type | type}' // any key
 '{key1: type, any: type}' // specific key, and all other "any"
 '{key1: type | type, ...}' // specific key, and all other no test
+'{status: enum:active,inactive,pending}' // object with enum property
+'{role: enum:admin,user,guest, active: boolean}' // multiple properties with enum
 
 
 // ADVANCE

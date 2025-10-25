@@ -113,6 +113,12 @@
   "dependencies": {
     "@knighttower/type-check": "file:./packages/type-check",
     "@knighttower/utility": "file:./packages/utility",
+    "@knighttower/x-loader": "file:./packages/x-loader",
+    "@knighttower/vue-utils": "file:./packages/vue-utils",
+    "@knighttower/bootstrap-mini": "file:./packages/bootstrap-mini",
+    "@knighttower/toast": "file:./packages/toast",
+    "@knighttower/block-ui": "file:./packages/block-ui",
+    "@knighttower/adaptive": "file:./packages/adaptive",
     "bootstrap": "^5.3.8",
     "eslint-plugin-stylistic": "^0.0.0-0"
   },

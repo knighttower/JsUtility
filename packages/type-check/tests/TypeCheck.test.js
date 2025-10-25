@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { test } from 'vitest';
+import { test, describe, expect } from 'vitest';
 import {
     addTypeTest,
     _typeCheck,
@@ -238,4 +238,71 @@ test('array with objects: [{key: type, key: type}]', () => {
     // console.log(typeCheck([{ x: 2, y: 10 }], '[{x: number}]').log());
     assert.equal(_typeCheck([{ x: 2, y: 10 }], '[{x: number, ...}]').test(), true);
     assert.equal(_typeCheck([{ x: 2, y: 10 }], '[{x: number, any: number}]').test(), true);
+});
+
+describe('Enum Type Tests', () => {
+    test('Basic enum validation', () => {
+        expect(validType('red', 'enum=red/green/blue')).toBe(true);
+        expect(validType('yellow', 'enum=red/green/blue')).toBe(false);
+        expect(validType('green', 'enum=red/green/blue')).toBe(true);
+        expect(validType('blue', 'enum=red/green/blue')).toBe(true);
+    });
+
+    test('Enum with union types', () => {
+        expect(validType('red', 'string|enum=red/green/blue')).toBe(true);
+        expect(validType('yellow', 'string|enum=red/green/blue')).toBe(true); // valid string
+        expect(validType(123, 'number|enum=red/green/blue')).toBe(true); // valid number
+        expect(validType(true, 'boolean|enum=red/green/blue')).toBe(true); // valid boolean
+    });
+
+    test('Optional enum types', () => {
+        expect(validType('red', 'enum=red/green/blue?')).toBe(true);
+        expect(validType(null, 'enum=red/green/blue?')).toBe(true);
+        expect(validType(undefined, 'enum=red/green/blue?')).toBe(true);
+        expect(validType('yellow', 'enum=red/green/blue?')).toBe(false);
+    });
+
+    test('Enum with numbers as strings', () => {
+        expect(validType('1', 'enum=1/2/3')).toBe(true);
+        expect(validType('2', 'enum=1/2/3')).toBe(true);
+        expect(validType('4', 'enum=1/2/3')).toBe(false);
+    });
+
+    test('Enum with spaces in values', () => {
+        expect(validType('option A', 'enum=option A/option B/option C')).toBe(true);
+        expect(validType('option B', 'enum=option A/option B/option C')).toBe(true);
+        expect(validType('option D', 'enum=option A/option B/option C')).toBe(false);
+    });
+
+    test('Enum in function wrappers', () => {
+        const enumFunction = _tc('[enum=admin/user/guest]', (role) => {
+            return `Role: ${role}`;
+        });
+
+        expect(() => enumFunction('admin')).not.toThrow();
+        expect(() => enumFunction('invalid')).toThrow();
+    });
+
+    test('Enum with array validation', () => {
+        expect(validType(['red', 'blue'], '[enum=red/green/blue]')).toBe(true);
+        expect(validType(['reds', 'yellow'], '[enum=red/green/blue]')).toBe(false);
+    });
+
+    test('Enum in object validation', () => {
+        const testObj = { status: 'active', priority: 'high' };
+        expect(
+            validType(
+                testObj,
+                '{status: enum=active/inactive/pending, priority: enum=low/medium/high}'
+            )
+        ).toBe(true);
+
+        const invalidObj = { status: 'unknown', priority: 'high' };
+        expect(
+            validType(
+                invalidObj,
+                '{status: enum=active/inactive/pending, priority: enum=low/medium/high}'
+            )
+        ).toBe(false);
+    });
 });
