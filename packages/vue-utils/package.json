@@ -1,6 +1,6 @@
 {
   "name": "@knighttower/vue-utils",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "license": "MIT",
   "description": "Helps to install a mixin in Vue 2 or 3 for both options and composition API",
   "homepage": "https://github.com/knighttower/JsUtility",

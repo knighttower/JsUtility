@@ -1,6 +1,6 @@
 {
   "name": "@knighttower/toast",
-  "version": "1.8.0",
+  "version": "1.10.0",
   "type": "module",
   "description": "A dead simple toast library",
   "main": "dist/cjs/toast.cjs",

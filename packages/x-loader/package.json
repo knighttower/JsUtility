@@ -1,6 +1,6 @@
 {
   "name": "@knighttower/x-loader",
-  "version": "1.14.0",
+  "version": "1.16.0",
   "type": "module",
   "description": "tiny js/css/img loading library",
   "main": "dist/cjs/x-loader.cjs",

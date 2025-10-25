@@ -556,6 +556,20 @@ const cachedPipedTypes = new Map();
 // --------------------------
 
 /**
+ * Create enum test function for enum:val1,val2,val3 pattern
+ * @param {string} enumStr
+ * @return {function} test function
+ */
+function createEnumTest(enumStr) {
+    // Extract values after 'enum:'
+    const enumValues = enumStr
+        .substring(5)
+        .split('/')
+        .map((val) => val.trim());
+    return (_var_) => enumValues.includes(_var_);
+}
+
+/**
  * If the type is a union type, split it and return the tests for each type
  * @param {string} str
  * @return {array} tests
@@ -572,12 +586,20 @@ function getPipedTypes(str) {
             type = type.slice(0, -1);
             itCanBeNull = true;
         }
-        // lookup the test for the type and add it to the testsForKey array
-        const typeObj = typesMap.get(type);
-        const test = typeObj ?? isNoType(type);
-        if (test) {
-            testsForKey.push(test);
+
+        // Check if it's an enum pattern
+        if (type.startsWith('enum=')) {
+            const enumTest = createEnumTest(type);
+            testsForKey.push(enumTest);
+        } else {
+            // lookup the test for the type and add it to the testsForKey array
+            const typeObj = typesMap.get(type);
+            const test = typeObj ?? isNoType(type);
+            if (test) {
+                testsForKey.push(test);
+            }
         }
+
         // for optional types, add the tests for null and undefined
         if (itCanBeNull) {
             testsForKey.push(typesMap.get('null'), typesMap.get('undefined'));

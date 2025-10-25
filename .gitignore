@@ -4,6 +4,7 @@
 /.*
 /.gitconfig
 /.console
+/install-test
 # Sensitive files
 .*
 !.babelrc
