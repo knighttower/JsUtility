@@ -23,16 +23,18 @@
  * @usage convertToBool('false') // false
  */
 export function convertToBool(val) {
-    switch (typeof val) {
-        case 'boolean':
-            return val;
-        case 'string':
-            return val.toLowerCase() !== 'false' && val !== '0';
-        case 'number':
-            return val !== 0;
-        default:
-            return Boolean(val);
+    if (typeof val === 'boolean') return val;
+
+    if (typeof val === 'string') {
+        const normalized = val.trim().toLowerCase();
+        if (['true', '1', 'yes', 'on'].includes(normalized)) return true;
+        if (['false', '0', 'no', 'off', ''].includes(normalized)) return false;
+        return Boolean(normalized);
     }
+
+    if (typeof val === 'number') return val !== 0;
+
+    return Boolean(val);
 }
 
 /**
@@ -312,33 +314,24 @@ export function getGoogleMapsAddress(address) {
  * @note This function is case-insensitive and since native includes is not recursive, this function is
  */
 export function includes(collection, value, fromIndex = 0) {
+    if (collection === null || collection === undefined) {
+        return false;
+    }
+
     const isString = typeof value === 'string';
     value = isString ? value.toLowerCase() : value;
     const collectionType = typeOf(collection);
-    const find = (target) => {
-        const isType = typeOf(target);
-        if (isType === 'object' || isType === 'array') {
-            return includes(target, value, fromIndex);
-        }
-        if (isType === 'number' || isType === 'boolean') {
-            return collection.toString().includes(value.toString(), fromIndex);
-        }
-        // any other case
-        return target.includes(value, fromIndex);
-    };
+
     switch (collectionType) {
         case 'array':
-            return collection.some((item) => find(item));
-            break;
+            return collection.some((item) => includes(item, value));
         case 'string':
             return collection.toLowerCase().includes(value, fromIndex);
-            break;
         case 'number':
         case 'boolean':
             return collection.toString().includes(value.toString(), fromIndex);
         case 'object':
-            return Object.values(collection).some((item) => find(item));
-            break;
+            return Object.values(collection).some((item) => includes(item, value));
     }
     // any other case
     return collection.includes(value, fromIndex);
