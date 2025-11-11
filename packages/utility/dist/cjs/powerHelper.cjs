@@ -25,16 +25,18 @@
  * @usage convertToBool('false') // false
  */
 function convertToBool(val) {
-    switch (typeof val) {
-        case 'boolean':
-            return val;
-        case 'string':
-            return val.toLowerCase() !== 'false' && val !== '0';
-        case 'number':
-            return val !== 0;
-        default:
-            return Boolean(val);
+    if (typeof val === 'boolean') return val;
+
+    if (typeof val === 'string') {
+        const normalized = val.trim().toLowerCase();
+        if (['true', '1', 'yes', 'on'].includes(normalized)) return true;
+        if (['false', '0', 'no', 'off', ''].includes(normalized)) return false;
+        return Boolean(normalized);
     }
+
+    if (typeof val === 'number') return val !== 0;
+
+    return Boolean(val);
 }
 
 /**
