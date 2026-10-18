@@ -169,8 +169,11 @@ function emptyOrValue(value, _default = null) {
  * @param {any} value The value to check.
  * @returns {boolean} True if the value is a plain object, false otherwise.
  */
-const isPlainObject = (value) =>
-    value && typeof value === 'object' && value.constructor === Object;
+const isPlainObject = (value) => {
+    if (value === null || typeof value !== 'object') return false;
+    const proto = Object.getPrototypeOf(value);
+    return proto === Object.prototype || proto === null;
+};
 
 /**
  * Merges two or more objects into a single new object. Arrays and other types are overwritten.
