@@ -19,6 +19,9 @@ import {
     wildCardStringSearch,
     setWildCardString,
     getArrObjFromString,
+    getChunks,
+    startAndEndWith,
+    getObjectFromPath,
     proxyObject,
     getObjectValue,
 } from '../src/powerHelper.js';
@@ -363,4 +366,332 @@ test('setWildCardString - should set a wildcard at the end of a string', () => {
     const string3 = 'a*b*c';
     const result3 = setWildCardString(string3, null, true);
     assert.equal(result3, 'a(.*?)b(.*?)c$');
+});
+
+// =========================================
+// --> Edge cases
+// --------------------------
+test('getDirectivesFromString - never writes into built-in objects', () => {
+    const originalKeys = Object.keys;
+    let keysAfter, results2, results3;
+    try {
+        results = getDirectivesFromString('constructor.keys(1)');
+        keysAfter = Object.keys;
+        results2 = getDirectivesFromString('__proto__.polluted.x(1)');
+        results3 = getDirectivesFromString('toString.polluted(1)');
+        assert.strictEqual(keysAfter, originalKeys);
+        assert.strictEqual({}.polluted, undefined);
+        assert.strictEqual({}.toString.polluted, undefined);
+    } finally {
+        Object.keys = originalKeys;
+        delete Object.prototype.polluted;
+        delete Object.prototype.toString.polluted;
+    }
+    // the names are still usable as directives, they just stay inside the result
+    assert.ok(Object.prototype.hasOwnProperty.call(results.directive, 'constructor'));
+    assert.deepStrictEqual(results.directive.constructor, { keys: '1' });
+    assert.deepStrictEqual(results2, { type: 'dotObject', directive: {} });
+    assert.deepStrictEqual(results3.directive.toString, { polluted: '1' });
+});
+
+test('getDirectivesFromString - parts that are not a directive are skipped', () => {
+    const expected = { type: 'dotObject', directive: { a: { b: '1' } } };
+    assert.deepStrictEqual(getDirectivesFromString('a.b(1) && foo'), expected);
+    assert.deepStrictEqual(getDirectivesFromString('a.b(1)&&'), expected);
+    assert.deepStrictEqual(getDirectivesFromString('a.b|(1)'), expected);
+});
+
+test('getDirectivesFromString - input that is not a string is returned with its type', () => {
+    const list = ['a'];
+    assert.deepStrictEqual(getDirectivesFromString(5), { type: 'number', directive: 5 });
+    assert.deepStrictEqual(getDirectivesFromString(true), { type: 'boolean', directive: true });
+    assert.deepStrictEqual(getDirectivesFromString(list), { type: 'object', directive: list });
+    assert.deepStrictEqual(getDirectivesFromString({ a: 1 }), {
+        type: 'object',
+        directive: { a: 1 },
+    });
+    assert.strictEqual(getDirectivesFromString(''), null);
+    assert.strictEqual(getDirectivesFromString(null), null);
+    assert.strictEqual(getDirectivesFromString([]), null);
+});
+
+test('getDirectivesFromString - valid JSON is kept as it is', () => {
+    assert.deepStrictEqual(getDirectivesFromString('{"a": "it\'s", "b": [1, "x,y"]}'), {
+        type: 'object',
+        directive: { a: "it's", b: [1, 'x,y'] },
+    });
+    assert.deepStrictEqual(getDirectivesFromString('["a,b", "c"]'), {
+        type: 'array',
+        directive: ['a,b', 'c'],
+    });
+});
+
+test('getDirectivesFromString - surrounding spaces and line breaks', () => {
+    assert.deepStrictEqual(getDirectivesFromString('  {a: hello}  '), {
+        type: 'object',
+        directive: { a: 'hello' },
+    });
+    assert.deepStrictEqual(getDirectivesFromString('{\r\n  a: hello,\r\n  b: [1, 2]\r\n}'), {
+        type: 'object',
+        directive: { a: 'hello', b: [1, 2] },
+    });
+    assert.deepStrictEqual(getDirectivesFromString('\n[a, b]\n'), {
+        type: 'array',
+        directive: ['a', 'b'],
+    });
+    assert.deepStrictEqual(getDirectivesFromString('directive.tablet(\r\n{to: here}\r\n)'), {
+        type: 'dotObject',
+        directive: { directive: { tablet: { to: 'here' } } },
+    });
+    // plain strings are returned untouched
+    assert.deepStrictEqual(getDirectivesFromString(' #hello '), {
+        type: 'string',
+        directive: ' #hello ',
+    });
+});
+
+test('getDirectivesFromString - a long string that never closes is still fast', () => {
+    const start = performance.now();
+    results = getDirectivesFromString('{' + 'a:'.repeat(20000));
+    assert.strictEqual(results.type, 'string');
+    assert.ok(performance.now() - start < 300, 'took too long');
+});
+
+test('getArrObjFromString - the word null, and colons inside values', () => {
+    assert.deepStrictEqual(getArrObjFromString('{y: {a: 1}, x: null}'), {
+        y: { a: 1 },
+        x: 'null',
+    });
+    assert.deepStrictEqual(getArrObjFromString('{x: null, y: {a: 1}}'), {
+        x: 'null',
+        y: { a: 1 },
+    });
+    assert.deepStrictEqual(getArrObjFromString('[{a: 1}, null]'), [{ a: 1 }, 'null']);
+    assert.deepStrictEqual(getArrObjFromString('{url: http://x.com/a, t: 10:30}'), {
+        url: 'http://x.com/a',
+        t: '10:30',
+    });
+    assert.deepStrictEqual(getArrObjFromString('[a:b, 10:30]'), ['a:b', '10:30']);
+});
+
+test('getArrObjFromString - extra commas are ignored', () => {
+    assert.deepStrictEqual(getArrObjFromString('[a,b,]'), ['a', 'b']);
+    assert.deepStrictEqual(getArrObjFromString('[a,,b]'), ['a', 'b']);
+    assert.deepStrictEqual(getArrObjFromString('[ , ]'), []);
+    assert.deepStrictEqual(getArrObjFromString('{a: 1,}'), { a: 1 });
+    assert.deepStrictEqual(getArrObjFromString('{a: 1,, b: [2,],}'), { a: 1, b: [2] });
+});
+
+test('getArrObjFromString - surrounding spaces and line breaks', () => {
+    assert.deepStrictEqual(getArrObjFromString(' [a, b] '), ['a', 'b']);
+    assert.deepStrictEqual(getArrObjFromString('[\n a,\n b\n]'), ['a', 'b']);
+    assert.deepStrictEqual(
+        getArrObjFromString('{\r\n a: 1,\r\n b: [2, 3],\r\n c: {\r\n  d: x\r\n }\r\n}'),
+        {
+            a: 1,
+            b: [2, 3],
+            c: { d: 'x' },
+        }
+    );
+});
+
+test('getArrObjFromString - anything that is not a collection is returned untouched', () => {
+    const object = { a: 1 };
+    const list = [1];
+    assert.strictEqual(getArrObjFromString(object), object);
+    assert.strictEqual(getArrObjFromString(list), list);
+    assert.strictEqual(getArrObjFromString(5), 5);
+    assert.strictEqual(getArrObjFromString(true), true);
+    assert.strictEqual(getArrObjFromString(null), null);
+    assert.strictEqual(getArrObjFromString(undefined), undefined);
+    assert.strictEqual(getArrObjFromString(''), '');
+    assert.strictEqual(getArrObjFromString('hello'), 'hello');
+    assert.strictEqual(getArrObjFromString(' hello '), ' hello ');
+    assert.strictEqual(getArrObjFromString('[hello'), '[hello');
+    assert.strictEqual(getArrObjFromString('{a: 1]'), '{a: 1]');
+});
+
+test('getArrObjFromString - keys, values and nesting', () => {
+    // values: numbers are converted, quotes are removed
+    assert.deepStrictEqual(getArrObjFromString('[1, 2.5, "7", abc, \'x y\', -3]'), [
+        1,
+        2.5,
+        7,
+        'abc',
+        'x y',
+        -3,
+    ]);
+    // entries without a key get their position as the key
+    assert.deepStrictEqual(getArrObjFromString('{a: string, ...}'), { a: 'string', 1: '...' });
+    assert.deepStrictEqual(getArrObjFromString('{"a": 1, \'b\': 2, 3: c}'), { a: 1, b: 2, 3: 'c' });
+    assert.deepStrictEqual(getArrObjFromString('{a: }'), { a: undefined });
+    assert.deepStrictEqual(getArrObjFromString('[]'), []);
+    assert.deepStrictEqual(getArrObjFromString('{}'), {});
+    assert.deepStrictEqual(getArrObjFromString('[ [ ], { } ]'), [[], {}]);
+    assert.deepStrictEqual(getArrObjFromString('[[a],[a]]'), [['a'], ['a']]);
+    assert.deepStrictEqual(getArrObjFromString('{a: [1, {b: [2, 3]}], c: {d: {e: 5}}}'), {
+        a: [1, { b: [2, 3] }],
+        c: { d: { e: 5 } },
+    });
+});
+
+test('getArrObjFromString - brackets without a partner are plain text', () => {
+    assert.deepStrictEqual(getArrObjFromString('[a, [b]'), ['a', '[b']);
+    assert.deepStrictEqual(getArrObjFromString('[a], b]'), ['a]', 'b']);
+    assert.deepStrictEqual(getArrObjFromString('[a, {b, c]'), ['a', '{b', 'c']);
+    // text around a nested collection stays as written
+    assert.deepStrictEqual(getArrObjFromString('[foo[1,2]bar, x]'), ['foo[1,2]bar', 'x']);
+    assert.deepStrictEqual(getArrObjFromString('{a: string|[number], b: x}'), {
+        a: 'string|[number]',
+        b: 'x',
+    });
+});
+
+test('getArrObjFromString - a __proto__ key does not change the result prototype', () => {
+    results = getArrObjFromString('{__proto__: {polluted: 1}, ok: 1}');
+    assert.strictEqual(results.polluted, undefined);
+    assert.strictEqual(Object.getPrototypeOf(results), Object.prototype);
+    assert.deepStrictEqual(results, { ok: 1 });
+    assert.strictEqual({}.polluted, undefined);
+});
+
+test('getArrObjFromString - large and deeply nested input', () => {
+    const big = getArrObjFromString('[' + 'a,'.repeat(100000) + '[b, {c: d}]]');
+    assert.strictEqual(big.length, 100001);
+    assert.deepStrictEqual(big[100000], ['b', { c: 'd' }]);
+    const deep = getArrObjFromString('['.repeat(500) + 'x' + ']'.repeat(500));
+    let level = deep;
+    for (let i = 1; i < 500; i++) {
+        level = level[0];
+    }
+    assert.deepStrictEqual(level, ['x']);
+});
+
+test('getChunks - should split and clean the chunks', () => {
+    assert.deepStrictEqual(getChunks('a, b ,c'), ['a', 'b', 'c']);
+    assert.deepStrictEqual(getChunks('a | b', '|'), ['a', 'b']);
+    assert.deepStrictEqual(getChunks('a&&b && c', '&&'), ['a', 'b', 'c']);
+    assert.deepStrictEqual(getChunks('abc'), ['abc']);
+    // empty chunks are empty strings
+    assert.deepStrictEqual(getChunks('a,,b'), ['a', '', 'b']);
+    assert.deepStrictEqual(getChunks('a,b,'), ['a', 'b', '']);
+    assert.deepStrictEqual(getChunks(''), []);
+    assert.deepStrictEqual(getChunks('   '), []);
+    assert.strictEqual(getChunks(5), 5);
+    assert.strictEqual(getChunks(undefined), undefined);
+});
+
+test('startAndEndWith - should check both ends', () => {
+    assert.strictEqual(startAndEndWith('hello world', 'h', 'd'), true);
+    assert.strictEqual(startAndEndWith('hello world', 'h', 'x'), false);
+    assert.strictEqual(startAndEndWith('hello world', 'x', 'd'), false);
+    assert.strictEqual(startAndEndWith('hello world', 'h'), true);
+    assert.strictEqual(startAndEndWith('hello world', null, 'd'), true);
+    assert.strictEqual(startAndEndWith('[a]', '[', ']'), true);
+    assert.strictEqual(startAndEndWith('[', '[', ']'), false);
+    assert.strictEqual(startAndEndWith(5, '[', ']'), false);
+    assert.strictEqual(startAndEndWith(null, '[', ']'), false);
+});
+
+test('setLookUpExp - should build a pattern that matches in between delimiters', () => {
+    let match = new RegExp(setLookUpExp('h', 'd')).exec('say hello world today');
+    assert.strictEqual(match[0], 'hello world');
+    assert.strictEqual(match[1], 'ello worl');
+    // two groups for each in between, as it always had
+    assert.strictEqual(match.length, 3);
+
+    match = new RegExp(setLookUpExp('<', '-', '>')).exec('a <one-two> b');
+    assert.strictEqual(match[0], '<one-two>');
+    assert.strictEqual(match[1], 'one');
+    assert.strictEqual(match[3], 'two');
+
+    // line breaks of any kind
+    assert.strictEqual(new RegExp(setLookUpExp('<', '>')).exec('<a\r\nb>')[1], 'a\r\nb');
+    assert.strictEqual(new RegExp(setLookUpExp('<', '>')).exec('<a\nb>')[1], 'a\nb');
+
+    // a regex with alternatives stays in one piece
+    assert.strictEqual(new RegExp(setLookUpExp(/a|b/, 'c')).exec('xa..c')[0], 'a..c');
+    assert.strictEqual(new RegExp(setLookUpExp('x', /c|d/)).exec('x..d')[0], 'x..d');
+
+    assert.throws(() => setLookUpExp('a'));
+});
+
+test('getMatchBlock - line breaks, alternatives and all matches', () => {
+    assert.strictEqual(getMatchBlock('<a\r\nb>', '<', '>'), '<a\r\nb>');
+    assert.strictEqual(getMatchBlock('<a\nb>', '<', '>'), '<a\nb>');
+    assert.strictEqual(getMatchBlock('xa..c', /a|b/, 'c'), 'a..c');
+    assert.strictEqual(getMatchBlock('x <a\r\nb/> y', /<\w/, '/>'), '<a\r\nb/>');
+    assert.deepStrictEqual(getMatchBlock('<a> x <b> <c', '<', '>', true), ['<a>', '<b>']);
+    assert.deepStrictEqual(getMatchBlock('{{a}} {{b}}', '{{', '}}', true), ['{{a}}', '{{b}}']);
+    assert.strictEqual(getMatchBlock('a () b', '(', ')'), '()');
+    assert.strictEqual(getMatchBlock('no match', '<', '>'), null);
+    assert.strictEqual(getMatchBlock('no match', '<', '>', true), null);
+    assert.strictEqual(getMatchBlock('<5>', '<', 5), '<5');
+    assert.strictEqual(getMatchBlock(5, '<', '>'), 5);
+});
+
+test('getMatchBlock - large input', () => {
+    // a block that never closes
+    let start = performance.now();
+    assert.strictEqual(getMatchBlock('<'.repeat(100000), '<', '>'), null);
+    assert.ok(performance.now() - start < 300, 'took too long');
+
+    // a very long block
+    const long = '<' + 'x'.repeat(5000000) + '>';
+    assert.strictEqual(getMatchBlock(long, '<', '>').length, long.length);
+    assert.strictEqual(getMatchBlock(long, /</, />/).length, long.length);
+});
+
+test('getMatchInBetween - no match returns the string as it is', () => {
+    assert.strictEqual(getMatchInBetween('hello', '<', '>'), 'hello');
+    assert.deepStrictEqual(getMatchInBetween('hello', '<', '>', true), []);
+    assert.deepStrictEqual(getMatchInBetween('<a> <b>', '<', '>', true), ['a', 'b']);
+    assert.strictEqual(getMatchInBetween('x <a\r\nb> y', '<', '>'), 'a\r\nb');
+});
+
+test('findNested - delimiters with more than one character', () => {
+    assert.strictEqual(findNested('a <b/> c', '<', '/>'), '<b/>');
+    assert.strictEqual(findNested('{{a}} {{b}}', '{{', '}}'), '{{b}}');
+    assert.strictEqual(findNested('[[]hello [world]]'), '[world]');
+    assert.strictEqual(findNested('no brackets'), null);
+});
+
+test('findAndReplaceInArray - the replacement can be an array of anything', () => {
+    assert.deepStrictEqual(findAndReplaceInArray([1, 2, 3], 2, [4, 5]), [1, [4, 5], 3]);
+    assert.deepStrictEqual(findAndReplaceInArray([1, 2, 3], 2, [' a ', 'b', [' c ']]), [
+        1,
+        ['a', 'b', [' c ']],
+        3,
+    ]);
+});
+
+test('getObjectFromPath - should return the value found at the path', () => {
+    const source = { a: { b: { c: 'value' } } };
+    assert.strictEqual(getObjectFromPath('a.b.c', source), 'value');
+    assert.strictEqual(getObjectFromPath('a.b', source), source.a.b);
+    assert.strictEqual(getObjectFromPath('a.x.c', source), undefined);
+    globalThis.__powerHelperTest = { a: 1 };
+    assert.strictEqual(getObjectFromPath('__powerHelperTest.a'), 1);
+    delete globalThis.__powerHelperTest;
+});
+
+test('cleanStr - delimiters of other types', () => {
+    assert.strictEqual(cleanStr('abc5', 5), 'abc');
+    assert.strictEqual(cleanStr(' abc ', undefined, null), 'abc');
+    assert.strictEqual(cleanStr('a.b.c', '.'), 'ab.c');
+    assert.strictEqual(cleanStr('a.b.c', /\./g), 'abc');
+    assert.strictEqual(cleanStr('(a)', '(', ')'), 'a');
+    assert.strictEqual(cleanStr(''), undefined);
+    assert.strictEqual(cleanStr(5), 5);
+});
+
+test('setExpString - escapes every special character', () => {
+    assert.strictEqual(
+        setExpString('$^.*+?()[]{}|\\'),
+        '\\$\\^\\.\\*\\+\\?\\(\\)\\[\\]\\{\\}\\|\\\\'
+    );
+    assert.strictEqual(setExpString('a-b/c'), 'a-b/c');
+    assert.strictEqual(setExpString(5), '5');
+    const regex = /a.b/;
+    assert.strictEqual(setExpString(regex), regex);
 });

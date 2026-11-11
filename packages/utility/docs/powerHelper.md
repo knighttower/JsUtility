@@ -154,10 +154,18 @@ findAndReplaceInArray([[1,2], [3,4]], 3, 'three'); // [[1,2], ['three',4]]
 
 Converts string formats into objects or arrays. Does not support quoted strings.
 
+- Values are separated by commas and can be nested
+- Object entries are `key: value`, an entry without a key gets its position as the key
+- Values that are numbers are converted to numbers, any other value is a string
+- Empty values (like the one after a trailing comma) are ignored
+- The expression can have spaces around it and be written in several lines
+
 ```javascript
 getArrObjFromString('[[value,value],value]'); // [['value', 'value'], 'value']
 getArrObjFromString('{ y: hello, x: world, z: [value,value]}'); 
 // { y: 'hello', x: 'world', z: ['value', 'value'] }
+getArrObjFromString('{ y: 1, url: http://site.com, ...}'); 
+// { y: 1, url: 'http://site.com', 2: '...' }
 ```
 
 **Parameters:**
@@ -224,6 +232,8 @@ Finds matches between delimiters, returns clean content without delimiters.
 getMatchInBetween('hello world', 'h', 'd'); // 'ello worl'
 getMatchInBetween('hello <world/>', '<', '/>'); // 'world'
 getMatchInBetween('text <a/> and <b/>', '<', '/>', true); // ['a', 'b']
+getMatchInBetween('hello world', '<', '/>'); // 'hello world' (no match)
+getMatchInBetween('hello world', '<', '/>', true); // [] (no match)
 ```
 
 **Parameters:**
@@ -232,7 +242,7 @@ getMatchInBetween('text <a/> and <b/>', '<', '/>', true); // ['a', 'b']
 - `p2` (String|RegExp): Second delimiter
 - `all` (Boolean): Return all matches (default: false)
 
-**Returns:** String|Array|null - Clean content between delimiters
+**Returns:** String|Array - Clean content between delimiters. When there is no match, the string is returned as it is (or an empty array when `all` is set)
 
 ### getChunks(str, splitter = ',')
 
@@ -356,7 +366,8 @@ getDirectivesFromString('{key: value}');
 Escapes a string to create a regex or returns the regex if it already is an expression.
 
 ```javascript
-setExpString('hello'); // '\\h\\e\\l\\l\\o'
+setExpString('hello'); // 'hello'
+setExpString('hello.world?'); // 'hello\\.world\\?'
 setExpString(/hello/); // /hello/
 setExpString('[test]'); // '\\[test\\]'
 ```
@@ -368,14 +379,16 @@ setExpString('[test]'); // '\\[test\\]'
 
 ### setLookUpExp(...args)
 
-Regex builder to get matches between multiple delimiters.
+Regex builder to get matches between multiple delimiters. What is in between can span several lines (any kind of line break).
+Strings are used as they are, so escape them first with `setExpString` when they are not meant to be a pattern.
 
 ```javascript
-setLookUpExp('h', 'd'); // 'h((.|\n)*?)d'
-setLookUpExp('h', 'd', 'c'); // 'h((.|\n)*?)d((.|\n)*?)c'
+setLookUpExp('h', 'd'); // 'h([\s\S]*?)()d'
+setLookUpExp('h', 'd', 'c'); // 'h([\s\S]*?)()d([\s\S]*?)()c'
+setLookUpExp(/a|b/, 'c'); // '(?:a|b)([\s\S]*?)()c'
 
 // Usage example:
-const pattern = setLookUpExp(".", "!");
+const pattern = setLookUpExp("\\.", "!");
 const regex = new RegExp(pattern, 'g');
 const text = "Hello World. Sunshine is here! Have fun!";
 const matches = text.match(regex); // [". Sunshine is here!"]
