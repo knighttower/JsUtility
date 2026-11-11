@@ -105,7 +105,7 @@ Formats dates to **MM/DD/YYYY** with optional time.
   `String | Null` - Formatted date or null if invalid.
 - **Usage:**
   ```javascript
-  dateFormat('2201-01-01 16:15PM', true);  // "01/01/2201 @ 4:15 PM"
+  dateFormat('2201-01-01 16:15', true);  // "01/01/2201 @ 04:15 PM"
   ```
 
 ---
@@ -270,34 +270,6 @@ Converts an input to an array.
 
 ---
 
-### **Address Helpers**
-
-#### 15. `getGoogleMapsAddress(address)`
-
-Generates a Google Maps URL from an address.
-
-- **Params:**  
-  `address: String | Object`
-- **Returns:**  
-  `String`
-- **Usage:**
-  ```javascript
-  getGoogleMapsAddress('New York');  // "https://maps.google.it/maps?q=New+York"
-  ```
-
-#### 16. `openGoogleMapsAddress(object)`
-
-Opens Google Maps in a new tab.
-
-- **Params:**  
-  `object: String | Object` - Address.
-- **Usage:**
-  ```javascript
-  openGoogleMapsAddress('New York');
-  ```
-
----
-
 ### **Additional Methods**
 
 - **Type Check:**  
@@ -388,14 +360,12 @@ export {
     emptyOrValue,
     formatPhoneNumber,
     getDynamicId,
-    getGoogleMapsAddress,
     getRandomId,
     includes,
     instanceOf,
     isEmpty,
     isNumber,
     makeArray,
-    openGoogleMapsAddress,
     randomId,
     toCurrency,
     toDollarString,
@@ -534,7 +504,6 @@ see all available in the CDN here --> https://cdn.jsdelivr.net/npm/@knighttower/
   dateFormat: "formats a date object to a specified format string",
   decimalToCurrency: "converts a decimal number to a currency string",
   emptyOrValue: "returns a default value if a given value is empty or undefined, uses isEmpty()",
-  getGoogleMapsAddress: "gets a formatted address string for a location using the Google Maps API",
   formatPhoneNumber: "formats a phone number string to a standardized format",
   getDynamicId: "generates a unique ID string based on a prefix, timestamp and a random number",
   getRandomId: "generates a random ID string",
@@ -542,7 +511,6 @@ see all available in the CDN here --> https://cdn.jsdelivr.net/npm/@knighttower/
   isNumber: "checks if a given value is a number (that includes string numbers and floats)",
   isEmpty: "checks if a given value is empty, checks arrays, objects, etc",
   logThis: "logs a message to the console with a specified prefix",
-  openGoogleMapsAddress: "opens Google Maps in a new tab with a specified address",
   toCurrency: "formats a number to a currency string",
   toDollarString: "formats a number to a dollar string",
   typeOf: "gets the type of a value and can also return simple comparisons. For more advanced type-checking, use the 'typeCheck' library https://github.com/knighttower/JsTypeCheck",

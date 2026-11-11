@@ -12,12 +12,10 @@ This documentation provides a detailed description of the functions available in
 - [formatPhoneNumber](#formatPhoneNumber)
 - [makeArray](#makeArray)
 - [getDynamicId](#getDynamicId)
-- [getGoogleMapsAddress](#getGoogleMapsAddress)
 - [includes](#includes)
 - [isEmpty](#isEmpty)
 - [isNumber](#isNumber)
 - [instanceOf](#instanceOf)
-- [openGoogleMapsAddress](#openGoogleMapsAddress)
 - [toCurrency](#toCurrency)
 - [toDollarString](#toDollarString)
 - [typeOf](#typeOf)
@@ -106,7 +104,7 @@ function dateFormat(dateTime, wTime)
 
 ### Example
 ```javascript
-console.log(dateFormat('2201-01-01 16:15PM', true));  // 01/01/2201 @ 4:15 PM
+console.log(dateFormat('2201-01-01 16:15', true));  // 01/01/2201 @ 04:15 PM
 ```
 
 ## decimalToCurrency
@@ -211,27 +209,7 @@ function getDynamicId()
 
 ### Example
 ```javascript
-console.log(getDynamicId());  // kn__1615961863463__105
-```
-
-## getGoogleMapsAddress
-### Description
-Generates a Google Maps URL for a given address, which can be a string or an object containing address components.
-
-### Syntax
-```javascript
-function getGoogleMapsAddress(address)
-```
-
-### Parameters
-- `address` (`String|Object`) - The address information.
-
-### Return Type
-- `string` - The Google Maps URL.
-
-### Example
-```javascript
-console.log(getGoogleMapsAddress('New York'));  // 'https://maps.google.it/maps?q=New+York'
+console.log(getDynamicId());  // id__k3j9x2ab__1615961863463
 ```
 
 ## includes
@@ -317,29 +295,7 @@ function instanceOf(input, test)
 ### Example
 ```javascript
 console.log(instanceOf(new Date(), 'date'));  // true
-console.log(instanceOf(123, 'number'));       // true
-```
-
-## openGoogleMapsAddress
-### Description
-Opens a Google Maps page for a given address using the system's default web browser.
-
-### Syntax
-```javascript
-function
-
- openGoogleMapsAddress(object)
-```
-
-### Parameters
-- `object` (`String|Object`) - The address information, either as a plain string or as an object.
-
-### Return Type
-- `void` - Opens a web page.
-
-### Example
-```javascript
-openGoogleMapsAddress('New York');  // Opens Google Maps for 'New York'
+console.log(instanceOf(new MyClass(), MyClass));  // true
 ```
 
 ## toCurrency
@@ -443,7 +399,7 @@ function validatePhone(phone)
 ### Example
 ```javascript
 console.log(validatePhone('1234567890'));  // true
-console.log(validatePhone('123 456 7890'));  // false
+console.log(validatePhone('123 456 7890'));  // true
 ```
 
 This comprehensive documentation should assist developers in effectively utilizing the  Utility Library to enhance their projects with reliable, commonly needed functionalities.
