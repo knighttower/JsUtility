@@ -863,6 +863,11 @@ TypeCheck JS supports a rich pattern syntax for expressing complex type requirem
 
 // Optional elements in arrays
 '[string, number?]'             // second element optional
+
+// Rest elements: "..." repeats the last declared type for all remaining elements
+'[number, ...]'                          // every element is a number
+'[string, number, ...]'                  // first string, then any number of numbers
+'{items: [{key: string, value: string}, ...]}' // array of {key, value} objects
 ```
 
 ### Object Patterns
