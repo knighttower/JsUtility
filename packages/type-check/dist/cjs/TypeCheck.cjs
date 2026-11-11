@@ -654,16 +654,27 @@ const basicTypes = (typeStr) => {
 /**
  * Handle array types
  * @param {string} strExp
- * @return {array} tests
+ * @return {object} { tests: array, hasRest: boolean }
  */
 const arrayTypes = (strExp) => {
     const testUnit = [];
     const convertedObj = getArrObjFromString(strExp);
+    let hasRest = false;
 
-    convertedObj.forEach((test) => {
+    convertedObj.forEach((test, index) => {
+        // '[type, ...]' rest marker: the last declared type applies to all remaining elements
+        if (typeof test === 'string' && test.trim() === '...') {
+            if (index !== convertedObj.length - 1 || index === 0) {
+                throw new Error(
+                    `Type Error: "..." must be the last item and follow a type in "${typeOf(strExp, 'string') ? strExp : JSON.stringify(strExp)}", e.g. "[type, ...]"`
+                );
+            }
+            hasRest = true;
+            return;
+        }
         testUnit.push(testBuilder(test));
     });
-    return testUnit;
+    return { tests: testUnit, hasRest };
 };
 
 /**
@@ -751,9 +762,12 @@ function testBuilder(strExp) {
         case 'basic':
             testUnit.set('tests', basicTypes(strExp));
             break;
-        case 'array':
-            testUnit.set('tests', arrayTypes(strExp));
+        case 'array': {
+            const { tests, hasRest } = arrayTypes(strExp);
+            testUnit.set('tests', tests);
+            testUnit.set('hasRest', hasRest);
             break;
+        }
         case 'object':
             const objTypes = objectTypes(strExp);
             testUnit = new Map([...testUnit, ...objTypes]);
@@ -798,16 +812,21 @@ const runBasicTest = (inputVal, tests) => {
     });
 };
 
-const runArrayTest = (inputVal, tests) => {
+const runArrayTest = (inputVal, tests, hasRest = false) => {
     // If the input is not an array, return false
     if (!typeOf(inputVal, 'array') || inputVal.length === 0) {
         return false;
     }
-    // Else, test each value in the array
-    return tests.every((test, index) => {
-        // console.log('is array: ', inputVal[index], test);
+    // Else, test each declared position in the array
+    const positionalResult = tests.every((test, index) => {
         return runRouteTest(inputVal[index], test);
     });
+    if (!positionalResult || !hasRest) {
+        return positionalResult;
+    }
+    // '[type, ...]': the remaining elements must match the last declared type
+    const restTest = tests[tests.length - 1];
+    return inputVal.slice(tests.length).every((value) => runRouteTest(value, restTest));
 };
 
 class ObjectTestHandler {
@@ -933,7 +952,7 @@ function runRouteTest(inputVal, unitTest) {
         case 'basic':
             return runBasicTest(inputVal, tests);
         case 'array':
-            return runArrayTest(inputVal, tests);
+            return runArrayTest(inputVal, tests, unitTest.get('hasRest'));
         case 'object':
             return runObjectTest(inputVal, unitTest); // No change here as the entire Map is passed
         default:
