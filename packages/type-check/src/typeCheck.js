@@ -17,16 +17,21 @@ const runBasicTest = (inputVal, tests) => {
     });
 };
 
-const runArrayTest = (inputVal, tests) => {
+const runArrayTest = (inputVal, tests, hasRest = false) => {
     // If the input is not an array, return false
     if (!typeOf(inputVal, 'array') || inputVal.length === 0) {
         return false;
     }
-    // Else, test each value in the array
-    return tests.every((test, index) => {
-        // console.log('is array: ', inputVal[index], test);
+    // Else, test each declared position in the array
+    const positionalResult = tests.every((test, index) => {
         return runRouteTest(inputVal[index], test);
     });
+    if (!positionalResult || !hasRest) {
+        return positionalResult;
+    }
+    // '[type, ...]': the remaining elements must match the last declared type
+    const restTest = tests[tests.length - 1];
+    return inputVal.slice(tests.length).every((value) => runRouteTest(value, restTest));
 };
 
 class ObjectTestHandler {
@@ -152,7 +157,7 @@ function runRouteTest(inputVal, unitTest) {
         case 'basic':
             return runBasicTest(inputVal, tests);
         case 'array':
-            return runArrayTest(inputVal, tests);
+            return runArrayTest(inputVal, tests, unitTest.get('hasRest'));
         case 'object':
             return runObjectTest(inputVal, unitTest); // No change here as the entire Map is passed
         default:

@@ -306,3 +306,27 @@ describe('Enum Type Tests', () => {
         ).toBe(false);
     });
 });
+
+describe('array rest marker: [type, ...]', () => {
+    const amenities = '{amenities: [{key: string, value: string}, ...]}';
+    test('every element matches the last declared type', () => {
+        expect(validType({ amenities: [{ key: 'a', value: 'b' }] }, amenities)).toBe(true);
+        expect(
+            validType({ amenities: [{ key: 'a', value: 'b' }, { key: 'c', value: 'd' }, { key: 'e', value: 'f' }] }, amenities)
+        ).toBe(true);
+        expect(validType({ amenities: [{ key: 'a', value: 'b' }, { key: 'c', value: 1 }] }, amenities)).toBe(false);
+        expect(validType({ amenities: [{ key: 'a', value: 'b' }, 'x'] }, amenities)).toBe(false);
+        expect(validType({ amenities: [] }, amenities)).toBe(false);
+        expect(validType([1, 2, 3], '[number, ...]')).toBe(true);
+        expect(validType([1, 2, 'x'], '[number, ...]')).toBe(false);
+    });
+    test('positional types followed by a rest type', () => {
+        expect(validType(['id', 1, 2, 3], '[string, number, ...]')).toBe(true);
+        expect(validType(['id', 1, 'x'], '[string, number, ...]')).toBe(false);
+        expect(validType(['id'], '[string, number, ...]')).toBe(false);
+    });
+    test('misplaced rest marker throws', () => {
+        expect(() => validType([1], '[...]')).toThrow();
+        expect(() => validType([1], '[..., number]')).toThrow();
+    });
+});

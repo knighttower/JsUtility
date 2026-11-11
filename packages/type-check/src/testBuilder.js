@@ -114,16 +114,27 @@ const basicTypes = (typeStr) => {
 /**
  * Handle array types
  * @param {string} strExp
- * @return {array} tests
+ * @return {object} { tests: array, hasRest: boolean }
  */
 const arrayTypes = (strExp) => {
     const testUnit = [];
     const convertedObj = getArrObjFromString(strExp);
+    let hasRest = false;
 
-    convertedObj.forEach((test) => {
+    convertedObj.forEach((test, index) => {
+        // '[type, ...]' rest marker: the last declared type applies to all remaining elements
+        if (typeof test === 'string' && test.trim() === '...') {
+            if (index !== convertedObj.length - 1 || index === 0) {
+                throw new Error(
+                    `Type Error: "..." must be the last item and follow a type in "${typeOf(strExp, 'string') ? strExp : JSON.stringify(strExp)}", e.g. "[type, ...]"`
+                );
+            }
+            hasRest = true;
+            return;
+        }
         testUnit.push(testBuilder(test));
     });
-    return testUnit;
+    return { tests: testUnit, hasRest };
 };
 
 /**
@@ -211,9 +222,12 @@ function testBuilder(strExp) {
         case 'basic':
             testUnit.set('tests', basicTypes(strExp));
             break;
-        case 'array':
-            testUnit.set('tests', arrayTypes(strExp));
+        case 'array': {
+            const { tests, hasRest } = arrayTypes(strExp);
+            testUnit.set('tests', tests);
+            testUnit.set('hasRest', hasRest);
             break;
+        }
         case 'object':
             const objTypes = objectTypes(strExp);
             testUnit = new Map([...testUnit, ...objTypes]);
