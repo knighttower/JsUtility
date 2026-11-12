@@ -4,8 +4,8 @@
   "main": "index.cjs",
   "module": "index.js",
   "type": "module",
-  "jsdelivr": "dist/browser/utility.js",
-  "browser": "dist/browser/utility.js",
+  "jsdelivr": "dist/browser/Utility.js",
+  "browser": "dist/browser/Utility.js",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
@@ -15,6 +15,7 @@
   "author": "knighttower (https://github.com/knighttower)",
   "files": [
     "dist",
+    "src",
     "nodeUtils",
     "index.js",
     "index.cjs"
@@ -29,41 +30,41 @@
     "./nodeUtils/*": "./nodeUtils/*",
     "./nodeUtils": "./nodeUtils/index.cjs",
     "./proxyObject": {
-      "import": "./dist/esm/proxyObject.js",
-      "require": "./dist/cjs/proxyObject.cjs"
+      "import": "./src/proxyObject.js",
+      "require": "./dist/cjs/ProxyObject.cjs"
     },
     "./proxyClass": {
-      "import": "./dist/esm/proxyObject.js",
-      "require": "./dist/cjs/proxyObject.cjs"
+      "import": "./src/proxyObject.js",
+      "require": "./dist/cjs/ProxyObject.cjs"
     },
     "./powerHelpers": {
-      "import": "./dist/esm/powerHelper.js",
+      "import": "./src/powerHelper.js",
       "require": "./dist/cjs/powerHelper.cjs"
     },
     "./helpers": {
-      "import": "./dist/esm/powerHelper.js",
+      "import": "./src/powerHelper.js",
       "require": "./dist/cjs/powerHelper.cjs"
     },
     "./promiseQueue": {
-      "import": "./dist/esm/promises.js",
+      "import": "./src/promises.js",
       "require": "./dist/cjs/promises.cjs"
     },
     "./promises": {
-      "import": "./dist/esm/promises.js",
+      "import": "./src/promises.js",
       "require": "./dist/cjs/promises.cjs"
     },
     "./EventBus": {
-      "import": "./dist/esm/EventBus.js",
+      "import": "./src/event-bus/EventBus.js",
       "require": "./dist/cjs/EventBus.cjs"
     },
     "./event-bus": {
-      "import": "./dist/esm/EventBus.js",
+      "import": "./src/event-bus/EventBus.js",
       "require": "./dist/cjs/EventBus.cjs"
     }
   },
   "bin": {
-    "buildExports": "./nodeUtils/BuildExports.js",
-    "bumpVersion": "./nodeUtils/BumpVersion.js"
+    "buildExports": "./nodeUtils/BuildExports.cjs",
+    "bumpVersion": "./nodeUtils/BumpVersion.cjs"
   },
   "keywords": [
     "utility",

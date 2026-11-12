@@ -58,17 +58,29 @@ export const promiseQueue = () => {
 
             if (!isValidPromise) {
                 if (typeOf(promise, 'function')) {
-                    promise = new Promise(async (resolve) => {
-                        const fx = await promise();
-                        return resolve(fx);
+                    promise = new Promise(async (resolve, reject) => {
+                        // An error thrown by the function, or the rejection of the promise it returns,
+                        // rejects this promise. Both were lost before, so this promise never settled
+                        // and the queue never finished
+                        try {
+                            const fx = await promise();
+                            return resolve(fx);
+                        } catch (error) {
+                            return reject(error);
+                        }
                     });
                 } else {
-                    console.error('---> Invalid promise added to the Queue:', promise.toString());
-                    return this.emit('fail', promise.toString());
+                    // String() instead of .toString(), which throws when the value is null or undefined
+                    console.error('---> Invalid promise added to the Queue:', String(promise));
+                    return this.emit('fail', String(promise));
                 }
             }
 
             makeArray(promise).forEach((promiseFunction) => {
+                // A promise can be rejected while it waits for its turn. With nothing attached to it
+                // yet, that is an unhandled rejection, which stops a Node process. This only marks it
+                // as handled, the rejection is still recorded when its turn comes
+                promiseFunction.catch(() => {});
                 this._stats.total++;
                 this._stats.pending++;
                 this.queue.push({
@@ -93,7 +105,8 @@ export const promiseQueue = () => {
             this._timer = null;
             this.queue = [];
             this.inProgress = false;
-            this._stats = { ...stats };
+            // With a new list: the copy alone would keep sharing the one that already has promises in it
+            this._stats = { ...stats, promises: [] };
             return this;
         }
 
@@ -124,18 +137,27 @@ export const promiseQueue = () => {
             this.inProgress = true;
             // this always grabs the first promise in the queue and then removes it after processing
             const { promiseFunction } = this.queue[0];
+            // clear() can be called while this promise is running. By the time it settles it is not
+            // the first one in the queue anymore, so what follows would be applied to another
+            // promise, or to none at all
+            const item = this.queue[0];
+            const wasCleared = () => this.queue[0] !== item;
             promiseFunction
                 .then((response) => {
+                    if (wasCleared()) return;
                     this.queue[0].status = 'fulfilled';
                     this.queue[0].response = response;
                     this._stats.completed++;
                 })
                 .catch((error) => {
+                    if (wasCleared()) return;
                     this._stats.errors += error + '\n';
                     this.queue[0].status = 'rejected';
+                    this.queue[0].error = error;
                     this._stats.rejected++;
                 })
                 .finally(() => {
+                    if (wasCleared()) return;
                     this._stats.promises.push(this.queue[0]);
                     this._stats.pending--;
                     this.queue.shift(); // Remove the processed promise from the queue
@@ -268,6 +290,10 @@ export const doPoll = (fn, options = {}) => {
             poll(); // initial tick
         }
 
+        // The first tick may have settled it already, and the clean up has run by then. The timeout
+        // below would never be cleared and the listener would stay on the signal
+        if (settled) return;
+
         timeoutId = setTimeout(() => {
             if (!stopped) stop('__TIMEOUT__');
         }, maxMs);
@@ -328,9 +354,7 @@ export const promisePool = (maxConcurrency = 10) => {
             _status = 'done';
             totalAdded = 0;
             completedCount = 0;
-            rejectedCount = 0;
             activeCount = 0;
-            rejectedPromises.length = 0;
             queue.length = 0;
 
             Object.keys(promises).forEach((key) => {
@@ -339,6 +363,11 @@ export const promisePool = (maxConcurrency = 10) => {
                 }
                 delete promises[key];
             });
+
+            // These two are reset after the loop: rejecting the promises that were running
+            // counts them as rejected
+            rejectedCount = 0;
+            rejectedPromises.length = 0;
         }
 
         /**
@@ -368,11 +397,16 @@ export const promisePool = (maxConcurrency = 10) => {
                         promise = null; // Will be created when dequeued
                     } else {
                         console.info('---> Invalid promise added to the pool.');
-                        rejectedPromises.push(promise.toString());
+                        // String() instead of .toString(), which throws when the value is null or undefined
+                        rejectedPromises.push(String(promise));
                         rejectedCount++;
                         return;
                     }
                 } else {
+                    // It is already running and can be rejected while it waits in line. With nothing
+                    // attached to it yet, that is an unhandled rejection, which stops a Node process.
+                    // This only marks it as handled, the rejection is still recorded when its turn comes
+                    promise.catch(() => {});
                     promiseFunction = () => promise;
                 }
 
@@ -391,6 +425,12 @@ export const promisePool = (maxConcurrency = 10) => {
 
                 queue.push(promiseId);
             });
+
+            // A pool that is done, or was cleared, starts over when it gets more promises to process.
+            // Its status stayed as 'done' before, so 'done' and 'completed' were never emitted again
+            if (queue.length > 0) {
+                _status = 'in-progress';
+            }
 
             this._processQueue();
         }
@@ -453,6 +493,9 @@ export const promisePool = (maxConcurrency = 10) => {
                         // Error already handled by rejecter
                     })
                     .finally(() => {
+                        // clear() took it out of the pool while it was running and reset the count,
+                        // so there is nothing left to update for it
+                        if (promises[promiseId] !== promiseData) return;
                         activeCount--;
                         $this._updateStatus();
 
@@ -614,6 +657,10 @@ export function doTimeout(idOrDelay, delayOrCallback, callback, ...args) {
         id = idOrDelay;
         delay = delayOrCallback;
     } else if (typeof idOrDelay === 'number' && typeof delayOrCallback === 'function') {
+        // Without an ID, what came in as 'callback' is the first of the additional arguments
+        if (arguments.length > 2) {
+            args.unshift(callback);
+        }
         delay = idOrDelay;
         callback = delayOrCallback;
     } else if (!delayOrCallback && typeof idOrDelay === 'string') {

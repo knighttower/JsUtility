@@ -27,8 +27,8 @@
   "sass": "./packages/bootstrap-mini/src/bootstrap-mini.scss",
   "style": "./packages/bootstrap-mini/dist/bootstrap-mini.css",
   "bin": {
-    "buildExports": "./packages/utility/nodeUtils/BuildExports.js",
-    "bumpVersion": "./packages/utility/nodeUtils/BumpVersion.js"
+    "buildExports": "./packages/utility/nodeUtils/BuildExports.cjs",
+    "bumpVersion": "./packages/utility/nodeUtils/BumpVersion.cjs"
   },
   "exports": {
     "./adaptive": {
@@ -64,35 +64,35 @@
     "./utility/nodeUtils/*": "./packages/utility/nodeUtils/*",
     "./utility/nodeUtils": "./packages/utility/nodeUtils/index.cjs",
     "./utility/proxyObject": {
-      "import": "./packages/utility/dist/esm/proxyObject.js",
-      "require": "./packages/utility/dist/cjs/proxyObject.cjs"
+      "import": "./packages/utility/src/proxyObject.js",
+      "require": "./packages/utility/dist/cjs/ProxyObject.cjs"
     },
     "./utility/proxyClass": {
-      "import": "./packages/utility/dist/esm/proxyObject.js",
-      "require": "./packages/utility/dist/cjs/proxyObject.cjs"
+      "import": "./packages/utility/src/proxyObject.js",
+      "require": "./packages/utility/dist/cjs/ProxyObject.cjs"
     },
     "./utility/powerHelpers": {
-      "import": "./packages/utility/dist/esm/powerHelper.js",
+      "import": "./packages/utility/src/powerHelper.js",
       "require": "./packages/utility/dist/cjs/powerHelper.cjs"
     },
     "./utility/helpers": {
-      "import": "./packages/utility/dist/esm/powerHelper.js",
+      "import": "./packages/utility/src/powerHelper.js",
       "require": "./packages/utility/dist/cjs/powerHelper.cjs"
     },
     "./utility/promiseQueue": {
-      "import": "./packages/utility/dist/esm/promises.js",
+      "import": "./packages/utility/src/promises.js",
       "require": "./packages/utility/dist/cjs/promises.cjs"
     },
     "./utility/promises": {
-      "import": "./packages/utility/dist/esm/promises.js",
+      "import": "./packages/utility/src/promises.js",
       "require": "./packages/utility/dist/cjs/promises.cjs"
     },
     "./utility/EventBus": {
-      "import": "./packages/utility/dist/esm/EventBus.js",
+      "import": "./packages/utility/src/event-bus/EventBus.js",
       "require": "./packages/utility/dist/cjs/EventBus.cjs"
     },
     "./utility/event-bus": {
-      "import": "./packages/utility/dist/esm/EventBus.js",
+      "import": "./packages/utility/src/event-bus/EventBus.js",
       "require": "./packages/utility/dist/cjs/EventBus.cjs"
     },
     "./vue-utils": {
