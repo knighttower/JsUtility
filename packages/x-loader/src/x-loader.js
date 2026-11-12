@@ -128,7 +128,7 @@ const domTracking = (($win) => {
  * xloader.css.ready('css-group-id').then(() => {});
  * xloader.css.isLoaded('css-group-id');
  * @html
- * <x-loader x-js="https://cdn.example.com/script.js" x-id="script-group-id" x-deps="anyDeps,otherDeps"></x-loader>
+ * <x-loader x-js="https://cdn.example.com/script.js" x-id="script-group-id" x-dep="anyDeps,otherDeps"></x-loader>
  * <x-loader x-css="https://cdn.example.com/style.css" x-id="css-group-id"></x-loader>
  * <x-loader x-img="https://cdn.example.com/image.jpg" x-id="img-group-id"></x-loader>
  */
@@ -188,11 +188,15 @@ const xloader = ((w) => {
                             reject(console.log(`Timeout ID "${ids}".`));
                         }, timeout);
 
-                        loadingSet.get(ids).finally(() => {
-                            cancelTimeout();
-                            clearTimeout(loadTimeout);
-                            resolve(true);
-                        });
+                        loadingSet
+                            .get(ids)
+                            .finally(() => {
+                                cancelTimeout();
+                                clearTimeout(loadTimeout);
+                                resolve(true);
+                            })
+                            // finally() returns a copy of a failed load, which load() already reports
+                            .catch(() => {});
 
                         return;
                     }
@@ -302,9 +306,11 @@ const xloader = ((w) => {
 
             if (regIds.has(id)) {
                 console.warn(`ID "${id}" is already registered.`);
-                return Promise.resolve(true);
+                // resolve when the load that registered the ID does
+                return (loadingSet.get(id) || Promise.resolve()).then(() => true);
             }
             regIds.set(id, true);
+            let imagesPlaced = 0;
 
             const promises = assets.map((src) => {
                 if (loadingAssets.get(src) && this.type !== 'img') return loadingAssets.get(src);
@@ -348,6 +354,10 @@ const xloader = ((w) => {
                                         element.setAttribute(key, attributes[key]);
                                     }
                                 });
+                                // must be set before src, the download starts when src is set
+                                if (loadType === 'lazy') {
+                                    element.setAttribute('fetchpriority', 'low');
+                                }
                                 element.src = src;
 
                                 break;
@@ -359,15 +369,20 @@ const xloader = ((w) => {
                             if (this.type === 'img') {
                                 const loadImg = () => {
                                     $element = $element || document.querySelector(`[x-id="${id}"]`);
+                                    // no placeholder on the page (img.load() used to preload)
+                                    if (!$element) return;
                                     $element.style.display = 'none';
-                                    $element.insertAdjacentElement('afterend', element);
+                                    // before the tag, so with several images each one has a place
+                                    $element.insertAdjacentElement('beforebegin', element);
 
                                     // Had to resort to this since the inner image was not being removed
-                                    $element.remove();
+                                    // (once every image of this ID is in place)
+                                    if (++imagesPlaced === assets.length) {
+                                        $element.remove();
+                                    }
                                 };
 
                                 if (loadType === 'lazy') {
-                                    element.setAttribute('fetchpriority', 'low');
                                     domTracking.afterLoad(loadImg);
                                 } else {
                                     domTracking.isReady(loadImg);
@@ -388,7 +403,8 @@ const xloader = ((w) => {
                                     });
                                     break;
                                 default:
-                                    document.body.appendChild(element);
+                                    // <head> when called before <body> exists
+                                    (document.body || document.head).appendChild(element);
                                     break;
                             }
                         }
@@ -574,7 +590,10 @@ const xloader = ((w) => {
             loader.autoLoadScripts([this]);
         }
     }
-    customElements.define('x-loader', LoaderTag);
+    // A second copy of the library (dist/browser plus the npm import) reuses the first one
+    if (!customElements.get('x-loader')) {
+        customElements.define('x-loader', LoaderTag);
+    }
 
     // Attach xloader globally
     return loader;
