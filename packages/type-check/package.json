@@ -11,8 +11,12 @@
   "license": "MIT",
   "files": [
     "dist",
+    "src",
     "index.js",
     "index.cjs"
+  ],
+  "sideEffects": [
+    "./dist/browser/*"
   ],
   "exports": {
     ".": {

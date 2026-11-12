@@ -46,7 +46,7 @@ npm i knighttower
 #### In the Browser
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@knighttower/type-check@latest/dist/browser/typeCheck.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@knighttower/type-check@latest/dist/browser/typeCheck.js"></script>
 
 <!-- OR as ESM -->
 <script type="module">

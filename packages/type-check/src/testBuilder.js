@@ -9,6 +9,8 @@ import { startAndEndWith, getArrObjFromString, typeOf } from '@knighttower/utili
 // --------------------------
 // Cache storage for tests
 const cachedTests = new Map();
+// array and object expressions are cached by reference, a WeakMap lets them go once they are not used
+const cachedObjectTests = new WeakMap();
 const cachedPipedTypes = new Map();
 
 // =========================================
@@ -38,7 +40,7 @@ function getPipedTypes(str) {
     if (cachedPipedTypes.has(str)) {
         return cachedPipedTypes.get(str);
     }
-    return str.split('|').reduce((testsForKey, t) => {
+    const pipedTests = str.split('|').reduce((testsForKey, t) => {
         let itCanBeNull = false;
         let type = t.trim();
 
@@ -64,9 +66,11 @@ function getPipedTypes(str) {
         if (itCanBeNull) {
             testsForKey.push(typesMap.get('null'), typesMap.get('undefined'));
         }
-        cachedPipedTypes.set(str, testsForKey);
         return testsForKey;
     }, []);
+    // cached once all the types are found (isNoType throws for an unsupported one)
+    cachedPipedTypes.set(str, pipedTests);
+    return pipedTests;
 }
 
 /**
@@ -166,13 +170,17 @@ const objectTypes = (strExp) => {
 
         checkTheAnyKey(obj) {
             if ('any' in obj) {
-                const keys = Object.keys(obj);
+                // the '...' entry is not a key to test, 'any' already tests all the other keys
+                const keys = Object.keys(obj).filter((key) => obj[key] !== '...');
                 if (keys.length === 1) {
                     this.testUnit.set('testAllAny', true);
                 } else {
                     this.testUnit.set(
                         'testFew',
-                        keys.filter((key) => key !== 'any')
+                        keys
+                            .filter((key) => key !== 'any')
+                            // optional keys ('key?') are stored by their name without the '?'
+                            .map((key) => (key.endsWith('?') ? key.slice(0, -1) : key))
                     );
                 }
             }
@@ -210,8 +218,10 @@ const objectTypes = (strExp) => {
  * @usage See more cases in the 'type-pattern.txt' file
  */
 function testBuilder(strExp) {
-    if (cachedTests.has(strExp)) {
-        return cachedTests.get(strExp);
+    // strings are cached by value, arrays and objects by reference
+    const cache = typeof strExp === 'string' ? cachedTests : cachedObjectTests;
+    if (cache.has(strExp)) {
+        return cache.get(strExp);
     }
     let testUnit = new Map([
         ['testMethod', determineMethod(strExp)],
@@ -236,7 +246,7 @@ function testBuilder(strExp) {
             isNoType(strExp);
     }
 
-    cachedTests.set(strExp, testUnit);
+    cache.set(strExp, testUnit);
     return testUnit;
 }
 
