@@ -24,8 +24,6 @@
   "files": [
     "./packages/*"
   ],
-  "sass": "./packages/bootstrap-mini/src/bootstrap-mini.scss",
-  "style": "./packages/bootstrap-mini/dist/bootstrap-mini.css",
   "bin": {
     "buildExports": "./packages/utility/nodeUtils/BuildExports.cjs",
     "bumpVersion": "./packages/utility/nodeUtils/BumpVersion.cjs"
@@ -41,10 +39,6 @@
       "require": "./packages/block-ui/dist/cjs/blockui.cjs"
     },
     "./block-ui/dist/*": "./packages/block-ui/dist/*",
-    "./bootstrap-mini": {
-      "import": "./packages/bootstrap-mini/index.js",
-      "require": "./packages/bootstrap-mini/dist/bootstrap-mini.css"
-    },
     "./toast": {
       "import": "./packages/toast/dist/esm/toast.js",
       "require": "./packages/toast/dist/cjs/toast.cjs"
@@ -113,13 +107,11 @@
   "dependencies": {
     "@knighttower/adaptive": "file:./packages/adaptive",
     "@knighttower/block-ui": "file:./packages/block-ui",
-    "@knighttower/bootstrap-mini": "file:./packages/bootstrap-mini",
     "@knighttower/toast": "file:./packages/toast",
     "@knighttower/type-check": "file:./packages/type-check",
     "@knighttower/utility": "file:./packages/utility",
     "@knighttower/vue-utils": "file:./packages/vue-utils",
     "@knighttower/x-loader": "file:./packages/x-loader",
-    "bootstrap": "^5.3.8",
     "eslint-plugin-stylistic": "^0.0.0-0"
   },
   "devDependencies": {

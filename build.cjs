@@ -57,16 +57,6 @@ const typeCheck = () => {
     runCommand(commands);
 };
 
-const bootstrapMini = () => {
-    runCommand(
-        `\
-    cd ./packages/bootstrap-mini \
-    && npx mix --production \
-    && node "${bumpVersion}" --exe \
-    ` + (local ? '' : '&& npm publish --access public')
-    );
-};
-
 const adaptive = () => {
     runCommand(
         `\
@@ -120,7 +110,6 @@ const generic = (genDir) => {
 };
 
 const workspaces = {
-    'bootstrap-mini': bootstrapMini,
     'type-check': typeCheck,
     utility,
     adaptive,
@@ -130,7 +119,6 @@ const workspaces = {
     toast: () => generic('toast'),
     xloader: () => generic('x-loader'),
     all: () => {
-        bootstrapMini();
         typeCheck();
         utility();
         adaptive();

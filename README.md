@@ -5,7 +5,6 @@ It holds the following packages:
 - [**JS Utility**](https://github.com/knighttower/JsUtility/tree/development/packages/utility): Collection of libraries with classes and functions for JavaScript
 - [**Node Utils**](https://github.com/knighttower/JsUtility/tree/development/packages/utility/nodeUtils): Collection of libraries with classes and functions for node.js
 - [**js-event-bus**](https://github.com/knighttower/JsUtility/tree/development/packages/utility/src/event-bus): Simple Event Bus library built for any JavaScript application.
-- [**BootsTrap Mini**](https://github.com/knighttower/JsUtility/tree/development/packages/bootstrap-mini): Built on top of Bootstrap but modified to have only the basic utilities classes and the grid system.
 - [**Adaptive Js**](https://github.com/knighttower/JsUtility/tree/development/packages/adaptive): Adaptive.js: Enhancing Layout Adaptability Beyond CSS, Navigating the Complexities of Modern Web Development
 - [**Vue Utils**](https://github.com/knighttower/JsUtility/tree/development/packages/vue-utils): Vue utilities for Vue.js applications. 
 - [**BlockUi**](https://github.com/knighttower/JsUtility/tree/development/packages/block-ui): tiny UI blocking utility.  
@@ -41,7 +40,6 @@ available packages are:
 - TypeCheck
 - EventBus
 - utility
-- BootstrapMiniCss
 - NodeUtils
 - AdaptiveJs
 - x-loader
@@ -51,7 +49,6 @@ Paths (aliases):
 - EventBus: `knighttower/utility/event-bus` (or `knighttower/utility/EventBus`)
 - utility: `knighttower/utility`
 - NodeUtils: `knighttower/utility/nodeUtils`
-- BootstrapMiniCss: `knighttower/bootstrap-mini`
 - AdaptiveJs: `knighttower/adaptive`
 - x-loader: `knighttower/x-loader`
 
@@ -60,7 +57,6 @@ Access src or dist files:
 - EventBus: `knighttower/utility/dist/*` (EventBus.js / EventBus.cjs)
 - utility: `knighttower/utility/dist/*`
 - NodeUtils: `knighttower/utility/nodeUtils/*`
-- BootstrapMiniCss: `knighttower/bootstrap-mini/dist/*`
 - AdaptiveJs: `knighttower/adaptive/dist/*`
 - x-loader: `knighttower/x-loader/dist/*`
 
@@ -70,7 +66,6 @@ import { typeCheck, validType } from 'knighttower/type-check';
 import { EventBus } from 'knighttower/utility/event-bus';
 import { emptyOrValue, typeOf } from 'knighttower/utility';
 import * as utility from 'knighttower/utility';
-import 'knighttower/bootstrap-mini';
 import { Adaptive } from 'knighttower/adaptive';
 import { xloader } from 'knighttower/x-loader';
 // Node only (CommonJS)
@@ -83,7 +78,6 @@ Some IDE wont show the src code when import in the file (peaking). You can use t
 - EventBus: `knighttower/packages/utility/src/event-bus`
 - utility: `knighttower/packages/utility`
 - NodeUtils: `knighttower/packages/utility/nodeUtils`
-- BootstrapMiniCss: `knighttower/packages/bootstrap-mini`
 - AdaptiveJs: `knighttower/packages/adaptive`
 - x-loader: `knighttower/packages/x-loader`
 
