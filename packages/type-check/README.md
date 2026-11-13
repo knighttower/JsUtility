@@ -66,7 +66,22 @@ npm i knighttower
 | /typeCheck.js.br | 3 KiB |
 | /typeCheck.js.gz | 3 KiB |
 
-You can also import from the `/src` folder for ESM + JS `next`, or from `/index.js` and `/index.cjs.js` as needed.
+You can also import from the `/src` folder for ESM + JS `next` (it is published with the package), or from `/index.js` and `/index.cjs` as needed.
+
+---
+
+### 🆕 What's new
+
+- **`validType()` is faster**: it runs the test directly, without building the chainable `_typeCheck` object. Same result as `_typeCheck(value, exp).test()`.
+- **Failed tests never throw by themselves**: values that can't be converted to JSON (`BigInt`, circular objects) used to throw while the error was being logged. Now the test just returns `false`, and `typeCheck` / `.fail()` throw the normal `TypeError`.
+- **Clearer error messages**: when the value is not an array (for `[...]`) or not an object (for `{...}`), the message shows that value, not the value of an earlier test.
+- **`{any: type, key?: type}`**: an optional key that is not set (`null` / `undefined`) is not tested.
+- **`{key: type, any: type, ...}`**: `any` together with `...` no longer throws; `any` tests all the other keys.
+- **`_tc()` accepts string options**: `'log'`, `'fail'`, `'return'`, or any other string as a custom error message.
+- **`_tcx()` instances have `.test()`**.
+- **Memory**: the error log keeps only the last entry, and patterns given as arrays/objects are cached by reference (a `WeakMap`), so they are released when no longer used.
+- **Smaller browser build**: `dist/browser` and `dist/umd` no longer include core-js polyfills.
+- **Browser file name** is `dist/browser/typeCheck.js` (lowercase `t`).
 
 ---
 
@@ -228,7 +243,9 @@ validType(valueToTest, typeExpression)
 - `valueToTest` (any) - The value to validate
 - `typeExpression` (string) - The type pattern to match against
 
-**Returns:** `boolean` - true if valid, false if invalid
+**Returns:** `boolean` - true if valid, false if invalid. It never throws for a failed test, not even for `BigInt` or circular values.
+
+It is the fastest way to get a boolean: it runs the test directly instead of building the chainable `_typeCheck` object.
 
 **Examples:**
 
@@ -284,7 +301,7 @@ _tc(typeExpressions, functionToWrap, options?)
 **Parameters:**
 - `typeExpressions` (array) - Array of type patterns for each parameter
 - `functionToWrap` (function) - The function to wrap with validation
-- `options` (object, optional) - Configuration options
+- `options` (object|string, optional) - Configuration options. A string works as a shortcut: `'log'`, `'fail'`, `'return'`, or any other string as the custom error message
 
 **Returns:** Wrapped function that validates inputs before execution
 
@@ -325,6 +342,10 @@ const processUser = _tc(
         error: 'Invalid user object provided'
     }
 );
+
+// String options
+const logged = _tc(['number'], (n) => n * 2, 'log');                  // logs every call
+const withMessage = _tc(['string'], (s) => s, 'A name is required!'); // custom error message
 
 // Arrow functions
 const multiply = _tc(['number', 'number'], (a, b) => a * b);
@@ -575,6 +596,13 @@ typeCheck({ x: 'string', y: 10, z: 20 }, '{x: string, y: number, ...}'); // true
 // Object with specific keys to test all test a common test method
 typeCheck({ x: 'string', y: 10, z: 20 }, '{x: string, y: number, any: number}'); // true
 
+// "any" with an optional key: the optional key is tested only when it is set
+validType({ a: 1, b: null }, '{any: number, b?: string}'); // true
+validType({ a: 1, b: 2 }, '{any: number, b?: string}'); // false
+
+// "any" with "...": "any" tests all the other keys
+validType({ k: 1, a: 'x' }, '{k: number, any: string, ...}'); // true
+
 // Nested arrays or objects
 typeCheck([1, { x: 'string', y: 10, z: 20 }, 3], '[number, {any: number, x: string}, number]'); // true
 
@@ -691,6 +719,7 @@ yourCoolFunction(44.5, 'hello'); // validates that both are numbers
     fail: false, // default true. Same as method fail()
     error: string, // custom error message
 }
+// or a string: 'log' | 'fail' | 'return' | 'any custom error message'
 ```
 
 <br/>
@@ -804,11 +833,20 @@ Possible type patterns:
 '{any: type}' // any key
 '{any: type | type}' // any key
 '{key1: type, any: type}' // specific key, and all other "any"
+'{any: type, key2?: type}' // all keys "any", key2 is tested only when it is set (not null/undefined)
+'{key1: type, any: type, ...}' // specific key, and all other "any" ("..." adds nothing here)
 '{key1: type | type, ...}' // specific key, and all other no test
 
 
 // ADVANCE
 // array of objects
+'[{key1: type | type}]' // returns test to test all key with one or more
+'[{key1: type, key2: type}]' // returns
+'[{key1: type, key2: type}, {key1: type, key2: type}]'
+'[{key1: type | type, key2: type | type}, {key1: type | type, key2: type | type}]'
+'[{key1: type, any: type}]'
+```
+
 ## 🔤 Type Patterns
 
 TypeCheck JS supports a rich pattern syntax for expressing complex type requirements:
@@ -1229,14 +1267,6 @@ const handleUserAction = _tc(
 ---
 
 ## ⚡ Performance
-'[{key1: type | type}]' // returns test to test all key with one or more
-'[{key1: type, key2: type}]' // returns
-'[{key1: type, key2: type}, {key1: type, key2: type}]'
-'[{key1: type | type, key2: type | type}, {key1: type | type, key2: type | type}]'
-'[{key1: type, any: type}]'
-```
-
-## ⚡ Performance
 
 TypeCheck JS is designed for production use with minimal performance overhead:
 
@@ -1244,8 +1274,8 @@ TypeCheck JS is designed for production use with minimal performance overhead:
 
 - **Lightweight**: ~6k gzipped, minimal bundle impact
 - **Fast Execution**: Micro-optimized for runtime operations
-- **Caching**: Built-in caching for type patterns and validations
-- **Memory Efficient**: Reuses validation functions and patterns
+- **Caching**: Built-in caching for type patterns and validations (string patterns by value, array/object patterns by reference in a `WeakMap`)
+- **Memory Efficient**: Reuses validation functions and patterns, and the error log only keeps the last entry
 
 ### Performance Comparison
 
@@ -1271,7 +1301,7 @@ for (let i = 0; i < 1000; i++) {
 ### Optimization Tips
 
 1. **Reuse wrapped functions**: Create `_tc` and `_tcx` wrapped functions once, use many times
-2. **Use `validType()` for boolean checks**: Faster than `_typeCheck().test()`
+2. **Use `validType()` for boolean checks**: Faster than `_typeCheck().test()`, since it skips building the chainable object
 3. **Cache complex patterns**: The library automatically caches, but avoid recreating patterns
 4. **Prefer simpler patterns**: `'string'` is faster than `'string|number|boolean'`
 
@@ -1284,19 +1314,18 @@ Comprehensive test coverage ensures reliability:
 ```bash
 # Run tests
 npm test
-
-# Run tests with coverage
-npm run test:coverage
-
-# Run performance benchmarks  
-npm run benchmark
 ```
 
 ### Test Files
 
 - `tests/TypeCheck.test.js` - Core functionality tests
 - `tests/TestBuilder.Unit.test.js` - Pattern parsing tests
-- `tests/BuildExports.unit.test.js` - Export validation tests
+- `tests/types.test.js` - Built-in type tests
+- `tests/typedom.test.js` - DOM type tests
+- `tests/fixes.test.js` - Regression tests for the fixed cases
+- `tests/memory.test.js` - Caching and error log memory tests
+- `tests/package.test.js` - Package exports and published files
+- `tests/webpack.polyfills.test.js` - Browser build without core-js polyfills
 - `type-patterns.txt` - Extended pattern examples
 
 ### Example Test Cases

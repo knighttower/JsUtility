@@ -44,14 +44,22 @@ npm i knighttower
 Drop-in from CDN (no build step)
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@knighttower/adaptive@latest/dist/browser/Adaptive.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@knighttower/adaptive@latest/dist/browser/Adaptive.js"></script>
 // or if need to use ESM, CJS, UMD, via browser //ESM
 <script type="module">
     import { Adaptive } from 'https://esm.run/@knighttower/adaptive@latest/index.js';
 </script>
 // UMD
-<script src="https://cdn.jsdelivr.net/npm/@knighttower/adaptive@latest/dist/umd/Adaptive.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@knighttower/adaptive@latest/dist/umd/Adaptive.js"></script>
 ```
+
+> The files in `dist` are already minified, there are no `.min.js` files.
+
+### What's new
+
+-   **One less dependency**: Adaptive (and Teleport) no longer depend on `@knighttower/type-check`, only on `@knighttower/utility`.
+-   **React-rendered elements**: Teleport and `Adaptive.registerElement()` accept elements rendered by React (and `<teleport-to>` inside a React tree). Before, checking them threw `Converting circular structure to JSON`.
+-   **No polyfills injected**: `dist/browser` and `dist/umd` are built without core-js. Besides being smaller, the build no longer replaces `Array.prototype.includes` on the host page in older Safari versions.
 
 
 ---
@@ -78,7 +86,7 @@ By default the "import" or "require", will load the indexes automatically. But, 
 
 ```js
 const { createApp } = Vue;
-import Adaptive from 'adaptive.js';
+import { Adaptive } from '@knighttower/adaptive';
 const App = createApp({});
 // NOTE: that adaptive will self register, do not use App.use()
 // Adaptive does that automatically
@@ -89,7 +97,7 @@ App.mount('#app');
 ### As stand-alone script in you project
 
 ```html
-<script src="//cdn.jsdelivr.net/npm/@knighttower/adaptive@1.3/dist/Adaptive.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/@knighttower/adaptive@latest/dist/browser/Adaptive.js"></script>
 <script>
     $adaptive.init();
 </script>
@@ -100,7 +108,7 @@ App.mount('#app');
 ```js
 import React from 'react';
 import ReactDom from 'react-dom';
-import Adaptive from 'adaptive.js';
+import { Adaptive } from '@knighttower/adaptive';
 // NOTE: that adaptive will self register, do not use App.use()
 // Adaptive does that automatically
 Adaptive.useReact(React);
@@ -603,6 +611,8 @@ Consider the following graphic:
 ![Screenshot_32](https://user-images.githubusercontent.com/649334/185774621-257a9b0f-c68e-4c38-984d-9cfea40ebb71.png)
 
 When using with Vue, there is no need to wrap it into custom tags (like Vue does), it uses the directive style v-teleport-to
+
+With React, `<teleport-to target="#id">` can be used inside components, and elements rendered by React can be passed to Teleport or `Adaptive.registerElement()`.
 
 <br/>
 
