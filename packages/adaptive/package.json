@@ -1,6 +1,6 @@
 {
   "name": "@knighttower/adaptive",
-  "version": "3.15.0",
+  "version": "3.16.0",
   "type": "module",
   "main": "index.cjs",
   "module": "index.js",
@@ -63,12 +63,10 @@
     "test": "npm run format && npm run eslint && vitest"
   },
   "dependencies": {
-    "@knighttower/utility": "*",
-    "@knighttower/type-check": "*"
+    "@knighttower/utility": "*"
   },
   "peerDependencies": {
-    "@knighttower/utility": "*",
-    "@knighttower/type-check": "*"
+    "@knighttower/utility": "*"
   },
   "bugs": {
     "url": "https://github.com/knighttower/JsUtility/issues"

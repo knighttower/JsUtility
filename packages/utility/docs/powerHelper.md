@@ -71,21 +71,27 @@ addQuotes('world', "'"); // 'world'
 
 ### cleanStr(str, ...args)
 
-Cleans a string from delimiters or just trims if no delimiters given.
+Cleans a string from delimiters or just trims if no delimiters given. The result is always trimmed.
+
+- A string (or number) delimiter is taken **literally** and removed **once** (its first appearance). It is not a regex pattern.
+- To remove a pattern, or every appearance, pass a `RegExp` (use the `g` flag for all).
+- `null` / `undefined` delimiters are skipped.
 
 ```javascript
 cleanStr('hello world', 'h', 'd'); // 'ello worl'
 cleanStr('  hello world  '); // 'hello world'
-cleanStr('hello world', 'hello'); // ' world'
-cleanStr('Hello World. Sunshine is here!', '\\..*!'); // 'Hello World'
-cleanStr('Hello World. Sunshine is here!', /Hello/g); // ' World. Sunshine is here!'
+cleanStr('hello world', 'hello'); // 'world'
+cleanStr('a.b.c', '.'); // 'ab.c' (literal, first one only)
+cleanStr('a-b-c', /-/g); // 'abc'
+cleanStr('Hello World. Sunshine is here!', /\..*!/); // 'Hello World'
+cleanStr('Hello World. Sunshine is here!', /Hello/g); // 'World. Sunshine is here!'
 ```
 
 **Parameters:**
 - `str` (String): String to clean
 - `...args` (String|RegExp): Delimiters to remove
 
-**Returns:** String - The cleaned string
+**Returns:** String|void - The cleaned string (void when the string is empty)
 
 ### fixQuotes(str, q = '"')
 
@@ -141,6 +147,7 @@ Recursively loops through an array to find and replace the desired target.
 ```javascript
 findAndReplaceInArray([1,2,3,4,5], 3, 'three'); // [1,2,'three',4,5]
 findAndReplaceInArray([[1,2], [3,4]], 3, 'three'); // [[1,2], ['three',4]]
+findAndReplaceInArray([1,2], 2, [' x ', 3]); // [1, ['x', 3]] (strings in an array value are trimmed, other values kept)
 ```
 
 **Parameters:**
@@ -154,10 +161,23 @@ findAndReplaceInArray([[1,2], [3,4]], 3, 'three'); // [[1,2], ['three',4]]
 
 Converts string formats into objects or arrays. Does not support quoted strings.
 
+- Values are separated by commas and can be nested
+- Object entries are `key: value`, an entry without a key gets its position as the key
+- Values that are numbers are converted to numbers, any other value is a string
+- Empty values (like the one after a trailing comma) are ignored
+- The expression can have spaces around it and be written in several lines
+- A bracket without its partner is treated as plain text instead of breaking the parse
+- `__proto__` keys are dropped (they cannot change the prototype of the result)
+- Anything that is not a string is returned as it is
+
 ```javascript
 getArrObjFromString('[[value,value],value]'); // [['value', 'value'], 'value']
 getArrObjFromString('{ y: hello, x: world, z: [value,value]}'); 
 // { y: 'hello', x: 'world', z: ['value', 'value'] }
+getArrObjFromString('{ y: 1, url: http://site.com, ...}'); 
+// { y: 1, url: 'http://site.com', 2: '...' }
+getArrObjFromString(' [1, a, [b, {c: 2}], ] '); // [1, 'a', ['b', { c: 2 }]]
+getArrObjFromString('{a: [1, }'); // { a: '[1' } (unmatched bracket kept as text)
 ```
 
 **Parameters:**
@@ -165,7 +185,7 @@ getArrObjFromString('{ y: hello, x: world, z: [value,value]}');
 
 **Returns:** Object|Array|String - Parsed result
 
-### getObjectFromPath(path, source = window)
+### getObjectFromPath(path, source = globalThis)
 
 Gets an object from a path using dot notation.
 
@@ -176,7 +196,7 @@ getObjectFromPath('console.log'); // [native function]
 
 **Parameters:**
 - `path` (String): Dot-separated path
-- `source` (Object): Source object to search (default: window)
+- `source` (Object): Source object to search (default: `globalThis`, which is `window` in the browser and also works in Node)
 
 **Returns:** Any - The value at the path
 
@@ -189,6 +209,7 @@ Finds the last instance of nested pattern with delimiters.
 ```javascript
 findNested('[[]hello [world]]', '[', ']'); // '[world]'
 findNested('text {nested {inner}} text', '{', '}'); // '{inner}'
+findNested('a <b/> c', '<', '/>'); // '<b/>' (multi-character end delimiters are returned whole)
 ```
 
 **Parameters:**
@@ -201,6 +222,7 @@ findNested('text {nested {inner}} text', '{', '}'); // '{inner}'
 ### getMatchBlock(str, p1, p2, all = false)
 
 Finds matches by delimiters, returns raw matches including delimiters.
+When both delimiters are plain strings they are matched literally in a single pass (no regex), so characters like `.` or `(` need no escaping.
 
 ```javascript
 getMatchBlock('is a hello world today', 'h', 'd'); // 'hello world'
@@ -224,6 +246,8 @@ Finds matches between delimiters, returns clean content without delimiters.
 getMatchInBetween('hello world', 'h', 'd'); // 'ello worl'
 getMatchInBetween('hello <world/>', '<', '/>'); // 'world'
 getMatchInBetween('text <a/> and <b/>', '<', '/>', true); // ['a', 'b']
+getMatchInBetween('hello world', '<', '/>'); // 'hello world' (no match)
+getMatchInBetween('hello world', '<', '/>', true); // [] (no match)
 ```
 
 **Parameters:**
@@ -232,23 +256,25 @@ getMatchInBetween('text <a/> and <b/>', '<', '/>', true); // ['a', 'b']
 - `p2` (String|RegExp): Second delimiter
 - `all` (Boolean): Return all matches (default: false)
 
-**Returns:** String|Array|null - Clean content between delimiters
+**Returns:** String|Array - Clean content between delimiters. When there is no match, the string is returned as it is (or an empty array when `all` is set)
 
 ### getChunks(str, splitter = ',')
 
-Splits a string into chunks by a given splitter and cleans the chunks.
+Splits a string into chunks by a given splitter and trims each chunk. Empty chunks are kept.
 
 ```javascript
 getChunks('a, b, c'); // ['a', 'b', 'c']
 getChunks('name.value.type', '.'); // ['name', 'value', 'type']
 getChunks('  a , b , c  '); // ['a', 'b', 'c']
+getChunks('a,,b'); // ['a', '', 'b']
+getChunks(''); // []
 ```
 
 **Parameters:**
 - `str` (String): String to split
 - `splitter` (String): Character to split by (default: ',')
 
-**Returns:** Array - Array of cleaned chunks
+**Returns:** Array - Array of trimmed chunks (a value that is not a string is returned untouched)
 
 ### startAndEndWith(strExp, start = null, end = null)
 
@@ -258,6 +284,8 @@ Checks if a string starts and ends with given strings.
 startAndEndWith('hello world', 'h', 'd'); // true
 startAndEndWith('hello world', 'x', 'd'); // false
 startAndEndWith('[array]', '[', ']'); // true
+startAndEndWith('hello world', 'h'); // true (only the start is checked)
+startAndEndWith(123, '1'); // false (not a string)
 ```
 
 **Parameters:**
@@ -265,7 +293,7 @@ startAndEndWith('[array]', '[', ']'); // true
 - `start` (String): Start pattern (default: null)
 - `end` (String): End pattern (default: null)
 
-**Returns:** Boolean - True if matches pattern
+**Returns:** Boolean - True if matches pattern. Always false when the value is not a string
 
 ## Wildcard Search
 
@@ -315,11 +343,15 @@ Converts string formats into objects, handling various directive patterns.
 ```javascript
 // Object-style
 getDirectivesFromString('directive.tablet(...values)'); 
-// {type: 'dotObject', directive: {directive: {tablet: 'values'}}}
+// {type: 'dotObject', directive: {directive: {tablet: '...values'}}}
 
 // Multiple breakdowns
 getDirectivesFromString('directive.tablet|mobile(...values)'); 
-// {directive: {tablet: 'values', mobile: 'values'}}
+// {type: 'dotObject', directive: {directive: {tablet: '...values', mobile: '...values'}}}
+
+// Chained commands
+getDirectivesFromString('x.mobile(a)&&x.tablet|desktop(b)');
+// {type: 'dotObject', directive: {x: {mobile: 'a', tablet: 'b', desktop: 'b'}}}
 
 // Function style
 getDirectivesFromString('show(#myId)'); 
@@ -332,7 +364,20 @@ getDirectivesFromString('[value1, value2]');
 // Object format
 getDirectivesFromString('{key: value}'); 
 // {type: 'object', directive: {key: 'value'}}
+
+// Valid JSON is parsed as it is
+getDirectivesFromString('{"a": [1, 2]}'); 
+// {type: 'object', directive: {a: [1, 2]}}
+
+// Anything else
+getDirectivesFromString('plain text'); 
+// {type: 'string', directive: 'plain text'}
 ```
+
+**Notes:**
+- The string is trimmed before it is checked, so surrounding spaces or line breaks are fine.
+- Array/object strings are tried as JSON first, then again with the quotes fixed, and finally with `getArrObjFromString`.
+- Plain text in between `&&` that is not a directive is ignored, and `__proto__` names are dropped.
 
 **Supported Patterns:**
 - **Array strings**: `[value, value]` or `['value','value']`
@@ -356,26 +401,30 @@ getDirectivesFromString('{key: value}');
 Escapes a string to create a regex or returns the regex if it already is an expression.
 
 ```javascript
-setExpString('hello'); // '\\h\\e\\l\\l\\o'
+setExpString('hello'); // 'hello'
+setExpString('hello.world?'); // 'hello\\.world\\?'
 setExpString(/hello/); // /hello/
 setExpString('[test]'); // '\\[test\\]'
+setExpString(12.5); // '12\\.5'
 ```
 
 **Parameters:**
-- `exp` (String|RegExp): Expression to escape
+- `exp` (String|Number|RegExp): Expression to escape
 
 **Returns:** String|RegExp - Escaped string or original regex
 
 ### setLookUpExp(...args)
 
-Regex builder to get matches between multiple delimiters.
+Regex builder to get matches between multiple delimiters. What is in between can span several lines (any kind of line break).
+Strings are used as they are, so escape them first with `setExpString` when they are not meant to be a pattern.
 
 ```javascript
-setLookUpExp('h', 'd'); // 'h((.|\n)*?)d'
-setLookUpExp('h', 'd', 'c'); // 'h((.|\n)*?)d((.|\n)*?)c'
+setLookUpExp('h', 'd'); // 'h([\s\S]*?)()d'
+setLookUpExp('h', 'd', 'c'); // 'h([\s\S]*?)()d([\s\S]*?)()c'
+setLookUpExp(/a|b/, 'c'); // '(?:a|b)([\s\S]*?)()c'
 
 // Usage example:
-const pattern = setLookUpExp(".", "!");
+const pattern = setLookUpExp("\\.", "!");
 const regex = new RegExp(pattern, 'g');
 const text = "Hello World. Sunshine is here! Have fun!";
 const matches = text.match(regex); // [". Sunshine is here!"]

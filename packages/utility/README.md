@@ -23,9 +23,30 @@ npm install @knighttower/utility
 Or via **CDN**:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@knighttower/utility@VERSION_NUMBER/dist/browser/LIBRARY_NAME.min.js"></script>
-<script type="module" src="https://esm.run/@knighttower/utility@VERSION_NUMBER/index.mjs"></script>
+<script src="https://cdn.jsdelivr.net/npm/@knighttower/utility@VERSION_NUMBER/dist/browser/LIBRARY_NAME.js"></script>
+<script type="module" src="https://esm.run/@knighttower/utility@VERSION_NUMBER/index.js"></script>
 ```
+
+---
+
+## What's new
+
+- **Removed:** `getGoogleMapsAddress` and `openGoogleMapsAddress`.
+- **ESM sub-path imports** (`/powerHelpers`, `/helpers`, `/promises`, `/promiseQueue`, `/EventBus`, `/event-bus`, `/proxyObject`, `/proxyClass`) now load the `src` files directly (the `src` folder is published). `require()` still uses `dist/cjs`.
+- **Browser build** of the main library is `dist/browser/Utility.js` (sets `window.utility`).
+- **Behavior fixes** (see the docs of each function for details):
+  - `convertToBool`: every string other than `'false'`, `'0'`, `'no'`, `'off'` or blank is `true`.
+  - `dateFormat`: strings without a time zone are shown exactly as written on any machine, timestamps (`0` included) and `Date` objects are accepted.
+  - `decimalToCurrency` / `toCurrency`: always two decimals, `0` gives `'0.00'`, invalid input gives `undefined`.
+  - `emptyOrValue` / `isEmpty`: numbers, booleans and `Date`/`RegExp`/`Error` are never empty.
+  - `extend`: never modifies the target, ignores `__proto__` keys and string sources.
+  - `includes`: supports `Map`/`Set` and `fromIndex` on arrays.
+  - `isNumber`: blank strings are `null`.
+  - `instanceOf`: custom classes are matched by class name.
+  - `toDollarString`: 999,950 and above shows as `M`.
+  - `validateEmail` accepts `+` and long TLDs; `validatePhone` accepts spaces and requires matching parentheses.
+  - powerHelper: `cleanStr` string delimiters are literal, `getArrObjFromString` / `getDirectivesFromString` parse nested and multi-line strings reliably, `getMatchBlock` matches plain-string delimiters without regex, `getObjectFromPath` defaults to `globalThis`.
+  - EventBus, promiseQueue, promisePool and doTimeout: see their docs for the fixes.
 
 ---
 
@@ -33,7 +54,7 @@ Or via **CDN**:
 
 - **Full library:**  
   ```javascript
-  import utility from '@knighttower/utility';
+  import * as utility from '@knighttower/utility';
   ```
 - **Individual functions:**  
   ```javascript
@@ -59,6 +80,8 @@ Converts a value to a boolean.
   convertToBool('true');  // true
   convertToBool('0');     // false
   convertToBool(1);       // true
+  convertToBool('off');   // false ('false', '0', 'no', 'off' and blank strings are false)
+  convertToBool('hello'); // true  (any other string is true)
   ```
 
 ---
@@ -90,6 +113,7 @@ Converts a currency string to a decimal.
 - **Usage:**
   ```javascript
   currencyToDecimal('$1,234.56');  // 1234.56
+  currencyToDecimal(1234.56);      // 1234.56 (numbers are returned as they are)
   ```
 
 ---
@@ -99,13 +123,16 @@ Converts a currency string to a decimal.
 Formats dates to **MM/DD/YYYY** with optional time.
 
 - **Params:**  
-  `dateTime: String` - Date string.  
+  `dateTime: String | Number | Date` - Date string, timestamp in milliseconds or Date object.  
   `wTime: Boolean` - Whether to include time.
 - **Returns:**  
-  `String | Null` - Formatted date or null if invalid.
+  `String | Null` - Formatted date or null if missing/invalid.
+- **Time zones:** strings without a zone are shown exactly as written on any machine; `Date` objects, timestamps and strings with a zone (`Z`, `+02:00`...) are shown in UTC.
 - **Usage:**
   ```javascript
-  dateFormat('2201-01-01 16:15PM', true);  // "01/01/2201 @ 4:15 PM"
+  dateFormat('2201-01-01 16:15', true);      // "01/01/2201 @ 04:15 PM"
+  dateFormat('2201-01-01T16:15:00Z', true);  // "01/01/2201 @ 04:15 PM"
+  dateFormat(0);                             // "01/01/1970"
   ```
 
 ---
@@ -117,10 +144,12 @@ Converts a decimal number to a formatted currency string.
 - **Params:**  
   `amount: String | Number`
 - **Returns:**  
-  `String` - Formatted currency.
+  `String | undefined` - Formatted currency (always two decimals), or undefined when not a number.
 - **Usage:**
   ```javascript
   decimalToCurrency(1234.56);  // "1,234.56"
+  decimalToCurrency(0);        // "0.00"
+  decimalToCurrency('abc');    // undefined
   ```
 
 ---
@@ -138,6 +167,7 @@ Returns default if value is empty.
   ```javascript
   emptyOrValue('', 'default');  // 'default'
   emptyOrValue('hello');        // 'hello'
+  emptyOrValue(0, 'default');   // 0 (numbers and booleans are never empty)
   ```
 
 ---
@@ -168,8 +198,11 @@ Checks if a value is empty.
   `Boolean` - `true` if empty, otherwise `false`.
 - **Usage:**
   ```javascript
-  isEmpty([]);  // true
-  isEmpty({});  // true
+  isEmpty([]);          // true
+  isEmpty({});          // true
+  isEmpty(new Set());   // true
+  isEmpty(0);           // false (numbers, booleans, functions, Date, RegExp and Error are never empty)
+  isEmpty(new Date());  // false
   ```
 
 ---
@@ -178,10 +211,10 @@ Checks if a value is empty.
 
 #### 9. `uuid(max)`
 
-Generates a unique string.
+Generates a random alphanumeric string (not an RFC UUID, and not for security purposes). Alias: `uniqueId`.
 
 - **Params:**  
-  `max: Number` - Maximum length (default: 20).
+  `max: Number` - Length of the string (default: 20, and 40 when `0` or another falsy value is passed).
 - **Returns:**  
   `String` - Unique string.
 - **Usage:**
@@ -214,8 +247,10 @@ Validates email format.
   `Boolean`
 - **Usage:**
   ```javascript
-  validateEmail('test@example.com');  // true
-  validateEmail('test@com');          // false
+  validateEmail('test@example.com');      // true
+  validateEmail('test+tag@test.online');  // true
+  validateEmail('test@com');              // false
+  validateEmail('test@test..com');        // false
   ```
 
 ---
@@ -231,6 +266,8 @@ Validates phone number format.
 - **Usage:**
   ```javascript
   validatePhone('(123) 456-7890');  // true
+  validatePhone('123 456 7890');    // true
+  validatePhone('(123 456-7890');   // false (the parentheses must match)
   ```
 
 ---
@@ -239,7 +276,7 @@ Validates phone number format.
 
 #### 13. `extend(target, ...sources)`
 
-Deep merges objects.
+Deep merges objects into a **new** object (the target is not modified). `__proto__` keys and string sources are ignored.
 
 - **Params:**  
   `target: Object` - Base object.  
@@ -270,41 +307,15 @@ Converts an input to an array.
 
 ---
 
-### **Address Helpers**
-
-#### 15. `getGoogleMapsAddress(address)`
-
-Generates a Google Maps URL from an address.
-
-- **Params:**  
-  `address: String | Object`
-- **Returns:**  
-  `String`
-- **Usage:**
-  ```javascript
-  getGoogleMapsAddress('New York');  // "https://maps.google.it/maps?q=New+York"
-  ```
-
-#### 16. `openGoogleMapsAddress(object)`
-
-Opens Google Maps in a new tab.
-
-- **Params:**  
-  `object: String | Object` - Address.
-- **Usage:**
-  ```javascript
-  openGoogleMapsAddress('New York');
-  ```
-
----
-
 ### **Additional Methods**
 
 - **Type Check:**  
-  `typeOf(input, test)` - Returns type of input.  
-  `instanceOf(input, test)` - Returns class instance of input.
+  `typeOf(input, test)` - Returns type of input (`'null'` for null, `'array'` for arrays).  
+  `instanceOf(input, test)` - Returns class instance of input; `test` can be a name (`'date'`) or a class (`MyClass`).  
+  `isNumber(value)` - Returns the value as a number, or `null` (blank strings included). Note `isNumber(0)` is `0`, compare against `null`.  
+  `isPlainObject(value)` - True for plain objects only.
 - **Recursive Check:**  
-  `includes(collection, value, fromIndex)` - Recursively checks if a collection includes a value.
+  `includes(collection, value, fromIndex)` - Recursively checks (case-insensitive) if an array, string, object, Map or Set includes a value.
 - **String Utilities:**  
   `toDollarString(amount)` - Converts a number to a short dollar string (`2K`, `2.5M`).
 
@@ -370,13 +381,11 @@ export {
     setWildCardString,
     startAndEndWith,
     wildCardStringSearch,
-    powerHelper,
     doAsync,
     doPoll,
     doTimeout,
     promisePool,
     promiseQueue,
-    promises,
     proxyClass,
     proxyObject,
     urlHelper,
@@ -385,17 +394,17 @@ export {
     currencyToDecimal,
     dateFormat,
     decimalToCurrency,
+    dynamicId,
     emptyOrValue,
     formatPhoneNumber,
     getDynamicId,
-    getGoogleMapsAddress,
     getRandomId,
     includes,
     instanceOf,
     isEmpty,
     isNumber,
+    isPlainObject,
     makeArray,
-    openGoogleMapsAddress,
     randomId,
     toCurrency,
     toDollarString,
@@ -412,10 +421,11 @@ export {
 - `@knighttower/utility/nodeUtils` (default export)
 - `@knighttower/utility/proxyObject` (default export)
 - `@knighttower/utility/proxyClass` (default export)
-- `@knighttower/utility/powerHelpers` (default export)
-- `@knighttower/utility/promises` (default export)
+- `@knighttower/utility/powerHelpers` (or `/helpers`, named exports)
+- `@knighttower/utility/promises` (or `/promiseQueue`, named exports)
 - `@knighttower/utility/EventBus` (default export)
 - `@knighttower/utility/event-bus` (default export)
+// ESM ("import") sub-paths load the files from /src, CJS ("require") sub-paths load /dist/cjs
 ```
 <br/> 
 
@@ -429,9 +439,10 @@ see browser examples here: https://github.com/knighttower/JsUtility/blob/develop
 see all available in the CDN here --> https://cdn.jsdelivr.net/npm/@knighttower/utility/dist/browser/  
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@knighttower/utility@VERSION_NUMBER/dist/browser/LIBRARY_NAME.min.js"></script>
+<!-- LIBRARY_NAME: Utility, powerHelper, promises, EventBus, DomObserver, ElementHelper, ProxyObject, proxyClass, UrlHelper -->
+<script src="https://cdn.jsdelivr.net/npm/@knighttower/utility@VERSION_NUMBER/dist/browser/LIBRARY_NAME.js"></script>
 //or ESM
-<script src="https://esm.run/@knighttower/utility@VERSION_NUMBER/index.mjs"></script>
+<script type="module" src="https://esm.run/@knighttower/utility@VERSION_NUMBER/index.js"></script>
 ```
 
 <br/>
@@ -534,22 +545,22 @@ see all available in the CDN here --> https://cdn.jsdelivr.net/npm/@knighttower/
   dateFormat: "formats a date object to a specified format string",
   decimalToCurrency: "converts a decimal number to a currency string",
   emptyOrValue: "returns a default value if a given value is empty or undefined, uses isEmpty()",
-  getGoogleMapsAddress: "gets a formatted address string for a location using the Google Maps API",
+  extend: "deep merges objects into a new object, without modifying the target",
   formatPhoneNumber: "formats a phone number string to a standardized format",
   getDynamicId: "generates a unique ID string based on a prefix, timestamp and a random number",
   getRandomId: "generates a random ID string",
-  includes: "checks if a collection (object|string|array) includes a given value",
+  includes: "checks if a collection (object|string|array|map|set) includes a given value",
   isNumber: "checks if a given value is a number (that includes string numbers and floats)",
   isEmpty: "checks if a given value is empty, checks arrays, objects, etc",
-  logThis: "logs a message to the console with a specified prefix",
-  openGoogleMapsAddress: "opens Google Maps in a new tab with a specified address",
+  isPlainObject: "checks if a given value is a plain object",
   toCurrency: "formats a number to a currency string",
   toDollarString: "formats a number to a dollar string",
   typeOf: "gets the type of a value and can also return simple comparisons. For more advanced type-checking, use the 'typeCheck' library https://github.com/knighttower/JsTypeCheck",
   instanceOf: "gets the instance of a value and can also return simple comparisons",
   validateEmail: "validates an email address string to ensure it is in a valid format",
-  validatePhone: "validates a phone number string to ensure it is in a valid format"
-  makeArray: "converts a value to an array, if it is not already an array"
+  validatePhone: "validates a phone number string to ensure it is in a valid format",
+  makeArray: "converts a value to an array, if it is not already an array",
+  uuid: "generates a random alphanumeric string (alias uniqueId)"
 }
 
 ```
@@ -575,8 +586,8 @@ You can see the src with github and explore the functions by using the "symbols 
   setLookUpExp: "sets a regular expression string for looking up a value in an object",
   startAndEndWith: "looks for a string that starts and ends with a given pattern",
   setWildCardString: "sets a wildcard at the beginning, end, or middle of a string",
-  wildCardStringSearch: "searches for a string using wildcards"
-  getObjectFromPath: "gets an object from a path",
+  wildCardStringSearch: "searches for a string using wildcards",
+  getObjectFromPath: "gets an object from a path (defaults to globalThis)",
 }
 
 ```
@@ -603,14 +614,14 @@ All Functions have also been Unit Tested and tests are in the source code if you
 ```javascript
 // note: in some cases, you may need to use the full path to the file "/index" in order to import it
 // All other modules can also be imported individually from the same path
-import utility from '@knighttower/utility';
+import * as utility from '@knighttower/utility';
 //and or
-import powerHelper from '@knighttower/utility';
+import * as powerHelper from '@knighttower/utility/powerHelpers';
 // or
 import { functionThatYouWantToUse, otherFunction } from '@knighttower/utility';
 // or
-import { utility as yourCustomName } from '@knighttower/utility';
-import { functionThatYouWantToUse } from 'https://cdn.jsdelivr.net/npm/@knighttower/utility@latest/index.mjs';
+import { emptyOrValue as yourCustomName } from '@knighttower/utility';
+import { functionThatYouWantToUse } from 'https://esm.run/@knighttower/utility@latest/index.js';
 ```
 
 Or even better, use it along with Vite and [Autoimport](https://github.com/unplugin/unplugin-auto-import) like:
@@ -620,13 +631,13 @@ Or even better, use it along with Vite and [Autoimport](https://github.com/unplu
 import AutoImport from 'unplugin-auto-import/vite';
 
 ... plugins: [
-        AutoImport({ imports: [ { '@knighttower/utility': ['utility'] }] }),
+        AutoImport({ imports: [ { '@knighttower/utility': [['*', 'utility']] }] }), // import * as utility
     ]
 
 // and then in your code...
 
 let something = utility.theFunctionYouWantToUse();
-//ex: utility.emptyOrValue() // Autoimport will only import the 'emptyOrValue' module automatically
+//ex: utility.emptyOrValue() // the bundler tree-shakes the functions you do not use
 ```
 
 <br/>

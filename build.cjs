@@ -25,7 +25,7 @@ const utility = () => {
         `node "${buildExports}" --dir ./src --type=esm`,
         `prettier --config "${pretty}" --write ./index.js`,
         `prettier --config "${pretty}" --write ./index.cjs`,
-        'npm run test',
+        'npx vitest run',
         `node "${bumpVersion}" --exe --minor`,
         local ? '' : 'npm publish --access public',
     ]
@@ -47,7 +47,7 @@ const typeCheck = () => {
         `node "${buildExports}" --file ./src/typeCheck.js --type=esm`,
         `prettier --config "${pretty}" --write ./index.js`,
         `prettier --config "${pretty}" --write ./index.cjs`,
-        'npm run test',
+        'npx vitest run',
         `node "${bumpVersion}" --exe --minor`,
         local ? '' : 'npm publish --access public',
     ]
@@ -55,16 +55,6 @@ const typeCheck = () => {
         .join(' && ');
 
     runCommand(commands);
-};
-
-const bootstrapMini = () => {
-    runCommand(
-        `\
-    cd ./packages/bootstrap-mini \
-    && npx mix --production \
-    && node "${bumpVersion}" --exe \
-    ` + (local ? '' : '&& npm publish --access public')
-    );
 };
 
 const adaptive = () => {
@@ -120,7 +110,6 @@ const generic = (genDir) => {
 };
 
 const workspaces = {
-    'bootstrap-mini': bootstrapMini,
     'type-check': typeCheck,
     utility,
     adaptive,
@@ -130,7 +119,6 @@ const workspaces = {
     toast: () => generic('toast'),
     xloader: () => generic('x-loader'),
     all: () => {
-        bootstrapMini();
         typeCheck();
         utility();
         adaptive();

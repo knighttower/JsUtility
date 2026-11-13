@@ -330,3 +330,34 @@ describe('array rest marker: [type, ...]', () => {
         expect(() => validType([1], '[..., number]')).toThrow();
     });
 });
+
+describe('How the type expression is written', () => {
+    test('a nested object followed by the null type', () => {
+        expect(validType({ y: { a: 1 }, x: null }, '{y: {a: number}, x: null}')).toBe(true);
+        expect(validType({ y: { a: 'no' }, x: null }, '{y: {a: number}, x: null}')).toBe(false);
+        expect(validType({ x: null, y: { a: 1 } }, '{x: null, y: {a: number}}')).toBe(true);
+    });
+    test('spaces around the expression', () => {
+        expect(validType([1], ' [number] ')).toBe(true);
+        expect(validType({ a: 'x' }, '  {a: string}  ')).toBe(true);
+        expect(validType({ a: 1 }, '  {a: string}  ')).toBe(false);
+    });
+    test('a trailing comma', () => {
+        expect(validType({ a: 'x' }, '{a: string,}')).toBe(true);
+        expect(validType([1, 'x'], '[number, string,]')).toBe(true);
+        expect(validType([1, 2], '[number, string,]')).toBe(false);
+    });
+    test('an expression written in several lines', () => {
+        const type = `{
+            a: string,
+            b: number,
+            c: [string, number],
+            d: {
+                e: boolean
+            }
+        }`;
+        expect(validType({ a: 'x', b: 1, c: ['y', 2], d: { e: true } }, type)).toBe(true);
+        expect(validType({ a: 'x', b: 1, c: ['y', 2], d: { e: 'no' } }, type)).toBe(false);
+        expect(validType({ a: 'x', b: 1 }, '{\r\n a: string,\r\n b: number\r\n}')).toBe(true);
+    });
+});

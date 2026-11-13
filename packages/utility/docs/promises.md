@@ -67,6 +67,11 @@ Adds a promise, function, or array of promises to the queue.
 **Parameters:**
 - `promise` - A Promise, function returning a Promise, or array of either
 
+**Notes:**
+- A function that throws, or whose promise rejects, is recorded as `rejected` and the queue keeps going.
+- A promise that rejects while it waits for its turn does not cause an unhandled rejection (which would stop a Node process). The rejection is still recorded when its turn comes.
+- An invalid value (not a promise or function, `null` included) emits `fail` instead of throwing.
+
 **Example:**
 ```javascript
 // Add a promise
@@ -80,7 +85,7 @@ queue.add([promise1, promise2, promise3]);
 ```
 
 #### `clear()`
-Clears the entire queue and resets all statistics.
+Clears the entire queue and resets all statistics (including the `promises` list). It is safe to call while a promise is running: when that promise settles it no longer updates the cleared queue.
 
 **Returns:** `this` (for method chaining)
 
@@ -108,11 +113,14 @@ Returns detailed statistics about the queue.
 - `pending` - Number of pending promises
 - `total` - Total number of promises added
 - `errors` - Concatenated error messages
-- `promises` - Array of all processed promise objects
+- `promises` - Array of all processed promise objects, each with `status` (`'fulfilled'` | `'rejected'`), `response` (when fulfilled) and `error` (the rejection reason, when rejected)
 
 ```javascript
 const stats = queue.stats();
 console.log(`${stats.completed}/${stats.total} promises completed`);
+stats.promises
+    .filter((item) => item.status === 'rejected')
+    .forEach((item) => console.log(item.error));
 ```
 
 ### Events
@@ -188,8 +196,13 @@ Adds promises or functions to the pool for execution.
 **Parameters:**
 - `promises` - A Promise, function, or array of either
 
+**Notes:**
+- A pool that is `done` (or was cleared) starts over when more promises are added, and emits `done` / `completed` again when they finish.
+- A promise that rejects while it waits in line does not cause an unhandled rejection; it is still counted when its turn comes.
+- An invalid value (`null` included) is counted as rejected instead of throwing.
+
 #### `clear()`
-Clears all promises and resets the pool state.
+Clears all promises and resets the pool state. Promises that were still running are rejected and do not update the pool when they settle.
 
 ```javascript
 pool.clear();
@@ -374,6 +387,9 @@ doTimeout('poller', 100, function() {
 });
 
 // Pass arguments to callback
+// Extra arguments also work without an ID
+doTimeout(1000, (name, age) => console.log(name, age), 'John', 30); // John 30
+
 doTimeout('withArgs', 1000, (name, age) => {
     console.log(`Hello ${name}, you are ${age} years old`);
 }, 'John', 30);

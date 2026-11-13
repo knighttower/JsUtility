@@ -10,6 +10,8 @@
 // METHODS
 // -----------------------------
 
+const FALSE_STRINGS = ['false', '0', 'no', 'off', ''];
+
 /**
  * Convert a value to bool
  * @param {String|Boolean|Int|Number} val
@@ -19,20 +21,14 @@
  * @usage convertToBool('0') // false
  * @usage convertToBool('1') // true
  * @usage convertToBool('') // false
- * @usage convertToBool('true') // true
- * @usage convertToBool('false') // false
+ * @usage convertToBool('yes') // true
+ * @usage convertToBool('off') // false
  */
 function convertToBool(val) {
-    if (typeof val === 'boolean') return val;
-
     if (typeof val === 'string') {
-        const normalized = val.trim().toLowerCase();
-        if (['true', '1', 'yes', 'on'].includes(normalized)) return true;
-        if (['false', '0', 'no', 'off', ''].includes(normalized)) return false;
-        return Boolean(normalized);
+        // Every other string, once trimmed, is not empty and therefore true
+        return !FALSE_STRINGS.includes(val.trim().toLowerCase());
     }
-
-    if (typeof val === 'number') return val !== 0;
 
     return Boolean(val);
 }
@@ -50,13 +46,8 @@ function convertToBool(val) {
  * @example convertToNumber(null) // Output: null (original)
  */
 function convertToNumber(input) {
-    const isNum = isNumber(input);
-
-    if (isNum !== null) {
-        return isNum;
-    }
-    // Case: String that cannot be converted to a number
-    return input;
+    // Anything that cannot be converted to a number is returned untouched
+    return isNumber(input) ?? input;
 }
 
 /**
@@ -81,59 +72,18 @@ function convertToNumber(input) {
  * @example var hello = [...]; emptyOrValue(hello') // [...]
  */
 function emptyOrValue(value, _default = null) {
-    /**
-     * Test sequence:
-     * If it is a number 0> : true
-     * If is not undefined: true
-     * If it is boolean (true|false) prevents going to empty
-     * If it is not Empty, [], null, {}, 0, true, false: true
-     */
-
-    if (isNumber(value) !== null || typeof value === 'boolean') {
-        return value;
-    } else if (!isEmpty(value)) {
-        return value;
-    }
-
-    return _default;
+    // Numbers (0 included) and booleans are never empty, see isEmpty
+    return isEmpty(value) ? _default : value;
 }
-
-const uuid = (max = 20) => {
-    const rnd = () => Math.random().toString(36).substring(2, 15);
-    max = max || 40;
-    var str = '';
-    for (var i = 0; i < max / 3 + 1; i++) {
-        str += rnd();
-    }
-    return str.substring(0, max);
-};
-
-/**
- * Generate unique ids
- * @function getDynamicId
- * @memberof utility
- * @return string Format kn__000000__000
- */
-function getDynamicId() {
-    return 'id__' + uuid(8) + '__' + new Date().getTime();
-}
-
-/**
- * Alias to getDynamicId
- * @function getRandomId
- * @memberof utility
- * @return string
- * @example getRandomId() // kn__000000__000
- */
-const getRandomId = getDynamicId;
 
 /**
  * Check if a value is empty
+ * Numbers, booleans, functions and value objects (Date, RegExp, Error) are never empty
  * @function isEmpty
  * @memberof utility
  * @param {string|array|object|map|set|number|boolean} value
  * @url https://moderndash.io/
- * @return {string}
+ * @return {boolean}
  */
 function isEmpty(value) {
     if (value === null || value === undefined) {
@@ -152,6 +102,11 @@ function isEmpty(value) {
         return value.byteLength === 0;
     }
 
+    // These hold their content internally, so they have no keys to count
+    if (value instanceof Date || value instanceof RegExp || value instanceof Error) {
+        return false;
+    }
+
     if (typeof value === 'object') {
         return Object.keys(value).length === 0;
     }
@@ -166,94 +121,29 @@ function isEmpty(value) {
  * @function isNumber
  * @memberof utility
  * @param {String|Number} value
- * @return null|int
- * @example isNumber(123) // true
- * @example isNumber(123.45) // true
- * @example isNumber('123abc') // false
- * @example isNumber('abc') // false
- * @example isNumber('') // false
- * @example isNumber("123") // true
- * @example isNumber("123.45") // true
+ * @return {null|number} The value as a number, or null when it is not a number
+ * @example isNumber(123) // 123
+ * @example isNumber(123.45) // 123.45
+ * @example isNumber('123abc') // null
+ * @example isNumber('abc') // null
+ * @example isNumber('') // null
+ * @example isNumber(' ') // null
+ * @example isNumber("123") // 123
+ * @example isNumber("123.45") // 123.45
+ * @example isNumber(0) // 0, so compare the result against null instead of using it as a boolean
  */
 function isNumber(value) {
-    const isType = typeof value;
-    switch (value) {
-        case null:
-        case undefined:
-        case '':
-            return null;
-        case '0':
-        case 0:
-            return 0;
-        default:
-            if (isType === 'number' || isType === 'string') {
-                if (typeof value === 'number' || !Number.isNaN(Number(value))) {
-                    return +value;
-                }
-            }
-
-            break;
+    const type = typeof value;
+    if (type !== 'number' && type !== 'string') {
+        return null;
+    }
+    // Number('') and Number('  ') are both 0, so blank strings have to be ruled out first
+    if (type === 'string' && value.trim() === '') {
+        return null;
     }
 
-    return null;
-}
-
-/**
- * Check the type of a variable, and get the correct type for it. It also accepts simple comparisons
- * For more advance type checking see https://github.com/knighttower/JsTypeCheck
- * @param {any} input - The variable to check
- * @param {string} test - The types to check against, piped string
- * @return {string|boolean} - The type of the variable
- * @example typeOf('hello', 'string') // returns true
- * @example typeOf('hello', 'number') // returns false
- * @example typeOf('hello', 'string') // returns true
- * @example typeOf('hello') // returns 'string'
- * @example typeOf(123, 'number|int') // returns 'number'
- * @example typeOf({}) // returns 'object'
- */
-function typeOf(input, test) {
-    // Special case for null since it can be treated as an object
-    if (input === null) {
-        if (test) {
-            return test === null || test === 'null' ? true : false;
-        }
-        return 'null';
-    }
-
-    let inputType;
-
-    switch (typeof input) {
-        case 'number':
-        case 'string':
-        case 'boolean':
-        case 'undefined':
-        case 'bigint':
-        case 'symbol':
-        case 'function':
-            inputType = typeof input;
-            break;
-        case 'object':
-            inputType = Array.isArray(input) ? 'array' : 'object';
-
-            break;
-        default:
-            inputType = 'unknown';
-    }
-
-    if (test) {
-        if (test.includes('|')) {
-            for (let type of test.split('|')) {
-                if (inputType === type) {
-                    return type;
-                }
-            }
-            return false;
-        }
-
-        return test === inputType;
-    }
-
-    return inputType;
+    const number = Number(value);
+    return Number.isNaN(number) ? null : number;
 }
 
 // //   utility; {
@@ -266,13 +156,11 @@ function typeOf(input, test) {
 //    extend,
 //     formatPhoneNumber,
 //     getDynamicId,
-//     getGoogleMapsAddress,
 //     getRandomId,
 //     includes,
 //     isEmpty, // from https://moderndash.io/
 //     isNumber,
 //     instanceOf,
-//     openGoogleMapsAddress,
 //     toCurrency,
 //     toDollarString,
 //     typeOf,
@@ -289,15 +177,57 @@ function typeOf(input, test) {
 
 
 // @private
-function _removeBrackets(strExp) {
-    const regex = /^(\{.*\}|\[.*\])$/; // Match only if both brackets are the same type
-    const match = strExp.match(regex);
+const _hasOwn = (obj, key) => Object.prototype.hasOwnProperty.call(obj, key);
 
-    if (match) {
-        return match[0].slice(1, -1).trim(); // Extract and trim the content between brackets
+// @private
+// Pairs every opening bracket with the one that closes it: Map { index of '{' or '[' => index of '}' or ']' }
+// A bracket without a partner is left out, so it ends up being treated as plain text
+function _matchBrackets(str) {
+    const pairs = new Map();
+    const opened = { '{': [], '[': [] };
+
+    for (let i = 0; i < str.length; i++) {
+        const char = str[i];
+        if (char === '{' || char === '[') {
+            opened[char].push(i);
+        } else if (char === '}' || char === ']') {
+            const sameType = opened[char === '}' ? '{' : '['];
+            const otherType = opened[char === '}' ? '[' : '{'];
+            if (sameType.length) {
+                const start = sameType.pop();
+                pairs.set(start, i);
+                // The other type of bracket opened inside this pair was never closed
+                while (otherType.length && otherType[otherType.length - 1] > start) {
+                    otherType.pop();
+                }
+            }
+        }
     }
 
-    return strExp; // Return the original string if no brackets found at start and end
+    return pairs;
+}
+
+// @private
+// Does the same as the regex from setLookUpExp, for delimiters that are plain strings, in a single pass
+function _getBlocks(str, start, end, all) {
+    const blocks = [];
+    let from = 0;
+
+    while (from <= str.length) {
+        const opens = str.indexOf(start, from);
+        // Without an end after this start there is none after any later start either
+        const closes = opens === -1 ? -1 : str.indexOf(end, opens + start.length);
+        if (closes === -1) {
+            break;
+        }
+        from = closes + end.length;
+        blocks.push(str.slice(opens, from));
+        if (!all) {
+            break;
+        }
+    }
+
+    return blocks;
 }
 
 /**
@@ -313,17 +243,18 @@ function addQuotes(str, q = '"') {
 
 /**
  * Clean a string from delimeters or just trimmed if no delimeters given
+ * A delimeter given as a string is removed once (its first appearance), use a regex with the g flag to remove all
  * @funtion cleanStr
  * @param {String} str - String to use
  * @param {String|Regex} p1 - Delimeter 1
  * @param {String|Regex} p2 - Delimeter 2
- * @return {String|void}
+ * @return {String|void} - void when the string is empty
  * @example cleanStr('hello world', 'h', 'd') // 'ello worl'
  * @example cleanStr('  hello world  ') // 'hello world'
  * @example cleanStr('hello world', 'hello') // 'world'
- * @example cleanStr('Hello World. Sunshine is here!', '\..*!') // Hello World
- * @example cleanStr('Hello World. Sunshine is here!', /Hello/g) // ' World. Sunshine is here!'
- * @example cleanStr('Hello World. Sunshine is here!', /Hello/g, /Sunshine/g) // ' World.  is here!'
+ * @example cleanStr('Hello World. Sunshine is here!', /\..*!/) // 'Hello World'
+ * @example cleanStr('Hello World. Sunshine is here!', /Hello/g) // 'World. Sunshine is here!'
+ * @example cleanStr('Hello World. Sunshine is here!', /Hello/g, /Sunshine/g) // 'World.  is here!'
  */
 function cleanStr(str, ...args) {
     if (!str) {
@@ -335,8 +266,11 @@ function cleanStr(str, ...args) {
 
     return args
         .reduce((accStr, arg) => {
-            const regex = arg instanceof RegExp ? arg : new RegExp(setExpString(arg));
-            return accStr.replace(regex, '');
+            if (arg === null || arg === undefined) {
+                return accStr;
+            }
+            // A string (or number) is taken literally and removed once
+            return accStr.replace(arg instanceof RegExp ? arg : String(arg), '');
         }, str)
         .trim();
 }
@@ -387,7 +321,7 @@ function findAndReplaceInArray(arr, find, value) {
         if (prop === find) {
             replaced = true;
             if (Array.isArray(value)) {
-                return value.map((p) => (Array.isArray(p) ? p : p.trim()));
+                return value.map((p) => (typeof p === 'string' ? p.trim() : p));
             }
             return value;
         }
@@ -405,6 +339,7 @@ function findAndReplaceInArray(arr, find, value) {
  * @param {string} end - Delimeter 2
  * @return {string|null}
  * @example findNested('[[]hello [world]]', '[', ']') // [world]
+ * @example findNested('a <b/> c', '<', '/>') // <b/>
  */
 function findNested(str, start = '[', end = ']') {
     if (typeof str !== 'string') {
@@ -427,7 +362,7 @@ function findNested(str, start = '[', end = ']') {
         return null;
     }
     // Extract and return the content between the last '[' and the next ']', including them
-    return substring.substring(0, endIndex + 1);
+    return substring.substring(0, endIndex + end.length);
 }
 
 /**
@@ -450,105 +385,117 @@ function fixQuotes(str, q = '"') {
  * Get an object from a path
  * @function getObjectFromPath
  * @param {String} path - The path to the object
- * @param {Object} source - The source object to search in
+ * @param {Object} source - The source object to search in. Defaults to the global object (window in the browser)
  * @return {Object} - The object found at the path
  * @example getObjectFromPath('a.b.c', {a: {b: {c: 'value'}}}) // 'value'
  * @example getObjectFromPath('a.b.c') // 'value'
  * @example getObjectFromPath('a.b.c', window) // value
  * @example getObjectFromPath('a.b.c', source) // value
  */
-function getObjectFromPath(path, source = window) {
+function getObjectFromPath(path, source = globalThis) {
     return path.split('.').reduce((acc, part) => acc && acc[part], source);
 }
 
 /**
  * Converts strings formats into objects or arrays
- * Note: quoted strings are not supported, use getDirectiveFromString instead
+ * - Values are separated by commas and can be nested: [value, [value], {key: value}]
+ * - Object entries are 'key: value', an entry without a key gets its position as the key
+ * - Values that are numbers are converted to numbers, any other value is a string
+ * - Empty values (like the one after a trailing comma) are ignored
+ * Note: quoted strings are not supported (the quotes are removed and a comma inside the quotes still separates values),
+ * use getDirectiveFromString instead
  * @param {string} strExp
- * @return {object|array|string}
+ * @return {object|array|string} - Anything that is not a string wrapped in {} or [] is returned as it is
  * @example getArrObjFromString('[[value,value],value]') // [['value', 'value'], 'value']
  * @example getArrObjFromString('[[value,value],value, { y: hello }, hello]') // [['value', 'value'], 'value', { y: 'hello' }, 'hello']
  * @example getArrObjFromString('{ y: hello, x: world, z: [value,value]}') // { y: 'hello', x: 'world', z: ['value', 'value'] }
+ * @example getArrObjFromString('{ y: 1, url: http://site.com, ...}') // { y: 1, url: 'http://site.com', 2: '...' }
  */
 function getArrObjFromString(strExp) {
-    // alredy typeof object or array just return it
-    if (typeOf(strExp, 'object') || typeOf(strExp, 'array') || !strExp) {
+    // alredy typeof object or array (or anything else that is not a string) just return it
+    if (typeof strExp !== 'string') {
         return strExp;
     }
-    const isObject = (str) => startAndEndWith(str, '{', '}');
-    const isArray = (str) => startAndEndWith(str, '[', ']');
-
-    const collectionType =
-        (isObject(strExp) ? 'object' : null) || (isArray(strExp) ? 'array' : null);
+    const expression = strExp.trim();
+    const isObject = startAndEndWith(expression, '{', '}');
     // If it is other type of string, return it
-    if (!collectionType) {
+    if (!isObject && !startAndEndWith(expression, '[', ']')) {
         return strExp;
     }
 
-    const nestedElements = {};
+    // The content, without the brackets that wrap it
+    const str = expression.slice(1, -1);
+    // Where each nested collection starts and ends
+    const nestedElements = _matchBrackets(str);
 
-    const getNested = (str) => {
-        const match1 = findNested(str, '{', '}');
-        const match2 = findNested(str, '[', ']');
-
-        if (str.indexOf(match1) > str.indexOf(match2)) {
-            return match1 || null;
-        }
-        return match2 || null;
-    };
-
-    const loopNested = (str) => {
-        if (!str) {
+    // A value is either a whole nested collection or plain text
+    const buildValue = (start, end) => {
+        const untrimmed = str.slice(start, end);
+        const value = untrimmed.trim();
+        if (!value) {
             return;
         }
+        // position of the value once trimmed
+        start += untrimmed.length - untrimmed.trimStart().length;
+        end = start + value.length;
 
-        let matched = getNested(_removeBrackets(str));
-
-        if (!matched) {
-            return;
+        if (nestedElements.get(start) === end - 1) {
+            return buildNested(start + 1, end - 1, value[0] === '{');
         }
-        const addMarker = (_str, matched) => {
-            let marker = `__${getRandomId()}__`;
-            let type =
-                (isObject(matched) ? 'object' : null) ||
-                (isArray(matched) ? 'array' : null) ||
-                'string';
-            _str = _str.replace(matched, marker);
-            nestedElements[marker] = {
-                type,
-                matched,
-            };
-            return _str;
-        };
-
-        str = addMarker(str, matched);
-
-        return loopNested(str) || str;
+        return convertToNumber(removeQuotes(value));
     };
 
-    const buildNested = (str, type) => {
-        str = _removeBrackets(str);
-        let output = type === 'object' ? {} : [];
+    const buildNested = (start, end, asObject) => {
+        const output = asObject ? {} : [];
+        let index = 0;
+        // Start of the current chunk and its first colon, the one between key and value
+        let chunkStart = start;
+        let colon = -1;
 
-        getChunks(str).forEach((chunk, index) => {
-            const isObjectKey = chunk.includes(':') && type === 'object';
-            const chunkParts = isObjectKey ? getChunks(chunk, ':') : [];
-            const chunkKey = removeQuotes(emptyOrValue(chunkParts[0], index));
-            chunk = isObjectKey ? chunkParts[1] : chunk;
-
-            if (chunk in nestedElements) {
-                const nested = nestedElements[chunk];
-                chunk = buildNested(nested.matched, nested.type);
+        for (let i = start; i <= end; i++) {
+            if (i < end) {
+                if (nestedElements.has(i)) {
+                    // commas and colons of a nested collection belong to it, jump to its end
+                    i = nestedElements.get(i);
+                    continue;
+                }
+                if (str[i] === ':' && colon === -1) {
+                    colon = i;
+                }
+                if (str[i] !== ',') {
+                    continue;
+                }
             }
-            chunk = convertToNumber(removeQuotes(chunk));
-            // set back in the collection either as an object or array
-            type === 'object' ? (output[chunkKey] = chunk) : output.push(chunk);
-        });
+            // a comma or the end of the collection closes the chunk, empty ones are ignored
+            if (str.slice(chunkStart, i).trim()) {
+                if (asObject) {
+                    const isObjectKey = colon !== -1;
+                    const key = isObjectKey ? str.slice(chunkStart, colon).trim() : '';
+                    const chunkKey = removeQuotes(emptyOrValue(key, index));
+                    // '__proto__' is not a key, it would replace the prototype of the output
+                    if (chunkKey !== '__proto__') {
+                        output[chunkKey] = buildValue(isObjectKey ? colon + 1 : chunkStart, i);
+                    }
+                } else {
+                    output.push(buildValue(chunkStart, i));
+                }
+                index++;
+            }
+            chunkStart = i + 1;
+            colon = -1;
+        }
         return output;
     };
 
-    return buildNested(loopNested(strExp) || strExp, collectionType);
+    return buildNested(0, str.length, isObject);
 }
+
+// Mathes simple directive function style: directive(#idOr.Class)
+const matchFunctionString = /^([a-zA-Z]+)(\()(\.|\#)(.*)(\))/;
+// Matches object-style strings: directive.tablet(...values)
+const regexDotObjectString = /([a-zA-Z]+)\.(.*?)\(([\s\S]*?)\)/;
+// Matches object-style strings: directive[expression](...values)
+const regexExObjectString = /([a-zA-Z]+)\[([\s\S]*?)\]\(([\s\S]*?)\)/;
 
 /**
  * handles the following patterns to get an object from string attributes
@@ -571,9 +518,7 @@ function getArrObjFromString(strExp) {
  * @example getDirectivesFromString('directive.tablet(...values)') // {directive: {tablet: 'values'}}
  */
 function getDirectivesFromString(stringDirective) {
-    const str = stringDirective;
-
-    if (!emptyOrValue(str)) {
+    if (!emptyOrValue(stringDirective)) {
         return null;
     }
 
@@ -583,97 +528,97 @@ function getDirectivesFromString(stringDirective) {
             directive: results,
         };
     };
-    const matchArrayTypes = /^\[((.|\n)*?)\]$/gm;
-    // comment eslint to ignore
+    let type = typeof stringDirective;
 
-    const matchObjectTypes = /^\{((.|\n)*?)\:((.|\n)*?)\}$/gm;
-
-    const matchFunctionString = /^([a-zA-Z]+)(\()(\.|\#)(.*)(\))/g;
-    const regexDotObjectString = /([a-zA-Z]+)\.(.*?)\(((.|\n)*?)\)/gm;
-    const regexExObjectString = /([a-zA-Z]+)\[((.|\n)*?)\]\(((.|\n)*?)\)/gm;
-    let type = typeof str;
-
-    if (type === 'object' || type === 'array') {
-        return results(type, str);
-    } else {
-        switch (true) {
-            case !!str.match(matchArrayTypes):
-                // Matches the Array as string: [value, value] OR ['value','value']
-                // regexArrayLike = /^\[((.|\n)*?)\]$/gm;
-                // Matches a multi-array string like [[value,value]],value]
-                // regexMultiArrayString = /\[(\n|)(((.|\[)*)?)\](\,\n|)(((.|\])*)?)(\n|)\]/gm;
-
-                type = 'array';
-                break;
-            case !!str.match(matchObjectTypes):
-                // Matches the JSON objects as string: {'directive':{key:value}} OR {key:value}
-                // regexObjectLike = /^\{((.|\n)*?)\:((.|\n)*?)\}/gm;
-                type = 'object';
-                break;
-            case !!str.match(matchFunctionString):
-                // Mathes simple directive function style: directive(#idOr.Class)
-                // regexFunctionString
-
-                const directive = str.split('(')[0].trim();
-                return results('idOrClassWithDirective', {
-                    [directive]: getMatchInBetween(str, '(', ')'),
-                });
-            case !!str.match(regexDotObjectString):
-                // Matches object-style strings: directive.tablet(...values) OR directive[expression](...values)
-                // OR directive.breakdown|breakdown2(...values) OR directive.tablet(...values)&&directive.mobile(...values)
-                type = 'dotObject';
-                break;
-            case !!str.match(regexExObjectString):
-                type = 'dotObject';
-                break;
-
-            default:
-                return results('string', str);
-        }
+    // Already an object or array (or anything else that is not a string)
+    if (type !== 'string') {
+        return results(type, stringDirective);
     }
-    if (type === 'array' || type === 'object') {
-        let strQ = fixQuotes(str);
 
-        try {
-            return results(type, JSON.parse(strQ));
-        } catch (error) {
-            // uncomment to debug
-            // console.log('___ parse error ___', error);
+    const str = stringDirective.trim();
+    // The object-style directives need them, checking first avoids searching a long string for nothing
+    const hasParentheses = str.includes('(') && str.includes(')');
+
+    switch (true) {
+        case startAndEndWith(str, '[', ']'):
+            // Matches the Array as string: [value, value] OR ['value','value']
+            // Matches a multi-array string like [[value,value]],value]
+            type = 'array';
+            break;
+        case startAndEndWith(str, '{', '}') && str.includes(':'):
+            // Matches the JSON objects as string: {'directive':{key:value}} OR {key:value}
+            type = 'object';
+            break;
+        case matchFunctionString.test(str):
+            // Mathes simple directive function style: directive(#idOr.Class)
+            const directive = str.split('(')[0].trim();
+            return results('idOrClassWithDirective', {
+                [directive]: getMatchInBetween(str, '(', ')'),
+            });
+        case hasParentheses && regexDotObjectString.test(str):
+        case hasParentheses && regexExObjectString.test(str):
+            // Matches object-style strings: directive.tablet(...values) OR directive[expression](...values)
+            // OR directive.breakdown|breakdown2(...values) OR directive.tablet(...values)&&directive.mobile(...values)
+            type = 'dotObject';
+            break;
+        default:
+            return results('string', stringDirective);
+    }
+
+    if (type === 'array' || type === 'object') {
+        const strQ = fixQuotes(str);
+
+        // Valid JSON is taken as it is, if not then it is tried again with the quotes fixed
+        for (const json of [str, strQ]) {
+            try {
+                return results(type, JSON.parse(json));
+            } catch (error) {
+                // uncomment to debug
+                // console.log('___ parse error ___', error);
+            }
         }
 
         return results(type, getArrObjFromString(strQ));
     }
 
-    if (type === 'dotObject') {
+    const setObject = {};
+
+    getChunks(str, '&&').forEach((command) => {
         let values, breakDownId, directive;
-        const setObject = {};
 
-        getChunks(str, '&&').forEach((command) => {
-            if (command.match(regexExObjectString)) {
-                // Matches object-style strings: directive[expression](...values)
-                values = getMatchInBetween(command, '](', ')');
-                breakDownId = getMatchInBetween(command, '[', ']');
-                directive = command.split('[')[0].trim();
-            } else {
-                // Matches object-style strings: directive.tablet(...values)
-                values = getMatchInBetween(command, '(', ')');
-                command = command.replace(getMatchBlock(command, '(', ')'), '');
-                [directive, breakDownId] = getChunks(command, '.');
-            }
+        if (regexExObjectString.test(command)) {
+            // Matches object-style strings: directive[expression](...values)
+            values = getMatchInBetween(command, '](', ')');
+            breakDownId = getMatchInBetween(command, '[', ']');
+            directive = command.split('[')[0].trim();
+        } else {
+            // Matches object-style strings: directive.tablet(...values)
+            values = getMatchInBetween(command, '(', ')');
+            command = command.replace(getMatchBlock(command, '(', ')') ?? '', '');
+            [directive, breakDownId] = getChunks(command, '.');
+        }
 
-            values = getArrObjFromString(values);
+        // Not a directive (like plain text in between '&&'), or a name that would alter the object itself
+        if (!directive || !breakDownId || directive === '__proto__') {
+            return;
+        }
 
-            if (!setObject[directive]) {
-                setObject[directive] = {};
-            }
+        values = getArrObjFromString(values);
 
-            getChunks(breakDownId, '|').forEach((id) => {
+        // Only its own keys count: 'constructor' or 'toString' are found in every object, and writing
+        // into those would change them for the whole page
+        if (!_hasOwn(setObject, directive)) {
+            setObject[directive] = {};
+        }
+
+        getChunks(breakDownId, '|').forEach((id) => {
+            if (id && id !== '__proto__') {
                 setObject[directive][id] = values;
-            });
+            }
         });
+    });
 
-        return results('dotObject', setObject);
-    }
+    return results('dotObject', setObject);
 }
 
 /**
@@ -692,11 +637,15 @@ function getMatchBlock(str, p1, p2, all = false) {
     if (typeof str !== 'string') {
         return str;
     }
-    p1 = setExpString(p1);
-    p2 = setExpString(p2);
-    let regex = new RegExp(setLookUpExp(p1, p2), 'gm');
-    const matches = str.match(regex);
-    if (matches) {
+    let matches;
+    if (typeof p1 === 'string' && typeof p2 === 'string' && p1 && p2) {
+        matches = _getBlocks(str, p1, p2, all);
+    } else {
+        p1 = setExpString(p1);
+        p2 = setExpString(p2);
+        matches = str.match(new RegExp(setLookUpExp(p1, p2), 'gm'));
+    }
+    if (matches && matches.length) {
         return all ? matches : matches[0];
     }
     return null;
@@ -705,31 +654,37 @@ function getMatchBlock(str, p1, p2, all = false) {
  * Splits a string into chunks by a given splitter and cleans the chunks
  * @param {string} str
  * @param {string} splitter - The string/character to split the string by. Defaults to ','
- * @return {string|array}
+ * @return {string|array} - The chunks, or the given value untouched when it is not a string
+ * @example getChunks('a, b ,c') // ['a', 'b', 'c']
+ * @example getChunks('a | b', '|') // ['a', 'b']
+ * @example getChunks('a,,b') // ['a', '', 'b']
+ * @example getChunks('') // []
  */
 function getChunks(str, splitter = ',') {
     if (typeof str !== 'string') {
         return str;
     }
-    if (isEmpty(str)) {
+    str = str.trim();
+    if (!str) {
         return [];
     }
-    str = cleanStr(str);
-    let chunks = str.split(splitter).map((t) => cleanStr(t));
-    return chunks.length === 1 && chunks[0] === '' ? [str] : chunks;
+    return str.split(splitter).map((chunk) => chunk.trim());
 }
 
 /**
  * find a match in between two delimeters, either string or regex given, returns clean matches
- * @function getMatchBlock
+ * Note: when there is no match, the string is returned as it is (or an empty array when 'all' is set)
+ * @function getMatchInBetween
  * @param {String} str
  * @param {String|Regex} p1
  * @param {String|Regex} p2
  * @param {Boolean} all If it should return all matches or single one (default)
- * @return {String|Array|Null}
+ * @return {String|Array}
  * @example getMatchInBetween('hello world', 'h', 'd') // 'ello worl'
  * @example getMatchInBetween('hello <world/>', '<', '/>', true) // ['world']
  * @example getMatchInBetween('hello <world/>', '<', '/>') // 'world'
+ * @example getMatchInBetween('hello world', '<', '/>') // 'hello world'
+ * @example getMatchInBetween('hello world', '<', '/>', true) // []
  */
 function getMatchInBetween(str, p1, p2, all = false) {
     if (typeof str !== 'string') {
@@ -759,12 +714,17 @@ function removeQuotes(str) {
  * @param {string} strExp
  * @param {string} start - The string/character to check it starts with
  * @param {string} end - The string/character to check it ends with
- * @return {string}
- * @example startAndEndWith('hello world', 'h', 'd') // false
+ * @return {boolean} - Always false when the given value is not a string
  * @example startAndEndWith('hello world', 'h', 'd') // true
+ * @example startAndEndWith('hello world', 'h', 'x') // false
+ * @example startAndEndWith('hello world', 'h') // true
  */
 function startAndEndWith(strExp, start = null, end = null) {
-    return (!start || strExp.startsWith(start)) && (!end || strExp.endsWith(end));
+    return (
+        typeof strExp === 'string' &&
+        (!start || strExp.startsWith(start)) &&
+        (!end || strExp.endsWith(end))
+    );
 }
 
 /**
@@ -772,36 +732,34 @@ function startAndEndWith(strExp, start = null, end = null) {
  * @function setExpString
  * @param {String|Regex} exp
  * @return {String|Regex}
- * @example setExpString('hello') // '\h\e\l\l\o'
+ * @example setExpString('hello') // 'hello'
+ * @example setExpString('hello.world?') // 'hello\.world\?'
  * @example setExpString(/hello/) // /hello/
- * @example setExpString([hello]) // \\[hello\\/ then use like new new RegExp(setExpString(StringOrRegex))
+ * @example setExpString('[hello]') // '\[hello\]' then use like new RegExp(setExpString(StringOrRegex))
  */
 function setExpString(exp) {
     if (exp instanceof RegExp) {
         return exp;
-    } else {
-        return exp
-            .split('')
-            .map((char) =>
-                ['$', '^', '.', '*', '+', '?', '(', ')', '[', ']', '{', '}', '|', '\\'].includes(
-                    char
-                )
-                    ? `\\${char}`
-                    : char
-            )
-            .join('');
     }
+    // numbers are valid too
+    return (typeof exp === 'number' ? String(exp) : exp).replace(/[$^.*+?()[\]{}|\\]/g, '\\$&');
 }
+
+// Anything in between two delimeters, line breaks of any kind included.
+// The empty group keeps the number of groups of the former pattern '((.|\n)*?)'
+const IN_BETWEEN = '([\\s\\S]*?)()';
 
 /**
  * Regex builder to get a match in between two delimeters
+ * Strings are used as they are, use setExpString to scape them first when they are not meant to be a pattern
  * @function setLookUpExp
  * @param {String|Regex} args - minimun two arguments as delimeters
  * @return {String} - Regex
- * @example setLookUpExp('h', 'd') // 'h((.|\n)*?)d'
- * @example setLookUpExp('h', 'd', 'c') // 'h((.|\n)*?)d((.|\n)*?)c'
+ * @example setLookUpExp('h', 'd') // 'h([\s\S]*?)()d'
+ * @example setLookUpExp('h', 'd', 'c') // 'h([\s\S]*?)()d([\s\S]*?)()c'
+ * @example setLookUpExp(/a|b/, 'c') // '(?:a|b)([\s\S]*?)()c'
  * @usage:
- * const pattern = setLookUpExp(".", "!");
+ * const pattern = setLookUpExp("\\.", "!");
 const regex = new RegExp(pattern, 'g');
 const text = "Hello World. Sunshine is here! Have fun!";
 const matches = text.match(regex);
@@ -811,21 +769,13 @@ function setLookUpExp(...args) {
     if (args.length < 2) {
         throw new Error('You need to pass at least two arguments');
     }
-    let expression = '';
     // loop through args
-    args.forEach((arg, index) => {
-        // if arg is a regex, return the source
-        if (arg instanceof RegExp) {
-            arg = arg.source;
-        }
-        if (index === 0) {
-            expression = arg;
-        } else {
-            expression += `((.|\n)*?)${arg}`;
-        }
-    });
-
-    return expression;
+    return args
+        .map((arg) => {
+            // if arg is a regex, use the source, grouped so that its alternatives (a|b) stay together
+            return arg instanceof RegExp ? `(?:${arg.source})` : arg;
+        })
+        .join(IN_BETWEEN);
 }
 
 /**

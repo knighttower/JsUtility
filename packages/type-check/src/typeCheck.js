@@ -20,6 +20,8 @@ const runBasicTest = (inputVal, tests) => {
 const runArrayTest = (inputVal, tests, hasRest = false) => {
     // If the input is not an array, return false
     if (!typeOf(inputVal, 'array') || inputVal.length === 0) {
+        // log it, else the error message would show the value of an earlier test
+        pushToErrorLogs(inputVal, 'Expected an array with at least one item');
         return false;
     }
     // Else, test each declared position in the array
@@ -38,7 +40,7 @@ class ObjectTestHandler {
     constructor(inputVal, unitTest) {
         // Extract all properties at once
         /* prettier-ignore */
-        const { testOnly, testFew, testAllAny, optionalKeys, tests } = [...unitTest.entries()].reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
+        const [testOnly, testFew, testAllAny, optionalKeys, tests] = [unitTest.get('testOnly'), unitTest.get('testFew'), unitTest.get('testAllAny'), unitTest.get('optionalKeys'), unitTest.get('tests')];
         // Use destructured variables
         this.testUnitKeys = [...tests.keys()];
         this.testOnly = testOnly;
@@ -112,6 +114,13 @@ class ObjectTestHandler {
         return this.testFew.every((key) => {
             const test = this.testCollection.get(key);
             const testValue = this.inputObject[key];
+            // '{key?: type, any: type}', an optional key that is not set (null/undefined) is not tested
+            if (
+                this.optionalKeys.includes(key) &&
+                (testValue === undefined || testValue === null)
+            ) {
+                return true;
+            }
 
             return runRouteTest(testValue, test);
         });
@@ -138,6 +147,8 @@ class ObjectTestHandler {
 
 const runObjectTest = (inputVal, unitTest) => {
     if (!typeOf(inputVal, 'object')) {
+        // log it, else the error message would show the value of an earlier test
+        pushToErrorLogs(inputVal, 'Expected an object');
         return false;
     }
     return new ObjectTestHandler(inputVal, unitTest).handleUnitTest();
@@ -204,7 +215,10 @@ function getSettings(input) {
                 }
                 break;
         }
-        cachedSettings.set(input, _val);
+        // only strings are cached, objects and functions can be new on every call
+        if (type === 'string') {
+            cachedSettings.set(input, _val);
+        }
         return _val;
     }
 
@@ -235,8 +249,17 @@ function typeError(inputVal) {
 }
 
 function pushToErrorLogs(inputVal, tests) {
+    let value;
+    try {
+        value = JSON.stringify(inputVal);
+    } catch (error) {
+        // BigInt and circular values can not be converted to JSON, a failed test must not throw
+        value = typeOf(inputVal);
+    }
+    // typeError() only reads the last log, keep one so the logs do not grow forever
+    typeErrorLogs.length = 0;
     typeErrorLogs.push({
-        value: JSON.stringify(inputVal),
+        value,
         tests: JSON.stringify(tests),
         found: typeOf(inputVal),
     });
@@ -339,6 +362,10 @@ const _typeCheck = (inputVal, typeExp, params) => {
 * @see directory test for more information and examples
 */
 const _tc = (typeExp, __function, params = {}) => {
+    // string params ('log' | 'fail' | 'return') become their settings object, a string can not be spread
+    if (params && typeOf(params, 'string')) {
+        params = getSettings(params);
+    }
     return (...args) => {
         params = { ...{ fail: true }, ...params };
         _typeCheck(args, typeExp, params);
@@ -402,6 +429,9 @@ const _tcx = (typeExp, __function, params) => {
             return() {
                 return this.returns;
             }
+            test() {
+                return this.testResults.test();
+            }
         })();
     };
 };
@@ -412,7 +442,8 @@ const _tcx = (typeExp, __function, params) => {
  * @param {string} typeExp
  */
 const validType = (inputVal, typeExp) => {
-    return _typeCheck(inputVal, typeExp).test();
+    // same result as _typeCheck(inputVal, typeExp).test(), without building the chainable object
+    return runRouteTest(inputVal, testBuilder(typeExp));
 };
 
 /**

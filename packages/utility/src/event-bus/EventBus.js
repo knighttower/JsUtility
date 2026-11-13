@@ -1,7 +1,9 @@
 class EventBus {
     constructor() {
         // cleanup
-        this.listeners = {};
+        // An object without prototype: a normal one ({}) already has 'constructor', 'toString' and
+        // the like, so events with those names were taken for registered ones and broke
+        this.listeners = Object.create(null);
     }
     // creates an event that can be triggered any number of times
     /**
@@ -76,55 +78,52 @@ class EventBus {
      * @example EventBus.emit('event.name', arg1, arg2, arg3, {__context: YourInstance})
      */
     emit(eventName, ...args) {
-        let queueListeners = [];
-        let matches = null;
-        const allArgs = this.extractContextFromArgs(args);
-        const context = allArgs[0];
-        args = allArgs[1];
+        const [context, params] = this.extractContextFromArgs(args);
+        const names = Object.keys(this.listeners);
+        let matches;
 
-        // name exact match
-        if (this.hasListener(eventName)) {
-            queueListeners = this.listeners[eventName];
-        } else {
+        if (typeof eventName !== 'string' && this.hasListener(eventName)) {
+            // name exact match, the only one possible for a name that is not a string (a number, a symbol)
+            matches = [eventName];
+        } else if (eventName.includes('*')) {
             // -----------------------------------------
             // Wildcard support
-            if (eventName.includes('*')) {
-                // case 1, if the incoming string has * or ** in it
-                // Matches the emit 'eventName' to the registered 'on' this.listeners
-                matches = this.patternSearch(eventName, Object.keys(this.listeners));
-
-                if (matches.length > 0) {
-                    matches.forEach((match) => {
-                        queueListeners = queueListeners.concat(this.listeners[match]);
-                    });
-                }
-            } else {
-                // case 2, if the incoming string does not have * or ** in it
-                // get the patterns from the this.listeners (on method) and match them to the emit name
-                for (const key in this.listeners) {
-                    if (key.includes('*')) {
-                        matches = this.patternSearch(key, [eventName]);
-                        if (matches) {
-                            queueListeners = queueListeners.concat(this.listeners[key]);
-                        }
-                    }
-                }
-            }
+            // case 1, if the incoming string has * or ** in it
+            // Matches the emit 'eventName' to the registered 'on' this.listeners
+            // The listeners registered under that same name are among them, since it matches itself
+            matches = this.patternSearch(eventName, names) ?? [];
+        } else {
+            // case 2, if the incoming string does not have * or ** in it
+            // name exact match, plus the patterns from the this.listeners (on method) that match the
+            // emit name. Having the exact name registered used to leave those patterns out, even
+            // when none of its listeners was left
+            matches = names.filter(
+                (name) =>
+                    name === eventName ||
+                    (name.includes('*') && this.patternSearch(name, [eventName]))
+            );
         }
 
-        queueListeners.forEach((listener, k) => {
-            let callback = listener.callback;
-            if (context) {
-                callback = callback.bind(context);
-            }
+        // Every listener is collected, along with the name it was registered under, before any of
+        // them is called, since the callbacks can add and remove listeners
+        const queueListeners = [];
+        matches.forEach((name) => {
+            this.listeners[name].forEach((listener) => queueListeners.push([name, listener]));
+        });
+
+        queueListeners.forEach(([name, listener]) => {
             if (listener.triggerCapacity !== undefined) {
                 listener.triggerCapacity--;
-                queueListeners[k].triggerCapacity = listener.triggerCapacity;
             }
             if (this.checkToRemoveListener(listener)) {
-                this.listeners[eventName].splice(k, 1);
+                // Removed from the list it was registered in, wherever it is in that list by now
+                const registered = this.listeners[name] ?? [];
+                const index = registered.indexOf(listener);
+                if (index > -1) {
+                    registered.splice(index, 1);
+                }
             }
-            callback(...args);
+            listener.callback.apply(context || undefined, params);
         });
     }
     /**
@@ -139,7 +138,9 @@ class EventBus {
     patternSearch(pattern, list) {
         let filteredList = [];
         // console.log('__testLogHere__', pattern, this.setWildCardString(pattern));
-        const regex = new RegExp(this.setWildCardString(pattern), 'g');
+        // Without the 'g' flag: with it, test() carries on from where the previous match ended,
+        // so the item that came after a match was never found
+        const regex = new RegExp(this.setWildCardString(pattern));
 
         filteredList = list.filter((item) => regex.test(item));
         return filteredList.length === 0 ? null : filteredList;
@@ -163,7 +164,12 @@ class EventBus {
         for (let i = 0; i < args.length; i++) {
             const arg = args[i];
              
-            if (arg && typeof arg === 'object' && arg.hasOwnProperty('__context')) {
+            // Checked through Object: the data can be an object without a hasOwnProperty of its own
+            if (
+                arg &&
+                typeof arg === 'object' &&
+                Object.prototype.hasOwnProperty.call(arg, '__context')
+            ) {
                 context = arg.__context;
                 args.splice(i, 1);
                 break;

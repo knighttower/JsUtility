@@ -1,6 +1,6 @@
 {
   "name": "knighttower",
-  "version": "10.78.0",
+  "version": "11.2.0",
   "type": "module",
   "engines": {
     "node": ">=20.10.0"
@@ -24,11 +24,9 @@
   "files": [
     "./packages/*"
   ],
-  "sass": "./packages/bootstrap-mini/src/bootstrap-mini.scss",
-  "style": "./packages/bootstrap-mini/dist/bootstrap-mini.css",
   "bin": {
-    "buildExports": "./packages/utility/nodeUtils/BuildExports.js",
-    "bumpVersion": "./packages/utility/nodeUtils/BumpVersion.js"
+    "buildExports": "./packages/utility/nodeUtils/BuildExports.cjs",
+    "bumpVersion": "./packages/utility/nodeUtils/BumpVersion.cjs"
   },
   "exports": {
     "./adaptive": {
@@ -41,10 +39,6 @@
       "require": "./packages/block-ui/dist/cjs/blockui.cjs"
     },
     "./block-ui/dist/*": "./packages/block-ui/dist/*",
-    "./bootstrap-mini": {
-      "import": "./packages/bootstrap-mini/index.js",
-      "require": "./packages/bootstrap-mini/dist/bootstrap-mini.css"
-    },
     "./toast": {
       "import": "./packages/toast/dist/esm/toast.js",
       "require": "./packages/toast/dist/cjs/toast.cjs"
@@ -64,35 +58,35 @@
     "./utility/nodeUtils/*": "./packages/utility/nodeUtils/*",
     "./utility/nodeUtils": "./packages/utility/nodeUtils/index.cjs",
     "./utility/proxyObject": {
-      "import": "./packages/utility/dist/esm/proxyObject.js",
-      "require": "./packages/utility/dist/cjs/proxyObject.cjs"
+      "import": "./packages/utility/src/proxyObject.js",
+      "require": "./packages/utility/dist/cjs/ProxyObject.cjs"
     },
     "./utility/proxyClass": {
-      "import": "./packages/utility/dist/esm/proxyObject.js",
-      "require": "./packages/utility/dist/cjs/proxyObject.cjs"
+      "import": "./packages/utility/src/proxyObject.js",
+      "require": "./packages/utility/dist/cjs/ProxyObject.cjs"
     },
     "./utility/powerHelpers": {
-      "import": "./packages/utility/dist/esm/powerHelper.js",
+      "import": "./packages/utility/src/powerHelper.js",
       "require": "./packages/utility/dist/cjs/powerHelper.cjs"
     },
     "./utility/helpers": {
-      "import": "./packages/utility/dist/esm/powerHelper.js",
+      "import": "./packages/utility/src/powerHelper.js",
       "require": "./packages/utility/dist/cjs/powerHelper.cjs"
     },
     "./utility/promiseQueue": {
-      "import": "./packages/utility/dist/esm/promises.js",
+      "import": "./packages/utility/src/promises.js",
       "require": "./packages/utility/dist/cjs/promises.cjs"
     },
     "./utility/promises": {
-      "import": "./packages/utility/dist/esm/promises.js",
+      "import": "./packages/utility/src/promises.js",
       "require": "./packages/utility/dist/cjs/promises.cjs"
     },
     "./utility/EventBus": {
-      "import": "./packages/utility/dist/esm/EventBus.js",
+      "import": "./packages/utility/src/event-bus/EventBus.js",
       "require": "./packages/utility/dist/cjs/EventBus.cjs"
     },
     "./utility/event-bus": {
-      "import": "./packages/utility/dist/esm/EventBus.js",
+      "import": "./packages/utility/src/event-bus/EventBus.js",
       "require": "./packages/utility/dist/cjs/EventBus.cjs"
     },
     "./vue-utils": {
@@ -113,13 +107,11 @@
   "dependencies": {
     "@knighttower/adaptive": "file:./packages/adaptive",
     "@knighttower/block-ui": "file:./packages/block-ui",
-    "@knighttower/bootstrap-mini": "file:./packages/bootstrap-mini",
     "@knighttower/toast": "file:./packages/toast",
     "@knighttower/type-check": "file:./packages/type-check",
     "@knighttower/utility": "file:./packages/utility",
     "@knighttower/vue-utils": "file:./packages/vue-utils",
     "@knighttower/x-loader": "file:./packages/x-loader",
-    "bootstrap": "^5.3.8",
     "eslint-plugin-stylistic": "^0.0.0-0"
   },
   "devDependencies": {

@@ -1,6 +1,6 @@
 {
   "name": "@knighttower/type-check",
-  "version": "5.18.0",
+  "version": "5.19.0",
   "type": "module",
   "description": "typeCheck JS",
   "main": "index.cjs",
@@ -11,8 +11,12 @@
   "license": "MIT",
   "files": [
     "dist",
+    "src",
     "index.js",
     "index.cjs"
+  ],
+  "sideEffects": [
+    "./dist/browser/*"
   ],
   "exports": {
     ".": {

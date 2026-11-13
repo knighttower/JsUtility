@@ -7,11 +7,20 @@
 
 **Refactoring and Updates:**
 
+---- 2025 ----
+-   Event names that exist on every object (`constructor`, `toString`, `hasOwnProperty`...) now work like any other name.
+-   Emitting a name fires its exact listeners **and** every wildcard listener that matches it (before, a registered exact name hid the wildcard ones).
+-   Wildcard matching no longer skips the item that comes right after a match.
+-   `once()` / `exactly()` listeners are removed from the list they were registered in, even when they were matched through a wildcard or the list changed during the emit.
+-   Callbacks can add or remove listeners while an event is being emitted.
+-   The data passed to `emit` can be an object without a prototype (`Object.create(null)`).
+-   Number and symbol event names are matched exactly.
+
 ---- 2024 ----
 -   Consolidated functions into a single class. No need to initialize the class anymore.
 -   Distribution files are now in the root of the project
 -   Distribution builds to support node / browser / module and other environments
--   Available via NPM (@knighttower/event-bus) && JsDelivr (https://cdn.jsdelivr.net/npm/@knighttower/event-bus@latest/dist/browser/EventBus.min.js)
+-   Available via NPM (@knighttower/utility) && JsDelivr (https://cdn.jsdelivr.net/npm/@knighttower/utility@latest/dist/browser/EventBus.js)
 
 ---- 2023 ----
 -   Remove some unnecessary methods to make it SOLID
@@ -54,32 +63,27 @@ If you want to use it in your Node.js apps you can import the library like this:
 
 ```js
 import { EventBus } from '@knighttower/utility/EventBus'; // gets the class
-const EventBus = new EventBus(); // creates a new instance
-//Tip: in node JS you can use the global instance=> EventBus().global();
+// or: import { EventBus } from '@knighttower/utility';
+const bus = new EventBus(); // creates a new instance
+// share the instance (export it from a module) to use the same bus across your app
 ```
 
 ### Importing in browser application
 
-If you want to use it in your Browser apps you can import the library (browser or iife) like this:
+If you want to use it in your Browser apps you can load the browser build, which sets the class on `window.EventBus`:
 
 ```html
-    <script src=" https://cdn.jsdelivr.net/npm/@knighttower/utility/dist/browser/EventBus.min.js "></script>
+    <script src="https://cdn.jsdelivr.net/npm/@knighttower/utility@latest/dist/browser/EventBus.js"></script>
     <script>
-        // global instance
-        EventBus.default().global();
-        // then you can use it
-        window.EventBus.on('my-event', function () {
+        const bus = new EventBus();
+        bus.on('my-event', function () {
             console.log('Inside `my-event`');
         });
-
-        // or if you want to use it with scope as 
-        const ev = EventBus.default();
-        // then you can use it
-        ev.on('my-event', function () {
-            console.log('Inside `my-event`');
-        });
+        bus.emit('my-event');
     </script>
 ```
+
+> The examples below call the methods on `EventBus` for brevity, use your instance (`bus`).
 
 ### Api of the library
 
@@ -106,10 +110,12 @@ With this code, when `my-event` is emitted this function will be executed. The n
 #### Register several time to an event
 
 ```js
-EventBus.exactly(3, 'my-event', function () {
+EventBus.exactly('my-event', function () {
     console.log("Inside `my-event`. It'll be executed only 3 times!");
-});
+}, 3);
 ```
+
+Arguments: `exactly(eventName, callback, capacity)`.
 
 With this code, when `my-event` is emitted this function will be executed with a maximum of triggers of 3.
 
@@ -143,6 +149,15 @@ The callback will be executed with the events like `my-event.a.name.b.c`.
 -   `my-event.a.name.b.c` **will** trigger the callback ;
 -   `my-event.a.name.b` **will** trigger the callback ;
 -   `my-event.name.b` **will not** trigger the callback ;
+
+When an event is emitted, the listeners registered with that exact name **and** all the wildcard listeners that match it are called:
+
+```js
+EventBus.on('user.save', () => console.log('exact'));
+EventBus.on('user.*', () => console.log('pattern'));
+
+EventBus.emit('user.save'); // 'exact', 'pattern'
+```
 
 #### Emit an event
 

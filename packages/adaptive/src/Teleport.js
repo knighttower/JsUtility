@@ -7,7 +7,6 @@ import {
     getDirectivesFromString as GetSettings,
     typeOf,
 } from '@knighttower/utility';
-import { validType } from '@knighttower/type-check';
 
 /**
  * @module Teleport
@@ -35,7 +34,8 @@ class Teleport {
     constructor(props) {
         domObserver.start();
         // Early exit if no props are provided
-        if (!validType(props, 'string|object')) {
+        // typeOf, not validType: validType runs JSON.stringify, which throws on React elements
+        if (!typeOf(props, 'string|object')) {
             return;
         }
 

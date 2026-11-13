@@ -14,11 +14,15 @@
  * @param {any} value The value to check.
  * @returns {boolean} True if the value is a plain object, false otherwise.
  */
-const isPlainObject = (value) =>
-    value && typeof value === 'object' && value.constructor === Object;
+const isPlainObject = (value) => {
+    if (value === null || typeof value !== 'object') return false;
+    const proto = Object.getPrototypeOf(value);
+    return proto === Object.prototype || proto === null;
+};
 
 /**
  * Merges two or more objects into a single new object. Arrays and other types are overwritten.
+ * Neither the target nor the sources are modified. Values that are not merged are copied by reference.
  *
  * @param {object} target The target object.
  * @param {...object} sources The source objects.
@@ -29,13 +33,18 @@ const extend = (target, ...sources) => {
         (acc, source) => {
             if (isPlainObject(source)) {
                 Object.entries(source).forEach(([key, value]) => {
+                    // Assigning '__proto__' (e.g. from parsed JSON) would replace the prototype of the result
+                    if (key === '__proto__') {
+                        return;
+                    }
                     acc[key] =
                         isPlainObject(value) && isPlainObject(acc[key])
                             ? extend(acc[key], value)
                             : value; // If it's not an object, directly assign it
                 });
-            } else {
-                // If the source is not an object (like a number), just merge directly
+            } else if (typeof source !== 'string') {
+                // Other objects (class instances, arrays) are merged directly.
+                // Strings are skipped since they would be spread one character per key.
                 Object.assign(acc, source);
             }
             return acc;
@@ -54,13 +63,11 @@ const extend = (target, ...sources) => {
 //    extend,
 //     formatPhoneNumber,
 //     getDynamicId,
-//     getGoogleMapsAddress,
 //     getRandomId,
 //     includes,
 //     isEmpty, // from https://moderndash.io/
 //     isNumber,
 //     instanceOf,
-//     openGoogleMapsAddress,
 //     toCurrency,
 //     toDollarString,
 //     typeOf,

@@ -1,9 +1,10 @@
 import { test, vi, expect } from 'vitest';
 import assert from 'assert';
 import { JSDOM } from 'jsdom';
-import urlHelper from '../dist/umd/urlHelper.js';
-import utility from '../dist/umd/utility.js';
-import proxyObject from '../dist/umd/proxyObject.js';
+// The names are written exactly as the files are on disk, Linux does not ignore upper and lower case
+import urlHelper from '../dist/umd/UrlHelper.js';
+import utility from '../dist/umd/Utility.js';
+import proxyObject from '../dist/umd/ProxyObject.js';
 vi.setConfig({
     testTimeout: 50000,
 });

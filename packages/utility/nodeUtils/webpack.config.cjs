@@ -1,7 +1,7 @@
 const path = require('path');
 const workingDir = process.cwd();
 const TerserPlugin = require('terser-webpack-plugin');
-const { targets, webpackFormats } = require(`${workingDir}/source-files.cjs`);
+const { targets, webpackFormats, polyfills } = require(`${workingDir}/source-files.cjs`);
 const { getFlagValue } = require('./NodeHelpers.cjs');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
@@ -13,6 +13,8 @@ const formats = webpackFormats ?? [
     { type: 'commonjs2', dir: 'cjs', ext: 'cjs' },
     { type: 'window', dir: 'browser', ext: 'js' },
 ];
+// A package can set `polyfills: false` in its source-files.cjs to build without core-js
+const polyfillOptions = polyfills === false ? { useBuiltIns: false, corejs: undefined } : {};
 const cssRulesUse = (isBundle) => {
     const use = [
         {
@@ -143,6 +145,7 @@ const getWebpackConfig = (config) => ({
                                     useBuiltIns: 'usage',
                                     corejs: 3,
                                     modules: false,
+                                    ...polyfillOptions,
                                 },
                             ],
                         ],

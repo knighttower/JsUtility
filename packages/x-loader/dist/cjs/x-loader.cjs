@@ -131,7 +131,7 @@ const domTracking = (($win) => {
  * xloader.css.ready('css-group-id').then(() => {});
  * xloader.css.isLoaded('css-group-id');
  * @html
- * <x-loader x-js="https://cdn.example.com/script.js" x-id="script-group-id" x-deps="anyDeps,otherDeps"></x-loader>
+ * <x-loader x-js="https://cdn.example.com/script.js" x-id="script-group-id" x-dep="anyDeps,otherDeps"></x-loader>
  * <x-loader x-css="https://cdn.example.com/style.css" x-id="css-group-id"></x-loader>
  * <x-loader x-img="https://cdn.example.com/image.jpg" x-id="img-group-id"></x-loader>
  */
@@ -142,6 +142,9 @@ const xloader = ((w) => {
     const loaded = new Map();
     const loadingSet = new Map();
     const loadingAssets = new Map();
+    // ready() calls waiting for an ID that load() has not registered yet. load() runs them as
+    // soon as it registers an ID, so their interval is only a backup.
+    const readyWaiters = new Set();
 
     // -----------------------------------------
     // --> @TODO: Add support for asset types
@@ -174,15 +177,17 @@ const xloader = ((w) => {
                 const cancelTimeout = () => {
                     maxTimeout && clearTimeout(maxTimeout);
                 };
-                const interval = setInterval(() => {
+                const check = () => {
                     if (loadedSet.get(ids)) {
                         clearInterval(interval);
+                        readyWaiters.delete(check);
                         resolve(true);
                         cancelTimeout();
                         return;
                     }
                     if (loadingSet.get(ids)) {
                         clearInterval(interval);
+                        readyWaiters.delete(check);
                         cancelTimeout();
 
                         const loadTimeout = setTimeout(() => {
@@ -190,19 +195,27 @@ const xloader = ((w) => {
                             reject(console.log(`Timeout ID "${ids}".`));
                         }, timeout);
 
-                        loadingSet.get(ids).finally(() => {
-                            cancelTimeout();
-                            clearTimeout(loadTimeout);
-                            resolve(true);
-                        });
+                        loadingSet
+                            .get(ids)
+                            .finally(() => {
+                                cancelTimeout();
+                                clearTimeout(loadTimeout);
+                                resolve(true);
+                            })
+                            // finally() returns a copy of a failed load, which load() already reports
+                            .catch(() => {});
 
                         return;
                     }
-                }, 50);
+                };
+                // backup only: load() runs check() as soon as it registers the ID
+                const interval = setInterval(check, 500);
+                readyWaiters.add(check);
 
                 // set to 1m for slow connections
                 maxTimeout = setTimeout(() => {
                     clearInterval(interval);
+                    readyWaiters.delete(check);
                     reject(console.log(`Timeout ID "${ids}".`));
                 }, 1000 * 60);
             });
@@ -246,22 +259,31 @@ const xloader = ((w) => {
                 return Promise.all(ids.map((id) => this.when(id, timeout)));
             }
             ids = ids.trim();
+            // already in window
+            if (window[ids]) return Promise.resolve(true);
             return new Promise((resolve, reject) => {
                 let maxTimeout;
                 const cancelTimeout = () => {
                     maxTimeout && clearTimeout(maxTimeout);
                 };
-                const interval = setInterval(() => {
+                const check = () => {
                     if (window[ids]) {
                         clearInterval(interval);
+                        document.removeEventListener('load', check, true);
                         resolve(true);
                         cancelTimeout();
                         return;
                     }
-                }, 50);
+                };
+                // backup, for a global set with no load event (inline script, code that runs later)
+                const interval = setInterval(check, 50);
+                // A script fires load right after it runs, so check then. 'load' does not bubble,
+                // so the document hears it on the way down (capture)
+                document.addEventListener('load', check, true);
 
                 maxTimeout = setTimeout(() => {
                     clearInterval(interval);
+                    document.removeEventListener('load', check, true);
                     reject(console.warn(`Timeout "${ids}": not in window.`));
                 }, timeout);
             });
@@ -304,9 +326,11 @@ const xloader = ((w) => {
 
             if (regIds.has(id)) {
                 console.warn(`ID "${id}" is already registered.`);
-                return Promise.resolve(true);
+                // resolve when the load that registered the ID does
+                return (loadingSet.get(id) || Promise.resolve()).then(() => true);
             }
             regIds.set(id, true);
+            let imagesPlaced = 0;
 
             const promises = assets.map((src) => {
                 if (loadingAssets.get(src) && this.type !== 'img') return loadingAssets.get(src);
@@ -350,6 +374,10 @@ const xloader = ((w) => {
                                         element.setAttribute(key, attributes[key]);
                                     }
                                 });
+                                // must be set before src, the download starts when src is set
+                                if (loadType === 'lazy') {
+                                    element.setAttribute('fetchpriority', 'low');
+                                }
                                 element.src = src;
 
                                 break;
@@ -361,15 +389,20 @@ const xloader = ((w) => {
                             if (this.type === 'img') {
                                 const loadImg = () => {
                                     $element = $element || document.querySelector(`[x-id="${id}"]`);
+                                    // no placeholder on the page (img.load() used to preload)
+                                    if (!$element) return;
                                     $element.style.display = 'none';
-                                    $element.insertAdjacentElement('afterend', element);
+                                    // before the tag, so with several images each one has a place
+                                    $element.insertAdjacentElement('beforebegin', element);
 
                                     // Had to resort to this since the inner image was not being removed
-                                    $element.remove();
+                                    // (once every image of this ID is in place)
+                                    if (++imagesPlaced === assets.length) {
+                                        $element.remove();
+                                    }
                                 };
 
                                 if (loadType === 'lazy') {
-                                    element.setAttribute('fetchpriority', 'low');
                                     domTracking.afterLoad(loadImg);
                                 } else {
                                     domTracking.isReady(loadImg);
@@ -390,7 +423,8 @@ const xloader = ((w) => {
                                     });
                                     break;
                                 default:
-                                    document.body.appendChild(element);
+                                    // <head> when called before <body> exists
+                                    (document.body || document.head).appendChild(element);
                                     break;
                             }
                         }
@@ -414,6 +448,8 @@ const xloader = ((w) => {
                 });
 
             loadingSet.set(id, promiseSet);
+            // wake the ready() calls waiting for an ID
+            readyWaiters.forEach((check) => check());
             return promiseSet;
         }
     }
@@ -576,7 +612,10 @@ const xloader = ((w) => {
             loader.autoLoadScripts([this]);
         }
     }
-    customElements.define('x-loader', LoaderTag);
+    // A second copy of the library (dist/browser plus the npm import) reuses the first one
+    if (!customElements.get('x-loader')) {
+        customElements.define('x-loader', LoaderTag);
+    }
 
     // Attach xloader globally
     return loader;

@@ -20,15 +20,6 @@ const typeCheck = () => {
     );
 };
 
-const bootstrapMini = () => {
-    runCommand(
-        `\
-    cd ./packages/bootstrap-mini \
-    && npx vitest
-    `
-    );
-};
-
 const adaptive = () => {
     runCommand(
         `\
@@ -41,7 +32,6 @@ const adaptive = () => {
 // runCommand('ncu -u && npm i');
 
 const workspaces = {
-    'bootstrap-mini': bootstrapMini,
     'type-check': typeCheck,
     utility,
     adaptive,
