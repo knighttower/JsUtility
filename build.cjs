@@ -25,7 +25,7 @@ const utility = () => {
         `node "${buildExports}" --dir ./src --type=esm`,
         `prettier --config "${pretty}" --write ./index.js`,
         `prettier --config "${pretty}" --write ./index.cjs`,
-        'npm run test',
+        'npx vitest run',
         `node "${bumpVersion}" --exe --minor`,
         local ? '' : 'npm publish --access public',
     ]
@@ -47,7 +47,7 @@ const typeCheck = () => {
         `node "${buildExports}" --file ./src/typeCheck.js --type=esm`,
         `prettier --config "${pretty}" --write ./index.js`,
         `prettier --config "${pretty}" --write ./index.cjs`,
-        'npm run test',
+        'npx vitest run',
         `node "${bumpVersion}" --exe --minor`,
         local ? '' : 'npm publish --access public',
     ]

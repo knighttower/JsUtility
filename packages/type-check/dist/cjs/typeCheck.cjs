@@ -24,13 +24,8 @@ Object.defineProperty(exports, '__esModule', { value: true });
  * @example convertToNumber(null) // Output: null (original)
  */
 function convertToNumber(input) {
-    const isNum = isNumber(input);
-
-    if (isNum !== null) {
-        return isNum;
-    }
-    // Case: String that cannot be converted to a number
-    return input;
+    // Anything that cannot be converted to a number is returned untouched
+    return isNumber(input) ?? input;
 }
 
 /**
@@ -55,59 +50,18 @@ function convertToNumber(input) {
  * @example var hello = [...]; emptyOrValue(hello') // [...]
  */
 function emptyOrValue(value, _default = null) {
-    /**
-     * Test sequence:
-     * If it is a number 0> : true
-     * If is not undefined: true
-     * If it is boolean (true|false) prevents going to empty
-     * If it is not Empty, [], null, {}, 0, true, false: true
-     */
-
-    if (isNumber(value) !== null || typeof value === 'boolean') {
-        return value;
-    } else if (!isEmpty(value)) {
-        return value;
-    }
-
-    return _default;
+    // Numbers (0 included) and booleans are never empty, see isEmpty
+    return isEmpty(value) ? _default : value;
 }
-
-const uuid = (max = 20) => {
-    const rnd = () => Math.random().toString(36).substring(2, 15);
-    max = max || 40;
-    var str = '';
-    for (var i = 0; i < max / 3 + 1; i++) {
-        str += rnd();
-    }
-    return str.substring(0, max);
-};
-
-/**
- * Generate unique ids
- * @function getDynamicId
- * @memberof utility
- * @return string Format kn__000000__000
- */
-function getDynamicId() {
-    return 'id__' + uuid(8) + '__' + new Date().getTime();
-}
-
-/**
- * Alias to getDynamicId
- * @function getRandomId
- * @memberof utility
- * @return string
- * @example getRandomId() // kn__000000__000
- */
-const getRandomId = getDynamicId;
 
 /**
  * Check if a value is empty
+ * Numbers, booleans, functions and value objects (Date, RegExp, Error) are never empty
  * @function isEmpty
  * @memberof utility
  * @param {string|array|object|map|set|number|boolean} value
  * @url https://moderndash.io/
- * @return {string}
+ * @return {boolean}
  */
 function isEmpty(value) {
     if (value === null || value === undefined) {
@@ -126,6 +80,11 @@ function isEmpty(value) {
         return value.byteLength === 0;
     }
 
+    // These hold their content internally, so they have no keys to count
+    if (value instanceof Date || value instanceof RegExp || value instanceof Error) {
+        return false;
+    }
+
     if (typeof value === 'object') {
         return Object.keys(value).length === 0;
     }
@@ -140,36 +99,29 @@ function isEmpty(value) {
  * @function isNumber
  * @memberof utility
  * @param {String|Number} value
- * @return null|int
- * @example isNumber(123) // true
- * @example isNumber(123.45) // true
- * @example isNumber('123abc') // false
- * @example isNumber('abc') // false
- * @example isNumber('') // false
- * @example isNumber("123") // true
- * @example isNumber("123.45") // true
+ * @return {null|number} The value as a number, or null when it is not a number
+ * @example isNumber(123) // 123
+ * @example isNumber(123.45) // 123.45
+ * @example isNumber('123abc') // null
+ * @example isNumber('abc') // null
+ * @example isNumber('') // null
+ * @example isNumber(' ') // null
+ * @example isNumber("123") // 123
+ * @example isNumber("123.45") // 123.45
+ * @example isNumber(0) // 0, so compare the result against null instead of using it as a boolean
  */
 function isNumber(value) {
-    const isType = typeof value;
-    switch (value) {
-        case null:
-        case undefined:
-        case '':
-            return null;
-        case '0':
-        case 0:
-            return 0;
-        default:
-            if (isType === 'number' || isType === 'string') {
-                if (typeof value === 'number' || !Number.isNaN(Number(value))) {
-                    return +value;
-                }
-            }
-
-            break;
+    const type = typeof value;
+    if (type !== 'number' && type !== 'string') {
+        return null;
+    }
+    // Number('') and Number('  ') are both 0, so blank strings have to be ruled out first
+    if (type === 'string' && value.trim() === '') {
+        return null;
     }
 
-    return null;
+    const number = Number(value);
+    return Number.isNaN(number) ? null : number;
 }
 
 /**
@@ -183,35 +135,17 @@ function isNumber(value) {
  * @example typeOf('hello', 'string') // returns true
  * @example typeOf('hello') // returns 'string'
  * @example typeOf(123, 'number|int') // returns 'number'
+ * @example typeOf(null, 'null|string') // returns 'null'
  * @example typeOf({}) // returns 'object'
+ * @example typeOf([]) // returns 'array'
  */
 function typeOf(input, test) {
-    // Special case for null since it can be treated as an object
+    // null and arrays are both 'object' for the native typeof
+    let inputType = typeof input;
     if (input === null) {
-        if (test) {
-            return test === null || test === 'null' ? true : false;
-        }
-        return 'null';
-    }
-
-    let inputType;
-
-    switch (typeof input) {
-        case 'number':
-        case 'string':
-        case 'boolean':
-        case 'undefined':
-        case 'bigint':
-        case 'symbol':
-        case 'function':
-            inputType = typeof input;
-            break;
-        case 'object':
-            inputType = Array.isArray(input) ? 'array' : 'object';
-
-            break;
-        default:
-            inputType = 'unknown';
+        inputType = 'null';
+    } else if (Array.isArray(input)) {
+        inputType = 'array';
     }
 
     if (test) {
@@ -240,13 +174,11 @@ function typeOf(input, test) {
 //    extend,
 //     formatPhoneNumber,
 //     getDynamicId,
-//     getGoogleMapsAddress,
 //     getRandomId,
 //     includes,
 //     isEmpty, // from https://moderndash.io/
 //     isNumber,
 //     instanceOf,
-//     openGoogleMapsAddress,
 //     toCurrency,
 //     toDollarString,
 //     typeOf,
@@ -263,184 +195,125 @@ function typeOf(input, test) {
 
 
 // @private
-function _removeBrackets(strExp) {
-    const regex = /^(\{.*\}|\[.*\])$/; // Match only if both brackets are the same type
-    const match = strExp.match(regex);
+// Pairs every opening bracket with the one that closes it: Map { index of '{' or '[' => index of '}' or ']' }
+// A bracket without a partner is left out, so it ends up being treated as plain text
+function _matchBrackets(str) {
+    const pairs = new Map();
+    const opened = { '{': [], '[': [] };
 
-    if (match) {
-        return match[0].slice(1, -1).trim(); // Extract and trim the content between brackets
+    for (let i = 0; i < str.length; i++) {
+        const char = str[i];
+        if (char === '{' || char === '[') {
+            opened[char].push(i);
+        } else if (char === '}' || char === ']') {
+            const sameType = opened[char === '}' ? '{' : '['];
+            const otherType = opened[char === '}' ? '[' : '{'];
+            if (sameType.length) {
+                const start = sameType.pop();
+                pairs.set(start, i);
+                // The other type of bracket opened inside this pair was never closed
+                while (otherType.length && otherType[otherType.length - 1] > start) {
+                    otherType.pop();
+                }
+            }
+        }
     }
 
-    return strExp; // Return the original string if no brackets found at start and end
-}
-
-/**
- * Clean a string from delimeters or just trimmed if no delimeters given
- * @funtion cleanStr
- * @param {String} str - String to use
- * @param {String|Regex} p1 - Delimeter 1
- * @param {String|Regex} p2 - Delimeter 2
- * @return {String|void}
- * @example cleanStr('hello world', 'h', 'd') // 'ello worl'
- * @example cleanStr('  hello world  ') // 'hello world'
- * @example cleanStr('hello world', 'hello') // 'world'
- * @example cleanStr('Hello World. Sunshine is here!', '\..*!') // Hello World
- * @example cleanStr('Hello World. Sunshine is here!', /Hello/g) // ' World. Sunshine is here!'
- * @example cleanStr('Hello World. Sunshine is here!', /Hello/g, /Sunshine/g) // ' World.  is here!'
- */
-function cleanStr(str, ...args) {
-    if (!str) {
-        return;
-    }
-    if (typeof str !== 'string') {
-        return str;
-    }
-
-    return args
-        .reduce((accStr, arg) => {
-            const regex = arg instanceof RegExp ? arg : new RegExp(setExpString(arg));
-            return accStr.replace(regex, '');
-        }, str)
-        .trim();
-}
-
-/**
- * Find the last instance of nested pattern with delimeters
- * @function findNested
- * @param {string} str
- * @param {string} start - Delimeter 1
- * @param {string} end - Delimeter 2
- * @return {string|null}
- * @example findNested('[[]hello [world]]', '[', ']') // [world]
- */
-function findNested(str, start = '[', end = ']') {
-    if (typeof str !== 'string') {
-        return str;
-    }
-    // return lastMatch;
-    // Find the last index of '['
-    const lastIndex = str.lastIndexOf(start);
-    // If '[' is not found, return null or some default value
-    if (lastIndex === -1) {
-        return null;
-    }
-
-    // Extract the substring starting from the last '[' to the end
-    const substring = str.substring(lastIndex);
-    // Find the index of the first ']' in the substring
-    const endIndex = substring.indexOf(end);
-    // If ']' is not found, return null or some default value
-    if (endIndex === -1) {
-        return null;
-    }
-    // Extract and return the content between the last '[' and the next ']', including them
-    return substring.substring(0, endIndex + 1);
+    return pairs;
 }
 
 /**
  * Converts strings formats into objects or arrays
- * Note: quoted strings are not supported, use getDirectiveFromString instead
+ * - Values are separated by commas and can be nested: [value, [value], {key: value}]
+ * - Object entries are 'key: value', an entry without a key gets its position as the key
+ * - Values that are numbers are converted to numbers, any other value is a string
+ * - Empty values (like the one after a trailing comma) are ignored
+ * Note: quoted strings are not supported (the quotes are removed and a comma inside the quotes still separates values),
+ * use getDirectiveFromString instead
  * @param {string} strExp
- * @return {object|array|string}
+ * @return {object|array|string} - Anything that is not a string wrapped in {} or [] is returned as it is
  * @example getArrObjFromString('[[value,value],value]') // [['value', 'value'], 'value']
  * @example getArrObjFromString('[[value,value],value, { y: hello }, hello]') // [['value', 'value'], 'value', { y: 'hello' }, 'hello']
  * @example getArrObjFromString('{ y: hello, x: world, z: [value,value]}') // { y: 'hello', x: 'world', z: ['value', 'value'] }
+ * @example getArrObjFromString('{ y: 1, url: http://site.com, ...}') // { y: 1, url: 'http://site.com', 2: '...' }
  */
 function getArrObjFromString(strExp) {
-    // alredy typeof object or array just return it
-    if (typeOf(strExp, 'object') || typeOf(strExp, 'array') || !strExp) {
+    // alredy typeof object or array (or anything else that is not a string) just return it
+    if (typeof strExp !== 'string') {
         return strExp;
     }
-    const isObject = (str) => startAndEndWith(str, '{', '}');
-    const isArray = (str) => startAndEndWith(str, '[', ']');
-
-    const collectionType =
-        (isObject(strExp) ? 'object' : null) || (isArray(strExp) ? 'array' : null);
+    const expression = strExp.trim();
+    const isObject = startAndEndWith(expression, '{', '}');
     // If it is other type of string, return it
-    if (!collectionType) {
+    if (!isObject && !startAndEndWith(expression, '[', ']')) {
         return strExp;
     }
 
-    const nestedElements = {};
+    // The content, without the brackets that wrap it
+    const str = expression.slice(1, -1);
+    // Where each nested collection starts and ends
+    const nestedElements = _matchBrackets(str);
 
-    const getNested = (str) => {
-        const match1 = findNested(str, '{', '}');
-        const match2 = findNested(str, '[', ']');
-
-        if (str.indexOf(match1) > str.indexOf(match2)) {
-            return match1 || null;
-        }
-        return match2 || null;
-    };
-
-    const loopNested = (str) => {
-        if (!str) {
+    // A value is either a whole nested collection or plain text
+    const buildValue = (start, end) => {
+        const untrimmed = str.slice(start, end);
+        const value = untrimmed.trim();
+        if (!value) {
             return;
         }
+        // position of the value once trimmed
+        start += untrimmed.length - untrimmed.trimStart().length;
+        end = start + value.length;
 
-        let matched = getNested(_removeBrackets(str));
-
-        if (!matched) {
-            return;
+        if (nestedElements.get(start) === end - 1) {
+            return buildNested(start + 1, end - 1, value[0] === '{');
         }
-        const addMarker = (_str, matched) => {
-            let marker = `__${getRandomId()}__`;
-            let type =
-                (isObject(matched) ? 'object' : null) ||
-                (isArray(matched) ? 'array' : null) ||
-                'string';
-            _str = _str.replace(matched, marker);
-            nestedElements[marker] = {
-                type,
-                matched,
-            };
-            return _str;
-        };
-
-        str = addMarker(str, matched);
-
-        return loopNested(str) || str;
+        return convertToNumber(removeQuotes(value));
     };
 
-    const buildNested = (str, type) => {
-        str = _removeBrackets(str);
-        let output = type === 'object' ? {} : [];
+    const buildNested = (start, end, asObject) => {
+        const output = asObject ? {} : [];
+        let index = 0;
+        // Start of the current chunk and its first colon, the one between key and value
+        let chunkStart = start;
+        let colon = -1;
 
-        getChunks(str).forEach((chunk, index) => {
-            const isObjectKey = chunk.includes(':') && type === 'object';
-            const chunkParts = isObjectKey ? getChunks(chunk, ':') : [];
-            const chunkKey = removeQuotes(emptyOrValue(chunkParts[0], index));
-            chunk = isObjectKey ? chunkParts[1] : chunk;
-
-            if (chunk in nestedElements) {
-                const nested = nestedElements[chunk];
-                chunk = buildNested(nested.matched, nested.type);
+        for (let i = start; i <= end; i++) {
+            if (i < end) {
+                if (nestedElements.has(i)) {
+                    // commas and colons of a nested collection belong to it, jump to its end
+                    i = nestedElements.get(i);
+                    continue;
+                }
+                if (str[i] === ':' && colon === -1) {
+                    colon = i;
+                }
+                if (str[i] !== ',') {
+                    continue;
+                }
             }
-            chunk = convertToNumber(removeQuotes(chunk));
-            // set back in the collection either as an object or array
-            type === 'object' ? (output[chunkKey] = chunk) : output.push(chunk);
-        });
+            // a comma or the end of the collection closes the chunk, empty ones are ignored
+            if (str.slice(chunkStart, i).trim()) {
+                if (asObject) {
+                    const isObjectKey = colon !== -1;
+                    const key = isObjectKey ? str.slice(chunkStart, colon).trim() : '';
+                    const chunkKey = removeQuotes(emptyOrValue(key, index));
+                    // '__proto__' is not a key, it would replace the prototype of the output
+                    if (chunkKey !== '__proto__') {
+                        output[chunkKey] = buildValue(isObjectKey ? colon + 1 : chunkStart, i);
+                    }
+                } else {
+                    output.push(buildValue(chunkStart, i));
+                }
+                index++;
+            }
+            chunkStart = i + 1;
+            colon = -1;
+        }
         return output;
     };
 
-    return buildNested(loopNested(strExp) || strExp, collectionType);
-}
-/**
- * Splits a string into chunks by a given splitter and cleans the chunks
- * @param {string} str
- * @param {string} splitter - The string/character to split the string by. Defaults to ','
- * @return {string|array}
- */
-function getChunks(str, splitter = ',') {
-    if (typeof str !== 'string') {
-        return str;
-    }
-    if (isEmpty(str)) {
-        return [];
-    }
-    str = cleanStr(str);
-    let chunks = str.split(splitter).map((t) => cleanStr(t));
-    return chunks.length === 1 && chunks[0] === '' ? [str] : chunks;
+    return buildNested(0, str.length, isObject);
 }
 
 /**
@@ -463,38 +336,17 @@ function removeQuotes(str) {
  * @param {string} strExp
  * @param {string} start - The string/character to check it starts with
  * @param {string} end - The string/character to check it ends with
- * @return {string}
- * @example startAndEndWith('hello world', 'h', 'd') // false
+ * @return {boolean} - Always false when the given value is not a string
  * @example startAndEndWith('hello world', 'h', 'd') // true
+ * @example startAndEndWith('hello world', 'h', 'x') // false
+ * @example startAndEndWith('hello world', 'h') // true
  */
 function startAndEndWith(strExp, start = null, end = null) {
-    return (!start || strExp.startsWith(start)) && (!end || strExp.endsWith(end));
-}
-
-/**
- * Scapes a string to create a regex or returns the regex if it already is an expression
- * @function setExpString
- * @param {String|Regex} exp
- * @return {String|Regex}
- * @example setExpString('hello') // '\h\e\l\l\o'
- * @example setExpString(/hello/) // /hello/
- * @example setExpString([hello]) // \\[hello\\/ then use like new new RegExp(setExpString(StringOrRegex))
- */
-function setExpString(exp) {
-    if (exp instanceof RegExp) {
-        return exp;
-    } else {
-        return exp
-            .split('')
-            .map((char) =>
-                ['$', '^', '.', '*', '+', '?', '(', ')', '[', ']', '{', '}', '|', '\\'].includes(
-                    char
-                )
-                    ? `\\${char}`
-                    : char
-            )
-            .join('');
-    }
+    return (
+        typeof strExp === 'string' &&
+        (!start || strExp.startsWith(start)) &&
+        (!end || strExp.endsWith(end))
+    );
 }
 
 //  const powerHelper = {
@@ -549,6 +401,8 @@ const typesMap = new Map([
 // --------------------------
 // Cache storage for tests
 const cachedTests = new Map();
+// array and object expressions are cached by reference, a WeakMap lets them go once they are not used
+const cachedObjectTests = new WeakMap();
 const cachedPipedTypes = new Map();
 
 // =========================================
@@ -578,7 +432,7 @@ function getPipedTypes(str) {
     if (cachedPipedTypes.has(str)) {
         return cachedPipedTypes.get(str);
     }
-    return str.split('|').reduce((testsForKey, t) => {
+    const pipedTests = str.split('|').reduce((testsForKey, t) => {
         let itCanBeNull = false;
         let type = t.trim();
 
@@ -604,9 +458,11 @@ function getPipedTypes(str) {
         if (itCanBeNull) {
             testsForKey.push(typesMap.get('null'), typesMap.get('undefined'));
         }
-        cachedPipedTypes.set(str, testsForKey);
         return testsForKey;
     }, []);
+    // cached once all the types are found (isNoType throws for an unsupported one)
+    cachedPipedTypes.set(str, pipedTests);
+    return pipedTests;
 }
 
 /**
@@ -706,13 +562,17 @@ const objectTypes = (strExp) => {
 
         checkTheAnyKey(obj) {
             if ('any' in obj) {
-                const keys = Object.keys(obj);
+                // the '...' entry is not a key to test, 'any' already tests all the other keys
+                const keys = Object.keys(obj).filter((key) => obj[key] !== '...');
                 if (keys.length === 1) {
                     this.testUnit.set('testAllAny', true);
                 } else {
                     this.testUnit.set(
                         'testFew',
-                        keys.filter((key) => key !== 'any')
+                        keys
+                            .filter((key) => key !== 'any')
+                            // optional keys ('key?') are stored by their name without the '?'
+                            .map((key) => (key.endsWith('?') ? key.slice(0, -1) : key))
                     );
                 }
             }
@@ -750,8 +610,10 @@ const objectTypes = (strExp) => {
  * @usage See more cases in the 'type-pattern.txt' file
  */
 function testBuilder(strExp) {
-    if (cachedTests.has(strExp)) {
-        return cachedTests.get(strExp);
+    // strings are cached by value, arrays and objects by reference
+    const cache = typeof strExp === 'string' ? cachedTests : cachedObjectTests;
+    if (cache.has(strExp)) {
+        return cache.get(strExp);
     }
     let testUnit = new Map([
         ['testMethod', determineMethod(strExp)],
@@ -776,7 +638,7 @@ function testBuilder(strExp) {
             isNoType(strExp);
     }
 
-    cachedTests.set(strExp, testUnit);
+    cache.set(strExp, testUnit);
     return testUnit;
 }
 
@@ -815,6 +677,8 @@ const runBasicTest = (inputVal, tests) => {
 const runArrayTest = (inputVal, tests, hasRest = false) => {
     // If the input is not an array, return false
     if (!typeOf(inputVal, 'array') || inputVal.length === 0) {
+        // log it, else the error message would show the value of an earlier test
+        pushToErrorLogs(inputVal, 'Expected an array with at least one item');
         return false;
     }
     // Else, test each declared position in the array
@@ -833,7 +697,7 @@ class ObjectTestHandler {
     constructor(inputVal, unitTest) {
         // Extract all properties at once
         /* prettier-ignore */
-        const { testOnly, testFew, testAllAny, optionalKeys, tests } = [...unitTest.entries()].reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
+        const [testOnly, testFew, testAllAny, optionalKeys, tests] = [unitTest.get('testOnly'), unitTest.get('testFew'), unitTest.get('testAllAny'), unitTest.get('optionalKeys'), unitTest.get('tests')];
         // Use destructured variables
         this.testUnitKeys = [...tests.keys()];
         this.testOnly = testOnly;
@@ -907,6 +771,13 @@ class ObjectTestHandler {
         return this.testFew.every((key) => {
             const test = this.testCollection.get(key);
             const testValue = this.inputObject[key];
+            // '{key?: type, any: type}', an optional key that is not set (null/undefined) is not tested
+            if (
+                this.optionalKeys.includes(key) &&
+                (testValue === undefined || testValue === null)
+            ) {
+                return true;
+            }
 
             return runRouteTest(testValue, test);
         });
@@ -933,6 +804,8 @@ class ObjectTestHandler {
 
 const runObjectTest = (inputVal, unitTest) => {
     if (!typeOf(inputVal, 'object')) {
+        // log it, else the error message would show the value of an earlier test
+        pushToErrorLogs(inputVal, 'Expected an object');
         return false;
     }
     return new ObjectTestHandler(inputVal, unitTest).handleUnitTest();
@@ -999,7 +872,10 @@ function getSettings(input) {
                 }
                 break;
         }
-        cachedSettings.set(input, _val);
+        // only strings are cached, objects and functions can be new on every call
+        if (type === 'string') {
+            cachedSettings.set(input, _val);
+        }
         return _val;
     }
 
@@ -1030,8 +906,17 @@ function typeError(inputVal) {
 }
 
 function pushToErrorLogs(inputVal, tests) {
+    let value;
+    try {
+        value = JSON.stringify(inputVal);
+    } catch (error) {
+        // BigInt and circular values can not be converted to JSON, a failed test must not throw
+        value = typeOf(inputVal);
+    }
+    // typeError() only reads the last log, keep one so the logs do not grow forever
+    typeErrorLogs.length = 0;
     typeErrorLogs.push({
-        value: JSON.stringify(inputVal),
+        value,
         tests: JSON.stringify(tests),
         found: typeOf(inputVal),
     });
@@ -1134,6 +1019,10 @@ const _typeCheck = (inputVal, typeExp, params) => {
 * @see directory test for more information and examples
 */
 const _tc = (typeExp, __function, params = {}) => {
+    // string params ('log' | 'fail' | 'return') become their settings object, a string can not be spread
+    if (params && typeOf(params, 'string')) {
+        params = getSettings(params);
+    }
     return (...args) => {
         params = { ...{ fail: true }, ...params };
         _typeCheck(args, typeExp, params);
@@ -1197,6 +1086,9 @@ const _tcx = (typeExp, __function, params) => {
             return() {
                 return this.returns;
             }
+            test() {
+                return this.testResults.test();
+            }
         })();
     };
 };
@@ -1207,7 +1099,8 @@ const _tcx = (typeExp, __function, params) => {
  * @param {string} typeExp
  */
 const validType = (inputVal, typeExp) => {
-    return _typeCheck(inputVal, typeExp).test();
+    // same result as _typeCheck(inputVal, typeExp).test(), without building the chainable object
+    return runRouteTest(inputVal, testBuilder(typeExp));
 };
 
 /**
