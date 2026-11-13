@@ -54,7 +54,7 @@ System.register('mixinInstaller', [], (function (exports) {
                         app.provide(name, object);
                     },
                 };
-            }; exports({ installMixin: installMixin, default: installMixin });
+            }; exports({ default: installMixin, installMixin: installMixin });
 
         })
     };

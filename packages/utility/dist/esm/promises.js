@@ -1,7 +1,9 @@
 class EventBus {
     constructor() {
         // cleanup
-        this.listeners = {};
+        // An object without prototype: a normal one ({}) already has 'constructor', 'toString' and
+        // the like, so events with those names were taken for registered ones and broke
+        this.listeners = Object.create(null);
     }
     // creates an event that can be triggered any number of times
     /**
@@ -76,55 +78,52 @@ class EventBus {
      * @example EventBus.emit('event.name', arg1, arg2, arg3, {__context: YourInstance})
      */
     emit(eventName, ...args) {
-        let queueListeners = [];
-        let matches = null;
-        const allArgs = this.extractContextFromArgs(args);
-        const context = allArgs[0];
-        args = allArgs[1];
+        const [context, params] = this.extractContextFromArgs(args);
+        const names = Object.keys(this.listeners);
+        let matches;
 
-        // name exact match
-        if (this.hasListener(eventName)) {
-            queueListeners = this.listeners[eventName];
-        } else {
+        if (typeof eventName !== 'string' && this.hasListener(eventName)) {
+            // name exact match, the only one possible for a name that is not a string (a number, a symbol)
+            matches = [eventName];
+        } else if (eventName.includes('*')) {
             // -----------------------------------------
             // Wildcard support
-            if (eventName.includes('*')) {
-                // case 1, if the incoming string has * or ** in it
-                // Matches the emit 'eventName' to the registered 'on' this.listeners
-                matches = this.patternSearch(eventName, Object.keys(this.listeners));
-
-                if (matches.length > 0) {
-                    matches.forEach((match) => {
-                        queueListeners = queueListeners.concat(this.listeners[match]);
-                    });
-                }
-            } else {
-                // case 2, if the incoming string does not have * or ** in it
-                // get the patterns from the this.listeners (on method) and match them to the emit name
-                for (const key in this.listeners) {
-                    if (key.includes('*')) {
-                        matches = this.patternSearch(key, [eventName]);
-                        if (matches) {
-                            queueListeners = queueListeners.concat(this.listeners[key]);
-                        }
-                    }
-                }
-            }
+            // case 1, if the incoming string has * or ** in it
+            // Matches the emit 'eventName' to the registered 'on' this.listeners
+            // The listeners registered under that same name are among them, since it matches itself
+            matches = this.patternSearch(eventName, names) ?? [];
+        } else {
+            // case 2, if the incoming string does not have * or ** in it
+            // name exact match, plus the patterns from the this.listeners (on method) that match the
+            // emit name. Having the exact name registered used to leave those patterns out, even
+            // when none of its listeners was left
+            matches = names.filter(
+                (name) =>
+                    name === eventName ||
+                    (name.includes('*') && this.patternSearch(name, [eventName]))
+            );
         }
 
-        queueListeners.forEach((listener, k) => {
-            let callback = listener.callback;
-            if (context) {
-                callback = callback.bind(context);
-            }
+        // Every listener is collected, along with the name it was registered under, before any of
+        // them is called, since the callbacks can add and remove listeners
+        const queueListeners = [];
+        matches.forEach((name) => {
+            this.listeners[name].forEach((listener) => queueListeners.push([name, listener]));
+        });
+
+        queueListeners.forEach(([name, listener]) => {
             if (listener.triggerCapacity !== undefined) {
                 listener.triggerCapacity--;
-                queueListeners[k].triggerCapacity = listener.triggerCapacity;
             }
             if (this.checkToRemoveListener(listener)) {
-                this.listeners[eventName].splice(k, 1);
+                // Removed from the list it was registered in, wherever it is in that list by now
+                const registered = this.listeners[name] ?? [];
+                const index = registered.indexOf(listener);
+                if (index > -1) {
+                    registered.splice(index, 1);
+                }
             }
-            callback(...args);
+            listener.callback.apply(context || undefined, params);
         });
     }
     /**
@@ -139,7 +138,9 @@ class EventBus {
     patternSearch(pattern, list) {
         let filteredList = [];
         // console.log('__testLogHere__', pattern, this.setWildCardString(pattern));
-        const regex = new RegExp(this.setWildCardString(pattern), 'g');
+        // Without the 'g' flag: with it, test() carries on from where the previous match ended,
+        // so the item that came after a match was never found
+        const regex = new RegExp(this.setWildCardString(pattern));
 
         filteredList = list.filter((item) => regex.test(item));
         return filteredList.length === 0 ? null : filteredList;
@@ -163,7 +164,12 @@ class EventBus {
         for (let i = 0; i < args.length; i++) {
             const arg = args[i];
              
-            if (arg && typeof arg === 'object' && arg.hasOwnProperty('__context')) {
+            // Checked through Object: the data can be an object without a hasOwnProperty of its own
+            if (
+                arg &&
+                typeof arg === 'object' &&
+                Object.prototype.hasOwnProperty.call(arg, '__context')
+            ) {
                 context = arg.__context;
                 args.splice(i, 1);
                 break;
@@ -206,6 +212,14 @@ class EventBus {
  */
 const makeArray = (item) => (Array.isArray(item) ? item : [item]);
 
+/**
+ * Generate a random alphanumeric string (not an RFC UUID, and not for security purposes)
+ * @function uuid
+ * @param {Number} max Length of the string. Defaults to 20, and to 40 when 0 or any other falsy value is passed
+ * @return string
+ * @example uuid() // 20 characters
+ * @example uuid(8) // 8 characters
+ */
 const uuid = (max = 20) => {
     const rnd = () => Math.random().toString(36).substring(2, 15);
     max = max || 40;
@@ -220,7 +234,7 @@ const uuid = (max = 20) => {
  * Generate unique ids
  * @function getDynamicId
  * @memberof utility
- * @return string Format kn__000000__000
+ * @return string Format id__00000000__000
  */
 function getDynamicId() {
     return 'id__' + uuid(8) + '__' + new Date().getTime();
@@ -237,35 +251,17 @@ function getDynamicId() {
  * @example typeOf('hello', 'string') // returns true
  * @example typeOf('hello') // returns 'string'
  * @example typeOf(123, 'number|int') // returns 'number'
+ * @example typeOf(null, 'null|string') // returns 'null'
  * @example typeOf({}) // returns 'object'
+ * @example typeOf([]) // returns 'array'
  */
 function typeOf(input, test) {
-    // Special case for null since it can be treated as an object
+    // null and arrays are both 'object' for the native typeof
+    let inputType = typeof input;
     if (input === null) {
-        if (test) {
-            return test === null || test === 'null' ? true : false;
-        }
-        return 'null';
-    }
-
-    let inputType;
-
-    switch (typeof input) {
-        case 'number':
-        case 'string':
-        case 'boolean':
-        case 'undefined':
-        case 'bigint':
-        case 'symbol':
-        case 'function':
-            inputType = typeof input;
-            break;
-        case 'object':
-            inputType = Array.isArray(input) ? 'array' : 'object';
-
-            break;
-        default:
-            inputType = 'unknown';
+        inputType = 'null';
+    } else if (Array.isArray(input)) {
+        inputType = 'array';
     }
 
     if (test) {
@@ -294,13 +290,11 @@ function typeOf(input, test) {
 //    extend,
 //     formatPhoneNumber,
 //     getDynamicId,
-//     getGoogleMapsAddress,
 //     getRandomId,
 //     includes,
 //     isEmpty, // from https://moderndash.io/
 //     isNumber,
 //     instanceOf,
-//     openGoogleMapsAddress,
 //     toCurrency,
 //     toDollarString,
 //     typeOf,
@@ -368,17 +362,29 @@ const promiseQueue = () => {
 
             if (!isValidPromise) {
                 if (typeOf(promise, 'function')) {
-                    promise = new Promise(async (resolve) => {
-                        const fx = await promise();
-                        return resolve(fx);
+                    promise = new Promise(async (resolve, reject) => {
+                        // An error thrown by the function, or the rejection of the promise it returns,
+                        // rejects this promise. Both were lost before, so this promise never settled
+                        // and the queue never finished
+                        try {
+                            const fx = await promise();
+                            return resolve(fx);
+                        } catch (error) {
+                            return reject(error);
+                        }
                     });
                 } else {
-                    console.error('---> Invalid promise added to the Queue:', promise.toString());
-                    return this.emit('fail', promise.toString());
+                    // String() instead of .toString(), which throws when the value is null or undefined
+                    console.error('---> Invalid promise added to the Queue:', String(promise));
+                    return this.emit('fail', String(promise));
                 }
             }
 
             makeArray(promise).forEach((promiseFunction) => {
+                // A promise can be rejected while it waits for its turn. With nothing attached to it
+                // yet, that is an unhandled rejection, which stops a Node process. This only marks it
+                // as handled, the rejection is still recorded when its turn comes
+                promiseFunction.catch(() => {});
                 this._stats.total++;
                 this._stats.pending++;
                 this.queue.push({
@@ -403,7 +409,8 @@ const promiseQueue = () => {
             this._timer = null;
             this.queue = [];
             this.inProgress = false;
-            this._stats = { ...stats };
+            // With a new list: the copy alone would keep sharing the one that already has promises in it
+            this._stats = { ...stats, promises: [] };
             return this;
         }
 
@@ -434,18 +441,27 @@ const promiseQueue = () => {
             this.inProgress = true;
             // this always grabs the first promise in the queue and then removes it after processing
             const { promiseFunction } = this.queue[0];
+            // clear() can be called while this promise is running. By the time it settles it is not
+            // the first one in the queue anymore, so what follows would be applied to another
+            // promise, or to none at all
+            const item = this.queue[0];
+            const wasCleared = () => this.queue[0] !== item;
             promiseFunction
                 .then((response) => {
+                    if (wasCleared()) return;
                     this.queue[0].status = 'fulfilled';
                     this.queue[0].response = response;
                     this._stats.completed++;
                 })
                 .catch((error) => {
+                    if (wasCleared()) return;
                     this._stats.errors += error + '\n';
                     this.queue[0].status = 'rejected';
+                    this.queue[0].error = error;
                     this._stats.rejected++;
                 })
                 .finally(() => {
+                    if (wasCleared()) return;
                     this._stats.promises.push(this.queue[0]);
                     this._stats.pending--;
                     this.queue.shift(); // Remove the processed promise from the queue
@@ -578,6 +594,10 @@ const doPoll = (fn, options = {}) => {
             poll(); // initial tick
         }
 
+        // The first tick may have settled it already, and the clean up has run by then. The timeout
+        // below would never be cleared and the listener would stay on the signal
+        if (settled) return;
+
         timeoutId = setTimeout(() => {
             if (!stopped) stop('__TIMEOUT__');
         }, maxMs);
@@ -638,9 +658,7 @@ const promisePool = (maxConcurrency = 10) => {
             _status = 'done';
             totalAdded = 0;
             completedCount = 0;
-            rejectedCount = 0;
             activeCount = 0;
-            rejectedPromises.length = 0;
             queue.length = 0;
 
             Object.keys(promises).forEach((key) => {
@@ -649,6 +667,11 @@ const promisePool = (maxConcurrency = 10) => {
                 }
                 delete promises[key];
             });
+
+            // These two are reset after the loop: rejecting the promises that were running
+            // counts them as rejected
+            rejectedCount = 0;
+            rejectedPromises.length = 0;
         }
 
         /**
@@ -678,11 +701,16 @@ const promisePool = (maxConcurrency = 10) => {
                         promise = null; // Will be created when dequeued
                     } else {
                         console.info('---> Invalid promise added to the pool.');
-                        rejectedPromises.push(promise.toString());
+                        // String() instead of .toString(), which throws when the value is null or undefined
+                        rejectedPromises.push(String(promise));
                         rejectedCount++;
                         return;
                     }
                 } else {
+                    // It is already running and can be rejected while it waits in line. With nothing
+                    // attached to it yet, that is an unhandled rejection, which stops a Node process.
+                    // This only marks it as handled, the rejection is still recorded when its turn comes
+                    promise.catch(() => {});
                     promiseFunction = () => promise;
                 }
 
@@ -701,6 +729,12 @@ const promisePool = (maxConcurrency = 10) => {
 
                 queue.push(promiseId);
             });
+
+            // A pool that is done, or was cleared, starts over when it gets more promises to process.
+            // Its status stayed as 'done' before, so 'done' and 'completed' were never emitted again
+            if (queue.length > 0) {
+                _status = 'in-progress';
+            }
 
             this._processQueue();
         }
@@ -763,6 +797,9 @@ const promisePool = (maxConcurrency = 10) => {
                         // Error already handled by rejecter
                     })
                     .finally(() => {
+                        // clear() took it out of the pool while it was running and reset the count,
+                        // so there is nothing left to update for it
+                        if (promises[promiseId] !== promiseData) return;
                         activeCount--;
                         $this._updateStatus();
 
@@ -924,6 +961,10 @@ function doTimeout(idOrDelay, delayOrCallback, callback, ...args) {
         id = idOrDelay;
         delay = delayOrCallback;
     } else if (typeof idOrDelay === 'number' && typeof delayOrCallback === 'function') {
+        // Without an ID, what came in as 'callback' is the first of the additional arguments
+        if (arguments.length > 2) {
+            args.unshift(callback);
+        }
         delay = idOrDelay;
         callback = delayOrCallback;
     } else if (!delayOrCallback && typeof idOrDelay === 'string') {
